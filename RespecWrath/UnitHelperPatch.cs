@@ -12,11 +12,10 @@ using System.Threading.Tasks;
 
 namespace RespecModBarley
 {
-	[HarmonyPatch(typeof(UnitHelper), "Respec")]
-	[HarmonyPatch(new Type[] { typeof(UnitEntityData) })]
-	internal static class Unithelper_Respec_patch
+	[HarmonyPatch(typeof(UnitHelper),"Respec")]
+	[HarmonyPatch(new Type[] { typeof(UnitEntityData), typeof(Action)})]
+	internal static class UnithelperRespec_patch
 	{
-
 		private static void Postfix(UnitEntityData unit)
 		{
 			int[] initStatsByUnit = Main.GetInitStatsByUnit(unit);
