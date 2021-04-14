@@ -1,0 +1,11 @@
+﻿{
+	"Id": "RespecWrath",
+	"DisplayName": "Respec Mod",
+	"Author": "Barley",
+	"Version": "1.0",
+	"ManagerVersion": "0.21.3",
+	"GameVersion": "0",
+	"EntryMethod": "RespecWrath.Main.Load",
+	"HomePage": "https://github.com/BarleyFlour/Respec",
+	"Repository": "https://github.com/BarleyFlour/Respec"
+}
