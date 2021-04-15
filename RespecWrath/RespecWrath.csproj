@@ -78,7 +78,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UnitHelperPatch.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="LevelUpStatePatch.cs" />
     <Compile Include="LibraryPatch.cs" />

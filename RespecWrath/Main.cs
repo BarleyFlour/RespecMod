@@ -17,7 +17,7 @@ using UnityModManagerNet;
 
 namespace RespecModBarley
 {
-	internal static class Main
+	public class Main
 	{
 		public static UnityModManager.ModEntry ModEntry;
 		static bool Load(UnityModManager.ModEntry modEntry)
@@ -36,6 +36,8 @@ namespace RespecModBarley
 			}
 			return true;
 		}
+
+        static bool FreeRespec = false;
 		private static void OnGUI(UnityModManager.ModEntry modEntry)
 		{
 			GUILayout.Space(5f);
@@ -154,6 +156,18 @@ namespace RespecModBarley
 				}
 			}
 			GUILayout.EndHorizontal();
+			GUILayout.Space(10f);
+			GUILayout.BeginHorizontal();
+			FreeRespec = GUILayout.Toggle(FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
+			GUILayout.EndHorizontal();
+			if (FreeRespec == true)
+            {
+				respecCost = 0L;
+            }
+			if (FreeRespec == false)
+			{
+				respecCost = 1000L;
+			}
 		}
 		internal sealed class PrivateImplementationDetails
 		{
@@ -263,13 +277,6 @@ namespace RespecModBarley
 			Traverse.Create(descriptor).Field("Stats").SetValue(new CharacterStats(descriptor));
 			descriptor.Stats.HitPoints.BaseValue = defaultPlayerCharacter.MaxHP;
 			descriptor.Stats.Speed.BaseValue = defaultPlayerCharacter.Speed.Value;
-			int[] initStatsByUnit = Main.GetInitStatsByUnit(entityData);
-			descriptor.Stats.Strength.BaseValue = initStatsByUnit[0];
-			descriptor.Stats.Dexterity.BaseValue = initStatsByUnit[1];
-			descriptor.Stats.Constitution.BaseValue = initStatsByUnit[2];
-			descriptor.Stats.Intelligence.BaseValue = initStatsByUnit[3];
-			descriptor.Stats.Wisdom.BaseValue = initStatsByUnit[4];
-			descriptor.Stats.Charisma.BaseValue = initStatsByUnit[5];
 			descriptor.UpdateSizeModifiers();
 			UnitHelper.Respec(entityData);
 			unitProgressionData.GainMythicExperience(MythicLvl);

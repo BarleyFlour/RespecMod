@@ -19,6 +19,13 @@ namespace RespecModBarley
 		// Token: 0x0600000C RID: 12 RVA: 0x000041B4 File Offset: 0x000023B4
 		private static void Postfix(LevelUpState __instance, UnitEntityData unit, LevelUpState.CharBuildMode mode)
 		{
+			int[] initStatsByUnit = Main.GetInitStatsByUnit(unit);
+			unit.Descriptor.Stats.Strength.BaseValue = initStatsByUnit[0];
+			unit.Descriptor.Stats.Dexterity.BaseValue = initStatsByUnit[1];
+			unit.Descriptor.Stats.Constitution.BaseValue = initStatsByUnit[2];
+			unit.Descriptor.Stats.Intelligence.BaseValue = initStatsByUnit[3];
+			unit.Descriptor.Stats.Wisdom.BaseValue = initStatsByUnit[4];
+			unit.Descriptor.Stats.Charisma.BaseValue = initStatsByUnit[5];
 			try
 			{
 				if (__instance.NextCharacterLevel == 1 && unit.Progression.Experience > 0)
