@@ -23,6 +23,10 @@ namespace RespecModBarley
 		{
 			try
 			{
+				foreach (BlueprintFeature blueprintFeature in unit.Descriptor.OriginalBlueprint.Race.m_Features)
+				{
+					unit.Descriptor.AddFact(blueprintFeature);
+				}
 				int[] initStatsByUnit = Main.GetInitStatsByUnit(unit);
 				unit.Descriptor.Stats.Strength.BaseValue = initStatsByUnit[0];
 				unit.Descriptor.Stats.Dexterity.BaseValue = initStatsByUnit[1];
