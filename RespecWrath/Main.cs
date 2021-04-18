@@ -1,7 +1,11 @@
 ﻿using HarmonyLib;
 using Kingmaker;
 using Kingmaker.Blueprints;
+using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Classes.Selection;
+using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Root;
+using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.UI.Common;
@@ -273,6 +277,7 @@ namespace RespecModBarley
 			int MythicLvl = unitProgressionData.MythicLevel;
 			LevelUpHelper.GetTotalIntelligenceSkillPoints(descriptor, 0);
 			LevelUpHelper.GetTotalSkillPoints(descriptor, 0);
+			Traverse.Create(descriptor.Progression).Field("m_Selections").GetValue<Dictionary<BlueprintFeatureSelection, FeatureSelectionData>>().Clear();
 			entityData.PrepareRespec();
 			Traverse.Create(descriptor).Field("Stats").SetValue(new CharacterStats(descriptor));
 			descriptor.Stats.HitPoints.BaseValue = defaultPlayerCharacter.MaxHP;

@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
 using Kingmaker;
 using Kingmaker.Blueprints;
+using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Class.LevelUp;
@@ -30,6 +32,10 @@ namespace RespecModBarley
 				unit.Descriptor.Stats.Charisma.BaseValue = initStatsByUnit[5];
 				if (__instance.NextCharacterLevel == 1 && unit.Progression.Experience > 0)
 				{
+					if (unit.Progression.Race == Stuf.HumanRace || unit.Progression.Race == Stuf.HalfElfRace || unit.Progression.Race == Stuf.HalfOrcRace)
+					{
+						__instance.CanSelectRaceStat = true;
+					}
 					var blueprintUnit = Game.Instance.BlueprintRoot.SelectablePlayerCharacters.Where(u => u == unit.Blueprint).FirstOrDefault();
 					bool flag = unit.Blueprint == Game.Instance.BlueprintRoot.DefaultPlayerCharacter;
 					bool flag2 = flag;
@@ -46,7 +52,7 @@ namespace RespecModBarley
 					}
 					if (!unit.IsCustomCompanion())
 					{
-						Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.CharGen);
+						Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.LevelUp);
 						__instance.CanSelectAlignment = true;
 						__instance.CanSelectPortrait = true;
 						__instance.CanSelectRace = true;
@@ -58,10 +64,6 @@ namespace RespecModBarley
 					{
 						Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.LevelUp);
 						Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(true);
-						if (unit.Progression.Race == Stuf.HumanRace || unit.Progression.Race == Stuf.HalfElfRace || unit.Progression.Race == Stuf.HalfOrcRace)
-						{
-							__instance.CanSelectRaceStat = true;
-						}
 						__instance.CanSelectAlignment = false;
 						__instance.CanSelectRace = false;
 						__instance.CanSelectPortrait = false;

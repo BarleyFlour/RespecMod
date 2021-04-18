@@ -78,11 +78,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CharacterBuildControllerPatch.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="LevelUpStatePatch.cs" />
     <Compile Include="LibraryPatch.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SelectClassPatch.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.json">
