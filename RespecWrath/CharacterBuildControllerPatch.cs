@@ -8,13 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RespecWrath
+namespace RespecModBarley
 {
     [HarmonyPatch(typeof(CharacterBuildController), "SetupUI")]
     internal static class CharacterBuildController_Patch
     {
         private static void Postfix(CharacterBuildController __instance)
         {
+            if(Main.IsEnabled == false){return;}
             if (__instance.LevelUpController.State.Mode == LevelUpState.CharBuildMode.CharGen && __instance.Unit.Progression.Experience > 0 && !__instance.Unit.IsCustomCompanion())
             {
                 if (!__instance.Unit.IsMainCharacter)

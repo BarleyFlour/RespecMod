@@ -24,8 +24,6 @@ namespace RespecModBarley
 {
 	public class Main
 	{
-		public static List<BlueprintFeature> featurestoadd = new List<BlueprintFeature> { };
-
 		public static UnityModManager.ModEntry ModEntry;
 		static bool Load(UnityModManager.ModEntry modEntry)
 		{
@@ -36,6 +34,7 @@ namespace RespecModBarley
 				var harmony = new Harmony(modEntry.Info.Id);
 				harmony.PatchAll();
 				modEntry.OnGUI = OnGUI;
+				IsEnabled = ModEntry.Enabled;
 			}
 			catch (Exception e)
 			{
@@ -45,8 +44,10 @@ namespace RespecModBarley
 		}
 
 		static bool FreeRespec = false;
+		public static List<BlueprintFeature> featurestoadd = new List<BlueprintFeature> { };
 		private static void OnGUI(UnityModManager.ModEntry modEntry)
 		{
+			if(IsEnabled == false){return;}
 			GUILayout.Space(5f);
 			GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
 			List<UnitEntityData> list = (from x in UIUtility.GetGroup(true, false)
@@ -107,13 +108,13 @@ namespace RespecModBarley
 			GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
 			int[] initStatsByUnit = Main.GetInitStatsByUnit(selected);
 			int num2 = 0;
-			foreach (StatType stat in StatTypeHelper.Attributes)
-			{
-				GUILayout.Label(string.Format("  {0} {1}", LocalizedTexts.Instance.Stats.GetText(stat), initStatsByUnit[num2++]), new GUILayoutOption[]
+				foreach (StatType stat in StatTypeHelper.Attributes)
 				{
+					GUILayout.Label(string.Format("  {0} {1}", LocalizedTexts.Instance.Stats.GetText(stat), initStatsByUnit[num2++]), new GUILayoutOption[]
+					{
 								GUILayout.ExpandWidth(false)
-				});
-			}
+					});
+				}
 			if (Main.extraPoints != Main.ExtraPointsType.Original)
 			{
 				GUILayout.Label("  Extra points " + ((Main.extraPoints == Main.ExtraPointsType.P25) ? "+25" : "Original"), new GUILayoutOption[]
@@ -275,6 +276,7 @@ namespace RespecModBarley
 		}
 		public static void PreRespec(UnitEntityData entityData)
 		{
+			if (IsEnabled == false) { return; }
 			var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
 			BlueprintUnit defaultPlayerCharacter = Game.Instance.BlueprintRoot.DefaultPlayerCharacter;
 			UnitDescriptor descriptor = entityData.Descriptor;
@@ -299,17 +301,26 @@ namespace RespecModBarley
 					Main.featurestoadd.Add(blueprintf.Blueprint);
 				}
 			}
+			if (unit.Pets != null)
+			{
+				foreach(UnitEntityData petdata in unit.Pets)
+                {
+					unit.Pets.Remove(petdata);
+					petdata.RemoveMaster();
+				}
+			}
 			UnitHelper.Respec(entityData);
 			unitProgressionData.GainMythicExperience(MythicLvl);
-			foreach (BlueprintFeature featuretoadd in BPBackgroundList)
+			/*foreach (BlueprintFeature featuretoadd in BPBackgroundList)
             {
 					///Main.logger.Log(featuretoadd.ToString());
 				unit.Descriptor.AddFact(featuretoadd);
 
-			}
+			}*/
 		}
 		public static Main.ExtraPointsType extraPoints;
 		public static UnityModManager.ModEntry.ModLogger logger;
+		public static bool IsEnabled;
 		public static int tabId = 0;
 		public static long respecCost = 1000L;
 		private static readonly string[] extraPointLabels = new string[]

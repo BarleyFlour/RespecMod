@@ -37,6 +37,7 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 	{
 		if (Initialized) return;
 		Initialized = true;
+		if(Main.IsEnabled == false){return;}
 		try
 		{
 			Main.logger.Log("Library patching initiated");
