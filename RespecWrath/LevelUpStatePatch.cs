@@ -37,6 +37,11 @@ namespace RespecModBarley
 					unit.Descriptor.Stats.Intelligence.BaseValue = initStatsByUnit[3];
 					unit.Descriptor.Stats.Wisdom.BaseValue = initStatsByUnit[4];
 					unit.Descriptor.Stats.Charisma.BaseValue = initStatsByUnit[5];
+					unit.Progression.AdvanceMythicExperience(Main.MythicXP);
+			        if (unit.Progression.MythicExperience != Main.MythicXP)
+			        {
+			        	unit.Progression.GainMythicExperience(1);
+		         	}
 					if (unit.Pets != null)
 					{
 						unit.Pets.Clear();

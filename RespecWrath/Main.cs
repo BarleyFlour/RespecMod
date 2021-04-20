@@ -11,6 +11,7 @@ using Kingmaker.EntitySystem.Entities;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.UI.Common;
 using Kingmaker.UnitLogic;
+using Kingmaker.UnitLogic.Buffs;
 using Kingmaker.UnitLogic.Class.LevelUp.Actions;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace RespecModBarley
 			}
 			return true;
 		}
-
+		public static int MythicXP;
 		static bool FreeRespec = false;
 		public static List<BlueprintFeature> featurestoadd = new List<BlueprintFeature> { };
 		private static void OnGUI(UnityModManager.ModEntry modEntry)
@@ -282,13 +283,14 @@ namespace RespecModBarley
 			UnitDescriptor descriptor = entityData.Descriptor;
 			UnitProgressionData unitProgressionData = entityData.Progression;
 			UnitEntityData unit = entityData;
-			int MythicLvl = unitProgressionData.MythicLevel;
+			MythicXP = unitProgressionData.MythicLevel;
 			LevelUpHelper.GetTotalIntelligenceSkillPoints(descriptor, 0);
 			LevelUpHelper.GetTotalSkillPoints(descriptor, 0);
 			Traverse.Create(descriptor.Progression).Field("m_Selections").GetValue<Dictionary<BlueprintFeatureSelection, FeatureSelectionData>>().Clear();
 			entityData.PrepareRespec();
+			entityData.Descriptor.Buffs.RawFacts.Clear();
 			Traverse.Create(descriptor).Field("Stats").SetValue(new CharacterStats(descriptor));
-			descriptor.Stats.HitPoints.BaseValue = defaultPlayerCharacter.MaxHP;
+			descriptor.Stats.HitPoints.BaseValue = defaultPlayerCharacter.MaxHP+1;
 			descriptor.Stats.Speed.BaseValue = defaultPlayerCharacter.Speed.Value;
 			descriptor.UpdateSizeModifiers();
 			var BPBackgroundList = new List<BlueprintFeature>{ };
@@ -310,7 +312,13 @@ namespace RespecModBarley
 				}
 			}
 			UnitHelper.Respec(entityData);
-			unitProgressionData.GainMythicExperience(MythicLvl);
+			unit.Progression.AdvanceMythicExperience(MythicXP);
+			if (unit.Progression.MythicExperience != MythicXP)
+			{
+				unit.Progression.GainMythicExperience(1);
+			}
+			///unitProgressionData.GainMythicExperience(MythicXP);
+			logger.Log(MythicXP.ToString());
 			/*foreach (BlueprintFeature featuretoadd in BPBackgroundList)
             {
 					///Main.logger.Log(featuretoadd.ToString());
