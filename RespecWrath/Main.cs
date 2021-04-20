@@ -295,6 +295,10 @@ namespace RespecModBarley
 			descriptor.UpdateSizeModifiers();
 			var BPBackgroundList = new List<BlueprintFeature>{ };
 			List<BlueprintFeature> list = new List<BlueprintFeature> { };
+			foreach(Buff buff in unit.Buffs)
+            {
+				buff.Detach();
+            }
 			foreach (Feature blueprintf in unit.Descriptor.Progression.Features.Enumerable)
 			{
 				if (backgroundsarray.Contains(blueprintf.Blueprint))
@@ -312,11 +316,11 @@ namespace RespecModBarley
 				}
 			}
 			UnitHelper.Respec(entityData);
-			unit.Progression.AdvanceMythicExperience(MythicXP);
+			/*unit.Progression.AdvanceMythicExperience(MythicXP);
 			if (unit.Progression.MythicExperience != MythicXP)
 			{
 				unit.Progression.GainMythicExperience(1);
-			}
+			}*/
 			///unitProgressionData.GainMythicExperience(MythicXP);
 			logger.Log(MythicXP.ToString());
 			/*foreach (BlueprintFeature featuretoadd in BPBackgroundList)
