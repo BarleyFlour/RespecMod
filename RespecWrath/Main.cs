@@ -6,6 +6,7 @@ using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Root;
 using Kingmaker.Designers.Mechanics.Facts;
+using Kingmaker.EntitySystem;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.UI.Common;
@@ -23,6 +24,8 @@ namespace RespecModBarley
 {
 	public class Main
 	{
+		public static List<BlueprintFeature> featurestoadd = new List<BlueprintFeature> { };
+
 		public static UnityModManager.ModEntry ModEntry;
 		static bool Load(UnityModManager.ModEntry modEntry)
 		{
@@ -41,7 +44,7 @@ namespace RespecModBarley
 			return true;
 		}
 
-        static bool FreeRespec = false;
+		static bool FreeRespec = false;
 		private static void OnGUI(UnityModManager.ModEntry modEntry)
 		{
 			GUILayout.Space(5f);
@@ -151,6 +154,7 @@ namespace RespecModBarley
 				{
 					try
 					{
+						Main.featurestoadd.Clear();
 						Main.PreRespec(selected);
 					}
 					catch (Exception ex)
@@ -165,9 +169,9 @@ namespace RespecModBarley
 			FreeRespec = GUILayout.Toggle(FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
 			GUILayout.EndHorizontal();
 			if (FreeRespec == true)
-            {
+			{
 				respecCost = 0L;
-            }
+			}
 			if (FreeRespec == false)
 			{
 				respecCost = 1000L;
@@ -269,11 +273,13 @@ namespace RespecModBarley
 			}
 			return numArray;
 		}
-		private static void PreRespec(UnitEntityData entityData)
-        {
+		public static void PreRespec(UnitEntityData entityData)
+		{
+			var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
 			BlueprintUnit defaultPlayerCharacter = Game.Instance.BlueprintRoot.DefaultPlayerCharacter;
 			UnitDescriptor descriptor = entityData.Descriptor;
 			UnitProgressionData unitProgressionData = entityData.Progression;
+			UnitEntityData unit = entityData;
 			int MythicLvl = unitProgressionData.MythicLevel;
 			LevelUpHelper.GetTotalIntelligenceSkillPoints(descriptor, 0);
 			LevelUpHelper.GetTotalSkillPoints(descriptor, 0);
@@ -283,8 +289,24 @@ namespace RespecModBarley
 			descriptor.Stats.HitPoints.BaseValue = defaultPlayerCharacter.MaxHP;
 			descriptor.Stats.Speed.BaseValue = defaultPlayerCharacter.Speed.Value;
 			descriptor.UpdateSizeModifiers();
+			var BPBackgroundList = new List<BlueprintFeature>{ };
+			List<BlueprintFeature> list = new List<BlueprintFeature> { };
+			foreach (Feature blueprintf in unit.Descriptor.Progression.Features.Enumerable)
+			{
+				if (backgroundsarray.Contains(blueprintf.Blueprint))
+				{
+					///Main.logger.Log(blueprintf.ToString());
+					Main.featurestoadd.Add(blueprintf.Blueprint);
+				}
+			}
 			UnitHelper.Respec(entityData);
 			unitProgressionData.GainMythicExperience(MythicLvl);
+			foreach (BlueprintFeature featuretoadd in BPBackgroundList)
+            {
+					///Main.logger.Log(featuretoadd.ToString());
+				unit.Descriptor.AddFact(featuretoadd);
+
+			}
 		}
 		public static Main.ExtraPointsType extraPoints;
 		public static UnityModManager.ModEntry.ModLogger logger;

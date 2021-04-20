@@ -3,10 +3,12 @@ using Kingmaker;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
+using Kingmaker.EntitySystem;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Class.LevelUp;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -21,12 +23,9 @@ namespace RespecModBarley
 		// Token: 0x0600000C RID: 12 RVA: 0x000041B4 File Offset: 0x000023B4
 		private static void Postfix(LevelUpState __instance, UnitEntityData unit, LevelUpState.CharBuildMode mode)
 		{
+			var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
 			try
 			{
-				foreach (BlueprintFeature blueprintFeature in unit.Descriptor.OriginalBlueprint.Race.m_Features)
-				{
-					unit.Descriptor.AddFact(blueprintFeature);
-				}
 				int[] initStatsByUnit = Main.GetInitStatsByUnit(unit);
 				unit.Descriptor.Stats.Strength.BaseValue = initStatsByUnit[0];
 				unit.Descriptor.Stats.Dexterity.BaseValue = initStatsByUnit[1];
@@ -36,6 +35,15 @@ namespace RespecModBarley
 				unit.Descriptor.Stats.Charisma.BaseValue = initStatsByUnit[5];
 				if (__instance.NextCharacterLevel == 1 && unit.Progression.Experience > 0)
 				{
+					foreach (BlueprintFeature blueprintFeature in unit.Descriptor.OriginalBlueprint.Race.m_Features)
+					{
+						unit.Descriptor.AddFact(blueprintFeature);
+					}
+					foreach (BlueprintFeature featuretoadd in Main.featurestoadd)
+					{
+							///Main.logger.Log(featuretoadd.ToString());
+							unit.Descriptor.AddFact(featuretoadd);
+					}
 					if (unit.Progression.Race == Stuf.HumanRace || unit.Progression.Race == Stuf.HalfElfRace || unit.Progression.Race == Stuf.HalfOrcRace)
 					{
 						__instance.CanSelectRaceStat = true;

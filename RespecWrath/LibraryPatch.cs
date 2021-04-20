@@ -126,6 +126,8 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 			noSelectionIfAlreadyHasFeatureBackgroundSelect.AnyFeatureFromSelection = false;
 			noSelectionIfAlreadyHasFeatureBackgroundSelect.m_Features = new BlueprintFeatureReference[] { arueshalaeFeatureList, nenioFeatureList, cameliaFeatureList, seelahFeatureList, emberFeatureList, lannFeatureList, daeranFeatureList, stauntonFeatureList, regillFeatureList, sosielvaenicFeatureList, delamereFeatureList, woljifFeatureList, ciarFeatureList, aneviaFeatureList, wenduagFeatureList, galfreyFeatureList, greyborFeatureList, treverFeatureList };
 			ExtensionMethods.AddComponent(Stuf.BackgroundSelect, noSelectionIfAlreadyHasFeatureBackgroundSelect);
+
+			var BackgroundArray = new BlueprintFeature[] {Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
 		}
 		catch (Exception ex)
 		{
@@ -171,6 +173,72 @@ namespace RespecModBarley
 		public static BlueprintUnit Trever => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("0bb1c03b9f7bbcf42bb74478af2c6258");
 		public static BlueprintScriptableObject TieflingHeritageSelect => ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>("c862fd0e4046d2d4d9702dd60474a181");
 		public static BlueprintScriptableObject BackgroundSelect => ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>("f926dabeee7f8a54db8f2010b323383c");
+		public static BlueprintFeatureSelection BackgroundSelectSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("f926dabeee7f8a54db8f2010b323383c");
+		public static BlueprintFeatureSelection BackgroundsWandererSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("0cdd576724fce2240b372455889fac87");
+		public static BlueprintFeatureSelection BackgroundsWizardSpellLikeSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("1139a014bb6cdcf4db0e11649ddfa60c");
+		public static BlueprintFeatureSelection BackgroundsScholarSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("273fab44409035f42a7e2af0858a463d");
+		public static BlueprintFeatureSelection BackgroundsWarriorSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("291f372e27b29f149ad15ff219fe15d9");
+		public static BlueprintFeatureSelection BackgroundsDruidSpellLikeSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("2fc911f0de029134585b5f35ff16be88");
+		public static BlueprintFeatureSelection BackgroundsNobleSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("7b11f589e81617a46b3e5eda3632508d");
+		public static BlueprintFeatureSelection BackgroundsClericSpellLikeSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("94f680dbbb083cc43962249e446a3e10");
+		public static BlueprintFeatureSelection BackgroundsOblateSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("c25021c31f302c6449ecdbc978822507");
+		public static BlueprintFeatureSelection BackgroundsStreetUrchinSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("e17f74060f864ff459393e11d5e7fe2f");
+		public static BlueprintFeatureSelection BackgroundsBaseSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("f926dabeee7f8a54db8f2010b323383c");
+		public static BlueprintFeatureSelection BackgroundsRegionalSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("fa621a249cc836f4382ca413b976e65e");
+		public static BlueprintFeatureSelection BackgroundsCraftsmanSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("fd36aaff6f41a2f4f9e91925d49a0d85");
+		public static BlueprintFeature BackgroundHunter => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("dd715e89fceb7ad44b120a49e4395332");
+		public static BlueprintFeature BackgroundHermit => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("aec583b2cf2305d4fa6a58d640a54f16");
+		public static BlueprintFeature BackgroundNomad => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("3335c5ea5b84e7f499498382d9dd33a5");
+
+		public static BlueprintFeature AcidSplashBackgroundsFeature => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("429741e7aac24764489cf22970241596");
+		public static BlueprintFeature DazeBackgroundsFeature => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("766b3afb932c48f43973f77bc6e17e9e");
+		public static BlueprintFeature DisruptUndeadBackgroundsFeature => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("45a538e8ab40a5d48966e8224578cc3b");
+		public static BlueprintFeature FlareBackgroundsFeature => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("dbad8a46a6278e24785e2b5b24c23de0");
+		public static BlueprintFeature JoltBackgroundsFeature => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("602c54b6823bd9e42a644ad4f1ad9ebe");
+		public static BlueprintFeature MageLightBackgroundsFeature => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("6e4cd4c19c1db674ca6e2635594927ae");
+		public static BlueprintFeature RayOfFrostBackgroundsFeature => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("f8f2076f829ea854381d7dbde3d05c43");
+		public static BlueprintFeature ResistanceBackgroundsFeature => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("5f94b6d19093f60499f7532f1b084b06");
+		public static BlueprintFeature TouchOfFatigueBackgroundsFeature => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("d972164e651ff7345800fc849c00855b");
+
+		public static BlueprintFeature BackgroundGladiator => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("1ea754d5573a0ed4e9fca4c30519f247");
+		public static BlueprintFeature BackgroundMercenary => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("43b7315eb58242943848750af3671a25");
+		public static BlueprintFeature BackgroundGuard => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("3a793809b0f11b74f8b79c252067bfe0");
+		public static BlueprintFeature BackgroundBountyHunter => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("15a072cca47e2444ebfd178b71f4e797");
+
+		public static BlueprintFeature BackgroundEmissary => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("2aca424b9a5e1b1408078ac0a4ed7bc3");
+		public static BlueprintFeature BackgroundLeader => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("c4ec4d736067fa945b512a235b13030b");
+		public static BlueprintFeature BackgroundCourtIntriguer => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("d7f5d62db424d3c4bbfb178bbb0b4e22");
+
+		public static BlueprintFeature BackgroundHealer => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("f0d2840b6564c6f408c1e068d0707ca0");
+		public static BlueprintFeature BackgroundAcolyte => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("7cc9014488caa5445a0c8b5e17b95466");
+		public static BlueprintFeature BackgroundMartialDisciple => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("46d69a77c26701a459607c3f42e3664a");
+
+		public static BlueprintFeature BackgroundAcrobat => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("621e1bb8e1d5e114da5a107351f5c7b3");
+		public static BlueprintFeature BackgroundMugger => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("88453bd5448456748ab531cddad38721");
+		public static BlueprintFeature BackgroundPickpocket => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("9da9faf5f0ef4904db4a59a22dafbb06");
+
+		public static BlueprintFeature BackgroundFarmhand => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("9da9faf5f0ef4904db4a59a22dafbb06");
+		public static BlueprintFeature BackgroundSmith => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("9da9faf5f0ef4904db4a59a22dafbb06");
+		public static BlueprintFeature BackgroundMiner => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("9da9faf5f0ef4904db4a59a22dafbb06");
+		public static BlueprintFeature BackgroundLumberjack => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("9da9faf5f0ef4904db4a59a22dafbb06");
+
+		public static BlueprintFeature BackgroundAldoriSwordsman => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("ce0ea6b388ac467408d6da224fab403d");
+		public static BlueprintFeature BackgroundVarisianExplorer => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("881e63a01d79ee445b96e888368b015d");
+		public static BlueprintFeature BackgroundRiverKingdomsDaredevil => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("c9cb4176176b4164ca3c0a65feda0226");
+		public static BlueprintFeature BackgroundCheliaxianDiabolist => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("67ab276984c26a645a7472091779d514");
+		public static BlueprintFeature BackgroundAndoranDiplomat => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("f6b2d489b1d907f47a734b5f72f5200d");
+		public static BlueprintFeature BackgroundQadiranWanderer => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("410ac851e51173141a96e02cca78e613");
+		public static BlueprintFeature BackgroundOsirionHistorian => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("759e9118b89068245afc0e25817aaf58");
+		public static BlueprintFeature BackgroundMwangianHunter => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("15b454c99494b8143ade4817fff816cc");
+		public static BlueprintFeature BackgroundNexianScholar => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("1206bb79daa23564a9d20021ca8674e5");
+		public static BlueprintFeature BackgroundGebianNecromancer => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("25b4f7ff8723d6e498f9cdc5ef2fad57");
+		public static BlueprintFeature BackgroundAlkenstarAlchemist => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("f51af2d4fa3358844879cbc5ee0f1073");
+		public static BlueprintFeature BackgroundRahadoumFaithless => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("f99465e6886253744aaef25d9b7c90c1");
+		public static BlueprintFeature BackgroundShacklesCorsair => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("25fa74e08bcc43c47816fa364f1d48b6");
+		public static BlueprintFeature BackgroundUstalavPeasant => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("e633b595bfb776d48858c0c51a6414ff");
+		public static BlueprintFeature BackgroundWarriorOfTheLinnormKings => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("494c972a8e7626749aeda25582e2e88f");
+		public static BlueprintFeature BackgroundMendevianOrphan => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("1d27bef027bdecc42a80c950cdc11380");
+
 		public static BlueprintFeature Airborne => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("70cffb448c132fa409e49156d013b175");
 		public static BlueprintRace HumanRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("0a5d473ead98b0646b94495af250fdc4");
 		public static BlueprintRace HalfElfRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("b3646842ffbd01643ab4dac7479b20b0");
