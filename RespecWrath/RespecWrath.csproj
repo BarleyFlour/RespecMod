@@ -85,11 +85,16 @@
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SelectClassPatch.cs" />
+    <Compile Include="TestPatch.cs" />
+    <Compile Include="UnitHelperPatch.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TextFile1.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

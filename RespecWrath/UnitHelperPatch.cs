@@ -1,9 +1,8 @@
 ﻿using HarmonyLib;
-using Kingmaker;
-using Kingmaker.Blueprints;
+using Kingmaker.EntitySystem;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.UnitLogic;
-using Kingmaker.UnitLogic.Class.LevelUp;
+using Kingmaker.UnitLogic.Parts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,19 +11,34 @@ using System.Threading.Tasks;
 
 namespace RespecModBarley
 {
-	[HarmonyPatch(typeof(UnitHelper),"Respec")]
-	[HarmonyPatch(new Type[] { typeof(UnitEntityData), typeof(Action)})]
-	internal static class UnithelperRespec_patch
+	[HarmonyPatch(typeof(UnitHelper), "RespecOnCommit")]
+	internal static class Unithelper_RespecOnCommit_Patch
 	{
-		private static void Postfix(UnitEntityData unit)
-		{
-			int[] initStatsByUnit = Main.GetInitStatsByUnit(unit);
-			unit.Descriptor.Stats.Strength.BaseValue = initStatsByUnit[0];
-			unit.Descriptor.Stats.Dexterity.BaseValue = initStatsByUnit[1];
-			unit.Descriptor.Stats.Constitution.BaseValue = initStatsByUnit[2];
-			unit.Descriptor.Stats.Intelligence.BaseValue = initStatsByUnit[3];
-			unit.Descriptor.Stats.Wisdom.BaseValue = initStatsByUnit[4];
-			unit.Descriptor.Stats.Charisma.BaseValue = initStatsByUnit[5];
+		private static void Postfix(UnitEntityData targetUnit, UnitEntityData tempUnit)
+        {
+			Main.featurestoadd.Clear();
+			Main.partstoadd.Clear();
+			Main.IsRespec = false;
+			///targetUnit.m_Group = Main.unitgroupparty;
+			///tempUnit.m_Group = Main.unitgroupparty;
+			foreach (EntityPart part in Main.partstoadd)
+			{
+				if (!targetUnit.Parts.Parts.Contains(part))
+				{
+					part.AttachToEntity(targetUnit);
+					part.TurnOn();
+					targetUnit.Parts.m_Parts.Add(part);
+				}
+			}
+			foreach (EntityPart part in Main.partstoadd)
+			{
+				if (!targetUnit.Parts.Parts.Contains(part))
+				{
+					part.AttachToEntity(tempUnit);
+					part.TurnOn();
+					tempUnit.Parts.m_Parts.Add(part);
+				}
+			}
 		}
 	}
 }

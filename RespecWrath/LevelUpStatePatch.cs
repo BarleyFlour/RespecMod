@@ -28,7 +28,8 @@ namespace RespecModBarley
 			{
 				if(Main.IsEnabled == false){return;}
 				int pointcount = 0;
-				if (__instance.NextCharacterLevel == 1 && unit.Progression.Experience > 0)
+				///if (__instance.NextCharacterLevel == 1 && unit.Progression.Experience > 0)
+				if (unit.Progression.Experience > 0 && Main.IsRespec == true && unit.Progression.Experience > 0)
 				{
 					int[] initStatsByUnit = Main.GetInitStatsByUnit(unit);
 					unit.Descriptor.Stats.Strength.BaseValue = initStatsByUnit[0];
@@ -38,7 +39,8 @@ namespace RespecModBarley
 					unit.Descriptor.Stats.Wisdom.BaseValue = initStatsByUnit[4];
 					unit.Descriptor.Stats.Charisma.BaseValue = initStatsByUnit[5];
 					unit.Progression.AdvanceMythicExperience(Main.MythicXP);
-			        if (unit.Progression.MythicExperience != Main.MythicXP)
+
+					if (unit.Progression.MythicExperience != Main.MythicXP)
 			        {
 			        	unit.Progression.GainMythicExperience(1);
 		         	}
@@ -50,6 +52,16 @@ namespace RespecModBarley
 					{
 						unit.Descriptor.AddFact(blueprintFeature);
 					}*/
+					unit.Parts.m_Parts.Clear();
+					foreach(EntityPart part in Main.partstoadd)
+                    {
+						if (!unit.Parts.m_Parts.Contains(part))
+						{
+							part.AttachToEntity(unit);
+							part.TurnOn();
+							unit.Parts.m_Parts.Add(part);
+						}
+					}
 					foreach (BlueprintFeature featuretoadd in Main.featurestoadd)
 					{
 							///Main.logger.Log(featuretoadd.ToString());

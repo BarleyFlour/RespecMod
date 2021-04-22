@@ -13,6 +13,8 @@ using Kingmaker.UI.Common;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Buffs;
 using Kingmaker.UnitLogic.Class.LevelUp.Actions;
+using Kingmaker.UnitLogic.Groups;
+using Kingmaker.UnitLogic.Parts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +47,10 @@ namespace RespecModBarley
 		}
 		public static int MythicXP;
 		static bool FreeRespec = false;
+		public static bool IsRespec = false;
 		public static List<BlueprintFeature> featurestoadd = new List<BlueprintFeature> { };
+		public static List<EntityPart> partstoadd = new List<EntityPart> { };
+		public static UnitGroup unitgroupparty;
 		private static void OnGUI(UnityModManager.ModEntry modEntry)
 		{
 			if(IsEnabled == false){return;}
@@ -54,6 +59,7 @@ namespace RespecModBarley
 			List<UnitEntityData> list = (from x in UIUtility.GetGroup(true, false)
 										 where !x.IsInCombat && !x.Descriptor.State.IsFinallyDead
 										 select x).ToList<UnitEntityData>();
+
 			bool flag2 = list.Any((UnitEntityData x) => x.Descriptor.Progression.CharacterLevel == 0);
 			if (flag2)
 			{
@@ -70,6 +76,10 @@ namespace RespecModBarley
 			UnitEntityData selected = null;
 			foreach (UnitEntityData unitEntityData in list)
 			{
+				if(unitEntityData.IsMainCharacter == true)
+                {
+					unitgroupparty = unitEntityData.m_Group;
+				}
 				if (!unitEntityData.IsPet && unitEntityData.IsPlayerFaction && (!flag2 || unitEntityData.Descriptor.Progression.CharacterLevel <= 0))
 				{
 					if (GUILayout.Toggle(Main.selectedCharacter == num, " " + unitEntityData.CharacterName, new GUILayoutOption[]
@@ -156,7 +166,7 @@ namespace RespecModBarley
 				{
 					try
 					{
-						Main.featurestoadd.Clear();
+						///Main.featurestoadd.Clear();
 						Main.PreRespec(selected);
 					}
 					catch (Exception ex)
@@ -295,6 +305,13 @@ namespace RespecModBarley
 			descriptor.UpdateSizeModifiers();
 			var BPBackgroundList = new List<BlueprintFeature>{ };
 			List<BlueprintFeature> list = new List<BlueprintFeature> { };
+			foreach (EntityPart entityPart in unit.Parts.Parts)
+			{
+				partstoadd.Add(entityPart);
+				///Main.logger.Log(entityPart.ToString());
+			}
+			Traverse.Create(unit.Parts).Field("Parts").SetValue(partstoadd);
+			unit.Ensure<UnitPartCompanion>().SetState(CompanionState.InParty);
 			foreach(Buff buff in unit.Buffs)
             {
 				buff.Detach();
@@ -315,6 +332,7 @@ namespace RespecModBarley
 					petdata.RemoveMaster();
 				}
 			}
+			IsRespec = true;
 			UnitHelper.Respec(entityData);
 			/*unit.Progression.AdvanceMythicExperience(MythicXP);
 			if (unit.Progression.MythicExperience != MythicXP)
@@ -322,7 +340,7 @@ namespace RespecModBarley
 				unit.Progression.GainMythicExperience(1);
 			}*/
 			///unitProgressionData.GainMythicExperience(MythicXP);
-			logger.Log(MythicXP.ToString());
+			///logger.Log(MythicXP.ToString());
 			/*foreach (BlueprintFeature featuretoadd in BPBackgroundList)
             {
 					///Main.logger.Log(featuretoadd.ToString());
