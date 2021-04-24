@@ -7,6 +7,7 @@ using Kingmaker.EntitySystem;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Class.LevelUp;
+using Kingmaker.UnitLogic.Parts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace RespecModBarley
 	// Token: 0x02000003 RID: 3
 	[HarmonyPatch(typeof(LevelUpState), MethodType.Constructor)]
 	[HarmonyPatch(new Type[] { typeof(UnitEntityData), typeof(LevelUpState.CharBuildMode) })]
+	[HarmonyPriority(9999)]
 	internal static class LevelUpState_ctor_Patch
 	{
 		// Token: 0x0600000C RID: 12 RVA: 0x000041B4 File Offset: 0x000023B4
@@ -28,9 +30,15 @@ namespace RespecModBarley
 			{
 				if(Main.IsEnabled == false){return;}
 				int pointcount = 0;
+				int pointcountfinal = pointcount - pointcount;
 				///if (__instance.NextCharacterLevel == 1 && unit.Progression.Experience > 0)
 				if (unit.Progression.Experience > 0 && Main.IsRespec == true && unit.Progression.Experience > 0)
 				{
+					foreach(Spellbook spellbook in unit.Spellbooks)
+                    {
+						spellbook.UpdateAllSlotsSize(true);
+						spellbook.UpdateMythicLevel();
+                    }
 					int[] initStatsByUnit = Main.GetInitStatsByUnit(unit);
 					unit.Descriptor.Stats.Strength.BaseValue = initStatsByUnit[0];
 					unit.Descriptor.Stats.Dexterity.BaseValue = initStatsByUnit[1];
@@ -54,12 +62,13 @@ namespace RespecModBarley
 					}*/
 					unit.Parts.m_Parts.Clear();
 					foreach(EntityPart part in Main.partstoadd)
-                    {
+                    {					
 						if (!unit.Parts.m_Parts.Contains(part))
 						{
 							part.AttachToEntity(unit);
 							part.TurnOn();
 							unit.Parts.m_Parts.Add(part);
+							part.PostLoad(unit);
 						}
 					}
 					foreach (BlueprintFeature featuretoadd in Main.featurestoadd)

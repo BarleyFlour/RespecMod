@@ -51,6 +51,8 @@ namespace RespecModBarley
 		public static List<BlueprintFeature> featurestoadd = new List<BlueprintFeature> { };
 		public static List<EntityPart> partstoadd = new List<EntityPart> { };
 		public static UnitGroup unitgroupparty;
+		public static string[] partslist = new String[] { "Kingmaker.UnitLogic.Parts.UnitPartPartyWeatherBuff", "Kingmaker.UnitLogic.Parts.UnitPartCompanion", "Kingmaker.UnitLogic.Parts.UnitPartNonStackBonuses", "Kingmaker.Corruption.UnitPartCorruption", "Kingmaker.UnitLogic.Parts.UnitPartWeariness", "Kingmaker.UnitLogic.Parts.UnitPartInteractions", "Kingmaker.UnitLogic.Parts.UnitPartVendor","Kingmaker.UnitLogic.Parts.UnitPartAbilityModifiers","Kingmaker.UnitLogic.Parts.UnitPartDamageGrace","Kingmaker.UnitLogic.Parts.UnitPartInspectedBuffs","Kingmaker.AreaLogic.SummonPool.SummonPool+PooledPart"};
+		public static float abilityscoreslider = 25.0F;
 		private static void OnGUI(UnityModManager.ModEntry modEntry)
 		{
 			if(IsEnabled == false){return;}
@@ -116,7 +118,16 @@ namespace RespecModBarley
 				}
 				GUILayout.EndHorizontal();
 			}
+			GUILayout.BeginHorizontal();
+			///abilityscoreslider = GUI.HorizontalSlider(new Rect(), abilityscoreslider, 0.0F, 100.0F);
+			GUILayout.EndHorizontal();
+			GUILayout.BeginHorizontal();
+			///GUILayout.Box(abilityscorepoints.ToString(),GUILayout.ExpandWidth(false));
+			GUILayout.EndHorizontal();
+			
 			GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
+
+			///Main.logger.Log(abilityscorepoints.ToString());
 			int[] initStatsByUnit = Main.GetInitStatsByUnit(selected);
 			int num2 = 0;
 				foreach (StatType stat in StatTypeHelper.Attributes)
@@ -307,8 +318,14 @@ namespace RespecModBarley
 			List<BlueprintFeature> list = new List<BlueprintFeature> { };
 			foreach (EntityPart entityPart in unit.Parts.Parts)
 			{
-				partstoadd.Add(entityPart);
-				///Main.logger.Log(entityPart.ToString());
+				if(partslist.Contains(entityPart.ToString()))
+                {
+					partstoadd.Add(entityPart);
+					Main.logger.Log(entityPart.ToString());
+				}
+				if (entityPart.ToString() != "Kingmaker.UnitLogic.Parts.UnitPartExtraSpellsPerDay")
+                {
+				}
 			}
 			Traverse.Create(unit.Parts).Field("Parts").SetValue(partstoadd);
 			unit.Ensure<UnitPartCompanion>().SetState(CompanionState.InParty);
@@ -348,6 +365,7 @@ namespace RespecModBarley
 
 			}*/
 		}
+		public static int abilityscorepoints = (int)abilityscoreslider;
 		public static Main.ExtraPointsType extraPoints;
 		public static UnityModManager.ModEntry.ModLogger logger;
 		public static bool IsEnabled;
