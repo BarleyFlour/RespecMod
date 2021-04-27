@@ -16,27 +16,30 @@ namespace RespecModBarley
 	{
 		private static void Postfix(UnitEntityData targetUnit, UnitEntityData tempUnit)
         {
-			Main.featurestoadd.Clear();
-			Main.partstoadd.Clear();
-			Main.IsRespec = false;
-			///targetUnit.m_Group = Main.unitgroupparty;
-			///tempUnit.m_Group = Main.unitgroupparty;
-			foreach (EntityPart part in Main.partstoadd)
+			if(Main.IsRespec == true)
 			{
-				if (!targetUnit.Parts.Parts.Contains(part))
+				Main.featurestoadd.Clear();
+				Main.partstoadd.Clear();
+				Main.IsRespec = false;
+				///targetUnit.m_Group = Main.unitgroupparty;
+				///tempUnit.m_Group = Main.unitgroupparty;
+				foreach (EntityPart part in Main.partstoadd)
 				{
-					part.AttachToEntity(targetUnit);
-					part.TurnOn();
-					targetUnit.Parts.m_Parts.Add(part);
+					if (!targetUnit.Parts.Parts.Contains(part))
+					{
+						part.AttachToEntity(targetUnit);
+						part.TurnOn();
+						targetUnit.Parts.m_Parts.Add(part);
+					}
 				}
-			}
-			foreach (EntityPart part in Main.partstoadd)
-			{
-				if (!targetUnit.Parts.Parts.Contains(part))
+				foreach (EntityPart part in Main.partstoadd)
 				{
-					part.AttachToEntity(tempUnit);
-					part.TurnOn();
-					tempUnit.Parts.m_Parts.Add(part);
+					if (!targetUnit.Parts.Parts.Contains(part))
+					{
+						part.AttachToEntity(tempUnit);
+						part.TurnOn();
+						tempUnit.Parts.m_Parts.Add(part);
+					}
 				}
 			}
 		}

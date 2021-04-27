@@ -29,8 +29,7 @@ namespace RespecModBarley
 			try
 			{
 				if(Main.IsEnabled == false){return;}
-				int pointcount = 0;
-				int pointcountfinal = pointcount - pointcount;
+				///int pointcount = Main.PointsCount;
 				///if (__instance.NextCharacterLevel == 1 && unit.Progression.Experience > 0)
 				if (unit.Progression.Experience > 0 && Main.IsRespec == true && unit.Progression.Experience > 0)
 				{
@@ -83,7 +82,11 @@ namespace RespecModBarley
 					var blueprintUnit = Game.Instance.BlueprintRoot.SelectablePlayerCharacters.Where(u => u == unit.Blueprint).FirstOrDefault();
 					bool flag = unit.Blueprint == Game.Instance.BlueprintRoot.DefaultPlayerCharacter;
 					bool flag2 = flag;
-					if (flag || Main.extraPoints == Main.ExtraPointsType.P25)
+					///__instance.StatsDistribution.Start(pointcount);
+					///Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(false);
+					///Traverse.Create(__instance.StatsDistribution).Property("Points", null).SetValue(pointcount);
+					///Traverse.Create(__instance.StatsDistribution).Property("TotalPoints", null).SetValue(pointcount);
+					/*if (flag || Main.extraPoints == Main.ExtraPointsType.P25)
 					{
 						__instance.StatsDistribution.Start(pointcount+25);
 					}
@@ -93,7 +96,7 @@ namespace RespecModBarley
 						Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(false);
 						Traverse.Create(__instance.StatsDistribution).Property("Points", null).SetValue(0);
 						Traverse.Create(__instance.StatsDistribution).Property("TotalPoints", null).SetValue(0);
-					}
+					}*/
 					if (unit.IsCustomCompanion() || unit.IsMainCharacter)
 					{
 						Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.CharGen);

@@ -17,17 +17,14 @@ namespace RespecModBarley
 		private static void Prefix(SelectClass __instance, LevelUpState state, UnitDescriptor unit)
 		{
 			    if(Main.IsEnabled == false){return;}
-				if (state.Mode == LevelUpState.CharBuildMode.LevelUp && unit.Progression.Experience > 0 && unit.Progression.CharacterLevel == 0)
+				if (unit.Progression.Experience > 0 && unit.Progression.CharacterLevel == 0 && Main.IsRespec == true)
 				{
-					foreach (BlueprintFeatureSelection blueprintFeatureSelection in unit.Progression.Race.Features.OfType<BlueprintFeatureSelection>())
+				state.StatsDistribution.Start(Main.PointsCount);
+				foreach (BlueprintFeatureSelection blueprintFeatureSelection in unit.Progression.Race.Features.OfType<BlueprintFeatureSelection>())
 					{
 						state.AddSelection(null, unit.Progression.Race, blueprintFeatureSelection, 0);
 					}
 				}
-				if(Main.IsEnabled)
-                {
-				 
-			    }
 		}
 	}
 }

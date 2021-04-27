@@ -11,16 +11,21 @@ using System.Threading.Tasks;
 
 namespace RespecModBarley
 {
-	[HarmonyPatch(typeof(StatsDistribution), MethodType.Constructor)]
+	///[HarmonyPatch(typeof(StatsDistribution), MethodType.Constructor)]
+	[HarmonyPatch(typeof(StatsDistribution),"Start")]
 
 	internal static class StatsDistributionPatch
 	{
-		private static void Postfix(StatsDistribution __instance)
+		private static void Postfix(StatsDistribution __instance, int pointCount)
         {
-			__instance.Points = 0;
-			__instance.TotalPoints = 0;
-
-		}
+			if (Main.IsRespec == true)
+            {
+			  pointCount = Main.PointsCount;
+			  __instance.Points = Main.PointsCount;
+			  __instance.TotalPoints = Main.PointsCount;
+			  __instance.TotalPoints = Main.PointsCount;
+		    }
+     	}
 
 	}
 }

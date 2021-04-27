@@ -22,6 +22,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityModManagerNet;
+using static UnityModManagerNet.UnityModManager;
 
 namespace RespecModBarley
 {
@@ -52,7 +53,11 @@ namespace RespecModBarley
 		public static List<EntityPart> partstoadd = new List<EntityPart> { };
 		public static UnitGroup unitgroupparty;
 		public static string[] partslist = new String[] { "Kingmaker.UnitLogic.Parts.UnitPartPartyWeatherBuff", "Kingmaker.UnitLogic.Parts.UnitPartCompanion", "Kingmaker.UnitLogic.Parts.UnitPartNonStackBonuses", "Kingmaker.Corruption.UnitPartCorruption", "Kingmaker.UnitLogic.Parts.UnitPartWeariness", "Kingmaker.UnitLogic.Parts.UnitPartInteractions", "Kingmaker.UnitLogic.Parts.UnitPartVendor","Kingmaker.UnitLogic.Parts.UnitPartAbilityModifiers","Kingmaker.UnitLogic.Parts.UnitPartDamageGrace","Kingmaker.UnitLogic.Parts.UnitPartInspectedBuffs","Kingmaker.AreaLogic.SummonPool.SummonPool+PooledPart"};
-		public static float abilityscoreslider = 25.0F;
+		public static int PointsCount;
+		public static bool OriginalStats;
+		/*public static float abilityscoreslider;
+		public static string abilityscorestring = abilityscoreslider.ToString();
+		public static int abilityscoreint = Int32.Parse(abilityscorestring);*/
 		private static void OnGUI(UnityModManager.ModEntry modEntry)
 		{
 			if(IsEnabled == false){return;}
@@ -99,7 +104,7 @@ namespace RespecModBarley
 			int i = Main.tabId;
 			if (i == 0)
 			{
-				GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
+				/*GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
 				GUILayout.Label("Stats: ", new GUILayoutOption[]
 				{
 							GUILayout.ExpandWidth(false)
@@ -116,15 +121,21 @@ namespace RespecModBarley
 						Main.extraPoints = (Main.ExtraPointsType)j;
 					}
 				}
+				GUILayout.EndHorizontal();*/
+				GUILayout.Space(10f);
+				GUILayout.BeginHorizontal();
+				OriginalStats = GUILayout.Toggle(OriginalStats, "Original Stats", GUILayout.ExpandWidth(false));
 				GUILayout.EndHorizontal();
 			}
 			GUILayout.BeginHorizontal();
-			///abilityscoreslider = GUI.HorizontalSlider(new Rect(), abilityscoreslider, 0.0F, 100.0F);
+			float value = PointsCount;
+			value = Math.Max(0, Math.Min(50, value));
+			float abilityscoreslider = (float)Math.Round(GUILayout.HorizontalSlider(value, 0f, 50f, GUILayout.Width(100)));
+			string stringstuff = GUILayout.TextField(abilityscoreslider.ToString(),GUILayout.ExpandWidth(false));
+			int pointsstring = Int32.Parse(stringstuff);
+			value = pointsstring;
+			PointsCount = (int)value;
 			GUILayout.EndHorizontal();
-			GUILayout.BeginHorizontal();
-			///GUILayout.Box(abilityscorepoints.ToString(),GUILayout.ExpandWidth(false));
-			GUILayout.EndHorizontal();
-			
 			GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
 
 			///Main.logger.Log(abilityscorepoints.ToString());
@@ -137,13 +148,14 @@ namespace RespecModBarley
 								GUILayout.ExpandWidth(false)
 					});
 				}
-			if (Main.extraPoints != Main.ExtraPointsType.Original)
+			/*if (Main.extraPoints != Main.ExtraPointsType.Original)
 			{
 				GUILayout.Label("  Extra points " + ((Main.extraPoints == Main.ExtraPointsType.P25) ? "+25" : "Original"), new GUILayoutOption[]
 				{
 								GUILayout.ExpandWidth(false)
 				});
-			}
+			}*/
+			GUILayout.Label(("  Extra points +" + (PointsCount.ToString())), new GUILayoutOption[] { GUILayout.ExpandWidth(false) });
 			GUILayout.EndHorizontal();
 			GUILayout.Space(10f);
 			GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
@@ -219,79 +231,19 @@ namespace RespecModBarley
 		public static int[] GetInitStatsByUnit(UnitEntityData unit)
 		{
 			int[] numArray = new int[6] { 10, 10, 10, 10, 10, 10 };
-			if (Main.extraPoints == Main.ExtraPointsType.Original)
+			if (OriginalStats == true)
 			{
-				if (unit.Descriptor.IsMainCharacter)
-				{
-					foreach (BlueprintUnit selectablePlayerCharacter in Game.Instance.BlueprintRoot.SelectablePlayerCharacters)
-					{
-						if ((UnityEngine.Object)unit.Descriptor.Blueprint == (UnityEngine.Object)selectablePlayerCharacter)
-							numArray = new int[6]
-							{
-							  selectablePlayerCharacter.Strength,
-							  selectablePlayerCharacter.Dexterity,
-							  selectablePlayerCharacter.Constitution,
-							  selectablePlayerCharacter.Intelligence,
-							  selectablePlayerCharacter.Wisdom,
-							  selectablePlayerCharacter.Charisma
-							};
-					}
-				}
-				else
-				{
-					switch (unit.Descriptor.Blueprint.name)
-					{
-						case "Camelia_Companion":
-							numArray = new int[6] { 11, 17, 14, 10, 16, 13 };
-							break;
-						case "Arueshalae_Companion":
-							numArray = new int[6] { 12, 20, 16, 18, 14, 20 };
-							break;
-						case "Daeran_Companion":
-							numArray = new int[6] { 7, 14, 13, 11, 14, 18 };
-							break;
-						case "Staunton_Companion":
-							numArray = new int[6] { 15, 18, 10, 7, 10, 14 };
-							break;
-						case "Regill_Companion":
-							numArray = new int[6] { 15, 17, 14, 10, 13, 12 };
-							break;
-						case "Nenio_Companion":
-							numArray = new int[6] { 7, 17, 12, 18, 9, 13 };
-							break;
-						case "SosielVaenic_Companion":
-							numArray = new int[6] { 16, 10, 14, 10, 16, 14 };
-							break;
-						case "Ember_Companion":
-							numArray = new int[6] { 9, 14, 14, 10, 13, 17 };
-							break;
-						case "Seelah_Companion":
-							numArray = new int[6] { 16, 13, 14, 10, 13, 15 };
-							break;
-						case "Delamere_Companion":
-							numArray = new int[6] { 16, 15, 10, 9, 10, 16 };
-							break;
-						case "Woljif_Companion":
-							numArray = new int[6] { 10, 18, 13, 16, 10, 13 };
-							break;
-						case "Wenduag_Companion":
-							numArray = new int[6] { 14, 18, 14, 10, 12, 7 };
-							break;
-						case "Lann_Companion":
-							numArray = new int[6] { 15, 15, 12, 11, 17, 11 };
-							break;
-						case "EvilArueshalae_Companion":
-							numArray = new int[6] { 12, 20, 16, 18, 14, 20 };
-							break;
-						case "Greybor_Companion":
-							numArray = new int[6] { 16, 16, 12, 13, 10, 12 };
-							break;
-						case "Trever_Companion":
-							numArray = new int[6] { 16, 10, 14, 10, 16, 14 };
-							break;
-
-
-					}
+				if (unit.IsStoryCompanion())
+                {
+					numArray = new int[6]
+                    {
+					 unit.OriginalBlueprint.Strength,
+					 unit.OriginalBlueprint.Dexterity,
+					 unit.OriginalBlueprint.Constitution,
+					 unit.OriginalBlueprint.Intelligence,
+					 unit.OriginalBlueprint.Wisdom,
+					 unit.OriginalBlueprint.Charisma
+                    };
 				}
 			}
 			return numArray;
@@ -322,9 +274,6 @@ namespace RespecModBarley
                 {
 					partstoadd.Add(entityPart);
 					Main.logger.Log(entityPart.ToString());
-				}
-				if (entityPart.ToString() != "Kingmaker.UnitLogic.Parts.UnitPartExtraSpellsPerDay")
-                {
 				}
 			}
 			Traverse.Create(unit.Parts).Field("Parts").SetValue(partstoadd);
@@ -365,17 +314,16 @@ namespace RespecModBarley
 
 			}*/
 		}
-		public static int abilityscorepoints = (int)abilityscoreslider;
 		public static Main.ExtraPointsType extraPoints;
 		public static UnityModManager.ModEntry.ModLogger logger;
 		public static bool IsEnabled;
 		public static int tabId = 0;
 		public static long respecCost = 1000L;
-		private static readonly string[] extraPointLabels = new string[]
+		/*private static readonly string[] extraPointLabels = new string[]
 		{
 			" Original",
 			" +25"
-		};
+		};*/
 		private static int selectedCharacter = 0;
 		public enum ExtraPointsType
 		{
