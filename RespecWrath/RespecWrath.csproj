@@ -52,6 +52,7 @@
     </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="System" />
     <Reference Include="UnityEngine">
       <HintPath>B:\Games\Other\Pathfinder Wrath of the Righteous Beta\Wrath_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
@@ -80,6 +81,7 @@
   <ItemGroup>
     <Compile Include="CharacterBuildControllerPatch.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="HandleRecruitPatch.cs" />
     <Compile Include="LevelUpStatePatch.cs" />
     <Compile Include="LibraryPatch.cs" />
     <Compile Include="Main.cs" />

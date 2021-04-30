@@ -52,9 +52,11 @@ namespace RespecModBarley
 		public static List<BlueprintFeature> featurestoadd = new List<BlueprintFeature> { };
 		public static List<EntityPart> partstoadd = new List<EntityPart> { };
 		public static UnitGroup unitgroupparty;
+		public static List<String> orglvllist = new List<String> { };
 		public static string[] partslist = new String[] { "Kingmaker.UnitLogic.Parts.UnitPartPartyWeatherBuff", "Kingmaker.UnitLogic.Parts.UnitPartCompanion", "Kingmaker.UnitLogic.Parts.UnitPartNonStackBonuses", "Kingmaker.Corruption.UnitPartCorruption", "Kingmaker.UnitLogic.Parts.UnitPartWeariness", "Kingmaker.UnitLogic.Parts.UnitPartInteractions", "Kingmaker.UnitLogic.Parts.UnitPartVendor","Kingmaker.UnitLogic.Parts.UnitPartAbilityModifiers","Kingmaker.UnitLogic.Parts.UnitPartDamageGrace","Kingmaker.UnitLogic.Parts.UnitPartInspectedBuffs","Kingmaker.AreaLogic.SummonPool.SummonPool+PooledPart"};
 		public static int PointsCount;
 		public static bool OriginalStats;
+		public static int OriginalBPLvl;
 		/*public static float abilityscoreslider;
 		public static string abilityscorestring = abilityscoreslider.ToString();
 		public static int abilityscoreint = Int32.Parse(abilityscorestring);*/
@@ -256,7 +258,13 @@ namespace RespecModBarley
 			UnitDescriptor descriptor = entityData.Descriptor;
 			UnitProgressionData unitProgressionData = entityData.Progression;
 			UnitEntityData unit = entityData;
-			MythicXP = unitProgressionData.MythicLevel;
+			///var UnitOrigLvlStrin = unit.CharacterName.ToString() + " " + entityData.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit.ToString();
+			///orglvllist.Add(UnitOrigLvlStrin);
+			///foreach(string strin in orglvllist)
+           /// {
+			///	Main.logger.Log(strin);
+            ///}
+			MythicXP = unitProgressionData.MythicExperience;
 			LevelUpHelper.GetTotalIntelligenceSkillPoints(descriptor, 0);
 			LevelUpHelper.GetTotalSkillPoints(descriptor, 0);
 			Traverse.Create(descriptor.Progression).Field("m_Selections").GetValue<Dictionary<BlueprintFeatureSelection, FeatureSelectionData>>().Clear();
@@ -266,6 +274,13 @@ namespace RespecModBarley
 			descriptor.Stats.HitPoints.BaseValue = defaultPlayerCharacter.MaxHP+1;
 			descriptor.Stats.Speed.BaseValue = defaultPlayerCharacter.Speed.Value;
 			descriptor.UpdateSizeModifiers();
+			if(entityData.IsStoryCompanion() == true)
+            {
+				if(entityData.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit != 0)
+                {
+					OriginalBPLvl = entityData.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit;
+				}
+			}
 			var BPBackgroundList = new List<BlueprintFeature>{ };
 			List<BlueprintFeature> list = new List<BlueprintFeature> { };
 			foreach (EntityPart entityPart in unit.Parts.Parts)
@@ -277,19 +292,26 @@ namespace RespecModBarley
 				}
 			}
 			Traverse.Create(unit.Parts).Field("Parts").SetValue(partstoadd);
-			unit.Ensure<UnitPartCompanion>().SetState(CompanionState.InParty);
+			///unit.Ensure<UnitPartCompanion>().SetState(CompanionState.InParty);
 			foreach(Buff buff in unit.Buffs)
             {
 				buff.Detach();
             }
 			foreach (Feature blueprintf in unit.Descriptor.Progression.Features.Enumerable)
 			{
+				/*if(blueprintf.Blueprint.name == "OriginalLevel")
+                {
+					Main.logger.Log("Orglvl");
+					OriginalBPLvl = Int32.Parse(blueprintf.Blueprint.Comment);
+                }
+				Main.logger.Log(blueprintf.Blueprint.name.ToString());*/
 				if (backgroundsarray.Contains(blueprintf.Blueprint))
 				{
 					///Main.logger.Log(blueprintf.ToString());
 					Main.featurestoadd.Add(blueprintf.Blueprint);
 				}
 			}
+			entityData.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
 			if (unit.Pets != null)
 			{
 				foreach(UnitEntityData petdata in unit.Pets)
@@ -314,7 +336,6 @@ namespace RespecModBarley
 
 			}*/
 		}
-		public static Main.ExtraPointsType extraPoints;
 		public static UnityModManager.ModEntry.ModLogger logger;
 		public static bool IsEnabled;
 		public static int tabId = 0;

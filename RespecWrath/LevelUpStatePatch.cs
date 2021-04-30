@@ -11,6 +11,7 @@ using Kingmaker.UnitLogic.Parts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -22,108 +23,121 @@ namespace RespecModBarley
 	[HarmonyPriority(9999)]
 	internal static class LevelUpState_ctor_Patch
 	{
+		///public static int intorglvl;
 		// Token: 0x0600000C RID: 12 RVA: 0x000041B4 File Offset: 0x000023B4
 		private static void Postfix(LevelUpState __instance, UnitEntityData unit, LevelUpState.CharBuildMode mode)
 		{
-			var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
-			try
+			if (Main.IsRespec == true)
 			{
-				if(Main.IsEnabled == false){return;}
-				///int pointcount = Main.PointsCount;
-				///if (__instance.NextCharacterLevel == 1 && unit.Progression.Experience > 0)
-				if (unit.Progression.Experience > 0 && Main.IsRespec == true && unit.Progression.Experience > 0)
+				var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
+				try
 				{
-					foreach(Spellbook spellbook in unit.Spellbooks)
+					if (Main.IsEnabled == false) { return; }
+					///int pointcount = Main.PointsCount;
+					if (Main.IsRespec == false && __instance.NextCharacterLevel == 1 && unit.Progression.Experience > 0)
                     {
-						spellbook.UpdateAllSlotsSize(true);
-						spellbook.UpdateMythicLevel();
-                    }
-					int[] initStatsByUnit = Main.GetInitStatsByUnit(unit);
-					unit.Descriptor.Stats.Strength.BaseValue = initStatsByUnit[0];
-					unit.Descriptor.Stats.Dexterity.BaseValue = initStatsByUnit[1];
-					unit.Descriptor.Stats.Constitution.BaseValue = initStatsByUnit[2];
-					unit.Descriptor.Stats.Intelligence.BaseValue = initStatsByUnit[3];
-					unit.Descriptor.Stats.Wisdom.BaseValue = initStatsByUnit[4];
-					unit.Descriptor.Stats.Charisma.BaseValue = initStatsByUnit[5];
-					unit.Progression.AdvanceMythicExperience(Main.MythicXP);
-
-					if (unit.Progression.MythicExperience != Main.MythicXP)
-			        {
-			        	unit.Progression.GainMythicExperience(1);
-		         	}
-					if (unit.Pets != null)
-					{
-						unit.Pets.Clear();
+						unit.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit = Main.OriginalBPLvl;
 					}
-					/*foreach (BlueprintFeature blueprintFeature in unit.Descriptor.OriginalBlueprint.Race.m_Features)
+					if (unit.Progression.Experience > 0 && unit.Progression.CharacterLevel == 0 && Main.IsRespec == true)
 					{
-						unit.Descriptor.AddFact(blueprintFeature);
-					}*/
-					unit.Parts.m_Parts.Clear();
-					foreach(EntityPart part in Main.partstoadd)
-                    {					
-						if (!unit.Parts.m_Parts.Contains(part))
+						foreach (BlueprintFeatureSelection blueprintFeatureSelection in unit.Progression.Race.Features.OfType<BlueprintFeatureSelection>())
 						{
-							part.AttachToEntity(unit);
-							part.TurnOn();
-							unit.Parts.m_Parts.Add(part);
-							part.PostLoad(unit);
+							__instance.AddSelection(null, unit.Progression.Race, blueprintFeatureSelection, 0);
 						}
 					}
-					foreach (BlueprintFeature featuretoadd in Main.featurestoadd)
+					if (Main.IsRespec == true && unit.Progression.Experience > 0 && unit.Progression.Experience > 0)
 					{
+						foreach (Spellbook spellbook in unit.Spellbooks)
+						{
+							spellbook.UpdateAllSlotsSize(true);
+							spellbook.UpdateMythicLevel();
+						}
+						int[] initStatsByUnit = Main.GetInitStatsByUnit(unit);
+						unit.Descriptor.Stats.Strength.BaseValue = initStatsByUnit[0];
+						unit.Descriptor.Stats.Dexterity.BaseValue = initStatsByUnit[1];
+						unit.Descriptor.Stats.Constitution.BaseValue = initStatsByUnit[2];
+						unit.Descriptor.Stats.Intelligence.BaseValue = initStatsByUnit[3];
+						unit.Descriptor.Stats.Wisdom.BaseValue = initStatsByUnit[4];
+						unit.Descriptor.Stats.Charisma.BaseValue = initStatsByUnit[5];
+						/*unit.Progression.AdvanceMythicExperience(Main.MythicXP);
+						if (unit.Progression.MythicExperience != Main.MythicXP)
+						{
+							unit.Progression.GainMythicExperience(1);
+						}*/
+						if (unit.Pets != null)
+						{
+							unit.Pets.Clear();
+						}
+						/*foreach (BlueprintFeature blueprintFeature in unit.Descriptor.OriginalBlueprint.Race.m_Features)
+						{
+							unit.Descriptor.AddFact(blueprintFeature);
+						}*/
+						unit.Parts.m_Parts.Clear();
+						foreach (EntityPart part in Main.partstoadd)
+						{
+							if (!unit.Parts.m_Parts.Contains(part))
+							{
+								///part.AttachToEntity(unit);
+								///part.TurnOn();
+								///unit.Parts.m_Parts.Add(part);
+								///part.PostLoad(unit);
+							}
+						}
+						foreach (BlueprintFeature featuretoadd in Main.featurestoadd)
+						{
 							///Main.logger.Log(featuretoadd.ToString());
 							unit.Descriptor.AddFact(featuretoadd);
-					}
-					if (unit.Progression.Race == Stuf.HumanRace || unit.Progression.Race == Stuf.HalfElfRace || unit.Progression.Race == Stuf.HalfOrcRace)
-					{
-						__instance.CanSelectRaceStat = true;
-					}
-					var blueprintUnit = Game.Instance.BlueprintRoot.SelectablePlayerCharacters.Where(u => u == unit.Blueprint).FirstOrDefault();
-					bool flag = unit.Blueprint == Game.Instance.BlueprintRoot.DefaultPlayerCharacter;
-					bool flag2 = flag;
-					///__instance.StatsDistribution.Start(pointcount);
-					///Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(false);
-					///Traverse.Create(__instance.StatsDistribution).Property("Points", null).SetValue(pointcount);
-					///Traverse.Create(__instance.StatsDistribution).Property("TotalPoints", null).SetValue(pointcount);
-					/*if (flag || Main.extraPoints == Main.ExtraPointsType.P25)
-					{
-						__instance.StatsDistribution.Start(pointcount+25);
-					}
-					else
-					{
-						__instance.AttributePoints = 0;
-						Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(false);
-						Traverse.Create(__instance.StatsDistribution).Property("Points", null).SetValue(0);
-						Traverse.Create(__instance.StatsDistribution).Property("TotalPoints", null).SetValue(0);
-					}*/
-					if (unit.IsCustomCompanion() || unit.IsMainCharacter)
-					{
-						Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.CharGen);
-						__instance.CanSelectAlignment = true;
-						__instance.CanSelectPortrait = true;
-						__instance.CanSelectRace = true;
-						__instance.CanSelectGender = true;
-						__instance.CanSelectName = true;
-						__instance.CanSelectVoice = true;
-					}
-					if (unit.IsStoryCompanion())
-					{
-						Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.LevelUp);
-						Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(true);
-						__instance.CanSelectAlignment = false;
-						__instance.CanSelectRace = false;
-						__instance.CanSelectPortrait = false;
-						__instance.CanSelectGender = false;
-						__instance.CanSelectName = false;
-						__instance.CanSelectVoice = false;
-						return;
+						}
+						if (unit.Progression.Race == Stuf.HumanRace || unit.Progression.Race == Stuf.HalfElfRace || unit.Progression.Race == Stuf.HalfOrcRace)
+						{
+							__instance.CanSelectRaceStat = true;
+						}
+						var blueprintUnit = Game.Instance.BlueprintRoot.SelectablePlayerCharacters.Where(u => u == unit.Blueprint).FirstOrDefault();
+						///__instance.StatsDistribution.Start(pointcount);
+						///Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(false);
+						///Traverse.Create(__instance.StatsDistribution).Property("Points", null).SetValue(pointcount);
+						///Traverse.Create(__instance.StatsDistribution).Property("TotalPoints", null).SetValue(pointcount);
+						/*if (flag || Main.extraPoints == Main.ExtraPointsType.P25)
+						{
+							__instance.StatsDistribution.Start(pointcount+25);
+						}
+						else
+						{
+							__instance.AttributePoints = 0;
+							Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(false);
+							Traverse.Create(__instance.StatsDistribution).Property("Points", null).SetValue(0);
+							Traverse.Create(__instance.StatsDistribution).Property("TotalPoints", null).SetValue(0);
+						}*/
+						if (unit.IsCustomCompanion() || unit.IsMainCharacter)
+						{
+							Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.CharGen);
+							__instance.CanSelectAlignment = true;
+							__instance.CanSelectPortrait = true;
+							__instance.CanSelectRace = true;
+							__instance.CanSelectGender = true;
+							__instance.CanSelectName = true;
+							__instance.CanSelectVoice = true;
+						}
+						if (unit.IsStoryCompanion())
+						{
+							Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.LevelUp);
+							Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(true);
+							Traverse.Create(__instance).Property("CanSelectName", null).SetValue(false);
+							Traverse.Create(__instance).Property("CanSelectVoice", null).SetValue(false);
+							__instance.CanSelectAlignment = false;
+							__instance.CanSelectRace = false;
+							__instance.CanSelectPortrait = false;
+							__instance.CanSelectGender = false;
+							__instance.CanSelectName = false;
+							__instance.CanSelectVoice = false;
+							return;
+						}
 					}
 				}
-			}
-			catch (Exception ex)
-			{
-				Main.logger.Log(ex.ToString());
+				catch (Exception ex)
+				{
+					Main.logger.Log(ex.ToString());
+				}
 			}
 		}
 	}

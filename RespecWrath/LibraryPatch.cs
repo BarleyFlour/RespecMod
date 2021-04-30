@@ -40,7 +40,7 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 		if(Main.IsEnabled == false){return;}
 		try
 		{
-			Main.logger.Log("Library patching initiated");
+			/*Main.logger.Log("Library patching initiated");
 			var BPEdit1 = Stuf.Arueshalae.GetComponent<ClassLevelLimit>().LevelLimit = 0;
 
 			var BPEdit3 = Stuf.Nenio.GetComponent<ClassLevelLimit>().LevelLimit = 0;
@@ -99,7 +99,7 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 
 			var BPEdit50 = Stuf.Trever.GetComponent<ClassLevelLimit>().LevelLimit = 0;
 			//var BPEdit51 = Stuf.Trever.GetComponent<AddClassLevels>().Levels = 0;
-
+			*/
 			var arueshalaeFeatureList = Stuf.ArueshalaeFeatureList.ToReference<BlueprintFeatureReference>();
 			var nenioFeatureList = Stuf.NenioFeatureList.ToReference<BlueprintFeatureReference>();
 			var cameliaFeatureList = Stuf.CameliaFeatureList.ToReference<BlueprintFeatureReference>();
@@ -151,7 +151,7 @@ namespace RespecModBarley
 		{
 			return (T)ResourcesLibrary.TryGetBlueprint(assetId);
 		}
-		public static BlueprintUnit Arueshalae => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("a352873d37ec6c54c9fa8f6da3a6b3e1");
+		/*public static BlueprintUnit Arueshalae => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("a352873d37ec6c54c9fa8f6da3a6b3e1");
 		public static BlueprintUnit Nenio => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("1b893f7cf2b150e4f8bc2b3c389ba71d");
 		public static BlueprintUnit Camelia => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("397b090721c41044ea3220445300e1b8");
 		public static BlueprintUnit Seelah => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("54be53f0b35bf3c4592a97ae335fe765");
@@ -171,7 +171,7 @@ namespace RespecModBarley
 		public static BlueprintUnit Galfrey => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("e46927657a79db64ea30758db3f42bb9");
 		public static BlueprintUnit Kestoglyr => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("e551850403d61eb48bb2de010d12c894");
 		public static BlueprintUnit Greybor => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("f72bb7c48bb3e45458f866045448fb58");
-		public static BlueprintUnit Trever => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("0bb1c03b9f7bbcf42bb74478af2c6258");
+		public static BlueprintUnit Trever => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("0bb1c03b9f7bbcf42bb74478af2c6258");*/
 		public static BlueprintScriptableObject TieflingHeritageSelect => ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>("c862fd0e4046d2d4d9702dd60474a181");
 		public static BlueprintScriptableObject BackgroundSelect => ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>("f926dabeee7f8a54db8f2010b323383c");
 		public static BlueprintFeatureSelection BackgroundSelectSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("f926dabeee7f8a54db8f2010b323383c");

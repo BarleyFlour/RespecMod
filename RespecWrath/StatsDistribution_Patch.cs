@@ -20,13 +20,14 @@ namespace RespecModBarley
         {
 			if (Main.IsRespec == true)
             {
-			  pointCount = Main.PointsCount;
-			  __instance.Points = Main.PointsCount;
-			  __instance.TotalPoints = Main.PointsCount;
-			  __instance.TotalPoints = Main.PointsCount;
+				if (pointCount != Main.PointsCount)
+				{
+					pointCount = Main.PointsCount;
+					__instance.Points = Main.PointsCount;
+					__instance.TotalPoints = Main.PointsCount;
+				}
 		    }
      	}
-
 	}
 }
 

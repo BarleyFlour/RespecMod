@@ -1,4 +1,7 @@
 ﻿using HarmonyLib;
+using Kingmaker.Blueprints;
+using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Facts;
 using Kingmaker.EntitySystem;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.UnitLogic;
@@ -8,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace RespecModBarley
 {
@@ -19,10 +23,11 @@ namespace RespecModBarley
 			if(Main.IsRespec == true)
 			{
 				Main.featurestoadd.Clear();
-				Main.partstoadd.Clear();
+				///targetUnit.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit = Main.OriginalBPLvl;
 				Main.IsRespec = false;
 				///targetUnit.m_Group = Main.unitgroupparty;
 				///tempUnit.m_Group = Main.unitgroupparty;
+				targetUnit.Progression.AdvanceMythicExperience(Main.MythicXP);
 				foreach (EntityPart part in Main.partstoadd)
 				{
 					if (!targetUnit.Parts.Parts.Contains(part))
@@ -37,10 +42,18 @@ namespace RespecModBarley
 					if (!targetUnit.Parts.Parts.Contains(part))
 					{
 						part.AttachToEntity(tempUnit);
-						part.TurnOn();
 						tempUnit.Parts.m_Parts.Add(part);
 					}
 				}
+				foreach (EntityPart part in Main.partstoadd)
+				{
+					if (!targetUnit.Parts.m_Parts.Contains(part))
+					{
+						///part.AttachToEntity(unit);
+						targetUnit.Parts.m_Parts.Add(part);
+					}
+				}
+				Main.partstoadd.Clear();
 			}
 		}
 	}
