@@ -23,14 +23,11 @@ namespace RespecModBarley
 			if(Main.IsRespec == true)
 			{
 				Main.featurestoadd.Clear();
-				///targetUnit.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit = Main.OriginalBPLvl;
 				Main.IsRespec = false;
-				///targetUnit.m_Group = Main.unitgroupparty;
-				///tempUnit.m_Group = Main.unitgroupparty;
 				targetUnit.Progression.AdvanceMythicExperience(Main.MythicXP);
 				foreach (EntityPart part in Main.partstoadd)
 				{
-					if (!targetUnit.Parts.Parts.Contains(part))
+					if(!targetUnit.Parts.Parts.Contains(part))
 					{
 						part.AttachToEntity(targetUnit);
 						part.TurnOn();

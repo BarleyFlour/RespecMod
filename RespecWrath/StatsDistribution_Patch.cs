@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Kingmaker.Blueprints.Classes.Selection;
+using Kingmaker.EntitySystem.Stats;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Class.LevelUp;
 using Kingmaker.UnitLogic.Class.LevelUp.Actions;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace RespecModBarley
 {
+
 	///[HarmonyPatch(typeof(StatsDistribution), MethodType.Constructor)]
 	[HarmonyPatch(typeof(StatsDistribution),"Start")]
 
@@ -23,8 +25,8 @@ namespace RespecModBarley
 				if (pointCount != Main.PointsCount)
 				{
 					pointCount = Main.PointsCount;
-					__instance.Points = Main.PointsCount;
-					__instance.TotalPoints = Main.PointsCount;
+					__instance.Points = pointCount;
+					__instance.TotalPoints = pointCount;
 				}
 		    }
      	}

@@ -1,11 +1,13 @@
 ﻿///credit to spacehamster for (most) of this
 using HarmonyLib;
+using Kingmaker;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Experience;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Designers.Mechanics.Facts;
+using Kingmaker.EntitySystem.Entities;
 using Kingmaker.UnitLogic;
 using RespecModBarley;
 using System;
@@ -13,11 +15,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[HarmonyPatch(typeof(ResourcesLibrary), "InitializeLibrary")]
+[HarmonyPatch(typeof(ResourcesLibrary), "StartPreloadingMode")]
 static class ResourcesLibrary_InitializeLibrary_Patch
 {
 	static bool Initialized;
-	static bool Prefix()
+	/*static bool Prefix()
 	{
 		if (Initialized)
 		{
@@ -32,10 +34,10 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 		{
 			return true;
 		}
-	}
+	}*/
 	static void Postfix()
 	{
-		if (Initialized) return;
+		///if (Initialized) return;
 		Initialized = true;
 		if(Main.IsEnabled == false){return;}
 		try
@@ -118,16 +120,26 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 			var galfreyFeatureList = Stuf.GalfreyFeatureList.ToReference<BlueprintFeatureReference>();
 			var greyborFeatureList = Stuf.GreyborFeatureList.ToReference<BlueprintFeatureReference>();
 			var treverFeatureList = Stuf.TreverFeatureList.ToReference<BlueprintFeatureReference>();
-			var noSelectionIfAlreadyHasFeature = ScriptableObject.CreateInstance<NoSelectionIfAlreadyHasFeature>();
-			noSelectionIfAlreadyHasFeature.AnyFeatureFromSelection = false;
+			var noSelectionIfAlreadyHasFeature = new NoSelectionIfAlreadyHasFeature();
 			noSelectionIfAlreadyHasFeature.m_Features = new BlueprintFeatureReference[] { arueshalaeFeatureList };
 			ExtensionMethods.AddComponent(Stuf.TieflingHeritageSelect, noSelectionIfAlreadyHasFeature);
-
-			var noSelectionIfAlreadyHasFeatureBackgroundSelect = ScriptableObject.CreateInstance<NoSelectionIfAlreadyHasFeature>();
+			var noSelectionIfAlreadyHasFeatureBackgroundSelect = new NoSelectionIfAlreadyHasFeature();
 			noSelectionIfAlreadyHasFeatureBackgroundSelect.AnyFeatureFromSelection = false;
 			noSelectionIfAlreadyHasFeatureBackgroundSelect.m_Features = new BlueprintFeatureReference[] { arueshalaeFeatureList, nenioFeatureList, cameliaFeatureList, seelahFeatureList, emberFeatureList, lannFeatureList, daeranFeatureList, stauntonFeatureList, regillFeatureList, sosielvaenicFeatureList, delamereFeatureList, woljifFeatureList, ciarFeatureList, aneviaFeatureList, wenduagFeatureList, galfreyFeatureList, greyborFeatureList, treverFeatureList };
 			ExtensionMethods.AddComponent(Stuf.BackgroundSelect, noSelectionIfAlreadyHasFeatureBackgroundSelect);
+			/*foreach (UnitEntityData data in Game.Instance.Player.PartyCharacters)
+            {
+			    if(data.IsStoryCompanion() == true)
+                {
+					var add = data.CharacterName.ToString() + "" + data.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit.ToString();
+					Main.UnitMemory.Add(add);
+					Main.logger.Log(add.ToString());
+					Main.logger.Log("stuff");
+					Main.logger.Log(Main.UnitMemory.ToString());
+                }
+            }*/
 
+			
 			var BackgroundArray = new BlueprintFeature[] {Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
 		}
 		catch (Exception ex)
@@ -171,7 +183,8 @@ namespace RespecModBarley
 		public static BlueprintUnit Galfrey => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("e46927657a79db64ea30758db3f42bb9");
 		public static BlueprintUnit Kestoglyr => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("e551850403d61eb48bb2de010d12c894");
 		public static BlueprintUnit Greybor => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("f72bb7c48bb3e45458f866045448fb58");
-		public static BlueprintUnit Trever => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("0bb1c03b9f7bbcf42bb74478af2c6258");*/
+		public static BlueprintUnit Trever => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("0bb1c03b9f7bbcf42bb74478af2c6258");
+		public static BlueprintUnit Player => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("4391e8b9afbb0cf43aeba700c089f56d");*/
 		public static BlueprintScriptableObject TieflingHeritageSelect => ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>("c862fd0e4046d2d4d9702dd60474a181");
 		public static BlueprintScriptableObject BackgroundSelect => ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>("f926dabeee7f8a54db8f2010b323383c");
 		public static BlueprintFeatureSelection BackgroundSelectSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("f926dabeee7f8a54db8f2010b323383c");
