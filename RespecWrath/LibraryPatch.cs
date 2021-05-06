@@ -6,6 +6,7 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Experience;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
+using Kingmaker.Blueprints.JsonSystem;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.UnitLogic;
@@ -15,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[HarmonyPatch(typeof(ResourcesLibrary), "StartPreloadingMode")]
+[HarmonyPatch(typeof(BlueprintsCache), "Init")]
 static class ResourcesLibrary_InitializeLibrary_Patch
 {
 	static bool Initialized;

@@ -82,7 +82,7 @@ namespace RespecModBarley
                     return info.OrgLvl;
 				}
 		   }
-		   return 1;
+		   return 5;
         }
 		public static int GetUnitInfoBP(BlueprintUnit unit)
 		{
@@ -94,7 +94,7 @@ namespace RespecModBarley
 					return info.OrgLvl;
 				}
 			}
-			return 1;
+			return 5;
 		}
 		public static void GetUnitForMemory(UnitEntityData data)
 		{
@@ -124,28 +124,33 @@ namespace RespecModBarley
         {
 			try
 			{
-				foreach (UnitEntityData unit in Game.Instance.Player.AllCharacters)
-				{
-					var unitinfoinstance = ScriptableObject.CreateInstance<UnitInfo>();
-					unitinfoinstance.Data = unit;
-					unitinfoinstance.OrgLvl = unitinfoinstance.Data.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit;
-					foreach (UnitInfo unitInfo in UnitMemory)
+				var CurrentArea = Game.Instance.Player.SavedInArea;
+				var entityPool = Game.Instance.State.Units;
+				foreach(UnitEntityData unit in entityPool)
+                {
+					if (unit.Blueprint.name.Contains("Companion"))
 					{
-						if (unitInfo.Data.CharacterName == unit.CharacterName)
+						var unitinfoinstance = ScriptableObject.CreateInstance<UnitInfo>();
+						unitinfoinstance.Data = unit;
+						unitinfoinstance.OrgLvl = unitinfoinstance.Data.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit;
+						foreach (UnitInfo unitInfo in UnitMemory)
 						{
-						    ///Main.logger.Log("alreadyexist");
-							return;
+							if (unitInfo.Data.CharacterName == unit.CharacterName)
+							{
+								///Main.logger.Log("alreadyexist");
+								return;
+							}
+						}
+						{
+							UnitMemory.Add(unitinfoinstance);
+							///.Main.logger.Log(unitinfoinstance.Data.CharacterName.ToString() + " " + unitinfoinstance.OrgLvl.ToString());
 						}
 					}
-					{
-						UnitMemory.Add(unitinfoinstance);
-						Main.logger.Log(unitinfoinstance.Data.CharacterName.ToString()+" "+unitinfoinstance.OrgLvl.ToString());
-					}
 				}
-				foreach (UnitInfo a in UnitMemory)
+				/*foreach (UnitInfo a in UnitMemory)
 				{
 					Main.logger.Log(a.Data.CharacterName.ToString());
-				}
+				}*/
 
 			}
 			catch (Exception e)
@@ -347,7 +352,7 @@ namespace RespecModBarley
 		public static void PreRespec(UnitEntityData entityData)
 		{
 			if (IsEnabled == false) { return; }
-			///var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
+			var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
 			BlueprintUnit defaultPlayerCharacter = Game.Instance.BlueprintRoot.DefaultPlayerCharacter;
 			UnitDescriptor descriptor = entityData.Descriptor;
 			UnitProgressionData unitProgressionData = entityData.Progression;
@@ -384,7 +389,7 @@ namespace RespecModBarley
             }
 			foreach (Feature blueprintf in unit.Descriptor.Progression.Features.Enumerable)
 			{
-				///if (backgroundsarray.Contains(blueprintf.Blueprint))
+				if (backgroundsarray.Contains(blueprintf.Blueprint))
 				{
 					///Main.logger.Log(blueprintf.ToString());
 					Main.featurestoadd.Add(blueprintf.Blueprint);

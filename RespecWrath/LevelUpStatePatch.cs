@@ -67,7 +67,7 @@ namespace RespecModBarley
 								///Main.logger.Log(featuretoadd.ToString());
 								unit.Descriptor.AddFact(featuretoadd);
 							}
-						///	if (unit.Progression.Race == Stuf.HumanRace || unit.Progression.Race == Stuf.HalfElfRace || unit.Progression.Race == Stuf.HalfOrcRace)
+						    if (unit.Progression.Race == Stuf.HumanRace || unit.Progression.Race == Stuf.HalfElfRace || unit.Progression.Race == Stuf.HalfOrcRace)
 							{
 								__instance.CanSelectRaceStat = true;
 							}
@@ -75,12 +75,13 @@ namespace RespecModBarley
 							if (unit.IsCustomCompanion() || unit.IsMainCharacter)
 							{
 								Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.CharGen);
+								Traverse.Create(__instance).Property("CanSelectVoice", null).SetValue(true);
 								__instance.CanSelectAlignment = true;
 								__instance.CanSelectPortrait = true;
 								__instance.CanSelectRace = true;
 								__instance.CanSelectGender = true;
 								__instance.CanSelectName = true;
-								__instance.CanSelectVoice = true;
+                                __instance.CanSelectVoice = true;
 							}
 							if (unit.IsStoryCompanion())
 							{
