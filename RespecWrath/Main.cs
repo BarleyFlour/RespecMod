@@ -126,6 +126,7 @@ namespace RespecModBarley
 			{
 				var CurrentArea = Game.Instance.Player.SavedInArea;
 				var entityPool = Game.Instance.State.Units;
+				var entityPool2 = Game.Instance.Player.AllCharacters;
 				foreach(UnitEntityData unit in entityPool)
                 {
 					if (unit.Blueprint.name.Contains("Companion"))
@@ -143,7 +144,28 @@ namespace RespecModBarley
 						}
 						{
 							UnitMemory.Add(unitinfoinstance);
-							///.Main.logger.Log(unitinfoinstance.Data.CharacterName.ToString() + " " + unitinfoinstance.OrgLvl.ToString());
+							///Main.logger.Log(unitinfoinstance.Data.CharacterName.ToString() + " " + unitinfoinstance.OrgLvl.ToString());
+						}
+					}
+				}
+				foreach (UnitEntityData unit in entityPool2)
+				{
+					if (unit.Blueprint.name.Contains("Companion"))
+					{
+						var unitinfoinstance = ScriptableObject.CreateInstance<UnitInfo>();
+						unitinfoinstance.Data = unit;
+						unitinfoinstance.OrgLvl = unitinfoinstance.Data.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit;
+						foreach (UnitInfo unitInfo in UnitMemory)
+						{
+							if (unitInfo.Data.CharacterName == unit.CharacterName)
+							{
+								///Main.logger.Log("alreadyexist");
+								return;
+							}
+						}
+						{
+							UnitMemory.Add(unitinfoinstance);
+							///Main.logger.Log(unitinfoinstance.Data.CharacterName.ToString() + " " + unitinfoinstance.OrgLvl.ToString());
 						}
 					}
 				}

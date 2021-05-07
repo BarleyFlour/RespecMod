@@ -23,11 +23,18 @@ namespace RespecModBarley
 	{
 		private static void Postfix()
 		{
-			Main.GetUnitsForMemory();
-			foreach (UnitEntityData data in Game.Instance.Player.AllCharacters)
+			try
 			{
-				data.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
+				Main.GetUnitsForMemory();
+				foreach (UnitEntityData data in Game.Instance.Player.AllCharacters)
+				{
+					data.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
+				}
 			}
+			catch(Exception e)
+            {
+				Main.logger.Error(e.ToString());
+            }
 		}
 	}
 }
