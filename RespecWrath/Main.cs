@@ -110,7 +110,7 @@ namespace RespecModBarley
 			{
 					var unitinfoinstance = ScriptableObject.CreateInstance<UnitInfo>();
 					unitinfoinstance.Data = data;
-					unitinfoinstance.OrgLvl = unitinfoinstance.Data.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit;
+					unitinfoinstance.OrgLvl = unitinfoinstance.Data.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit;
 					foreach (UnitInfo unitInfo in UnitMemory)
 					{
 						if (unitInfo.Data.CharacterName == data.CharacterName)
@@ -120,7 +120,7 @@ namespace RespecModBarley
 					}
 					{
 						UnitMemory.Add(unitinfoinstance);
-						Main.logger.Log(unitinfoinstance.Data.CharacterName.ToString() +" "+ unitinfoinstance.OrgLvl.ToString());
+						///Main.logger.Log(unitinfoinstance.Data.CharacterName.ToString() +" "+ unitinfoinstance.OrgLvl.ToString());
 					}
 			}
 			catch (Exception e)
@@ -172,7 +172,7 @@ namespace RespecModBarley
 						}
 						{
 							UnitMemory.Add(unitinfoinstance);
-							///Main.logger.Log(unitinfoinstance.Data.CharacterName.ToString() + " " + unitinfoinstance.OrgLvl.ToString());
+							Main.logger.Log(unitinfoinstance.Data.CharacterName.ToString() + " " + unitinfoinstance.OrgLvl.ToString());
 						}
 					}
 				}
