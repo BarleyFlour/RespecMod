@@ -215,10 +215,10 @@ namespace RespecModBarley
             SetFeatures(selection, features.ToArray());
         }
 
-        /*  public static void SetFeatures(this BlueprintFeatureSelection selection, params BlueprintFeature[] features)
+          public static void SetFeatures(this BlueprintFeatureSelection selection, params BlueprintFeature[] features)
           {
               selection.m_AllFeatures = selection.m_Features = features.Select(bp => bp.ToReference<BlueprintFeatureReference>()).ToArray();
-          }*/
+          }
 
         public static void InsertComponent(this BlueprintScriptableObject obj, int index, BlueprintComponent component)
         {
@@ -397,7 +397,10 @@ namespace RespecModBarley
              blueprintUnitFact_set_Description(feature) = description;
          }
 
-         public static bool HasFeatureWithId(this LevelEntry level, String id)
+         public static bool HasFeatureWithId(this 
+        
+        
+        Entry level, String id)
          {
              return level.Features.Any(f => HasFeatureWithId(f, id));
          }

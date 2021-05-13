@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Kingmaker;
+using Kingmaker.AreaLogic.Etudes;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
@@ -9,6 +10,7 @@ using Kingmaker.EntitySystem.Entities;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Class.LevelUp;
 using Kingmaker.UnitLogic.Class.LevelUp.Actions;
+using Kingmaker.UnitLogic.FactLogic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +30,7 @@ namespace RespecModBarley
 				Main.GetUnitsForMemory();
 				foreach (UnitEntityData data in Game.Instance.Player.AllCharacters)
 				{
-					data.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
+					data.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
 				}
 			}
 			catch(Exception e)

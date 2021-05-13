@@ -56,7 +56,11 @@ namespace RespecModBarley
 		}
 		private static void Postfix(Recruit __instance, RecruitData data)
         {
-			Main.GetUnitsForMemory();
+			try
+            {
+                Main.GetUnitsForMemory();
+            }
+            catch (Exception e) { Main.logger.Log(e.ToString()); }
 		}
 	}
 }

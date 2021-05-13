@@ -43,66 +43,8 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 		if(Main.IsEnabled == false){return;}
 		try
 		{
-			/*Main.logger.Log("Library patching initiated");
-			var BPEdit1 = Stuf.Arueshalae.GetComponent<ClassLevelLimit>().LevelLimit = 0;
+			Main.logger.Log("Library patching initiated");
 
-			var BPEdit3 = Stuf.Nenio.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit4 = Stuf.Nenio.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit5 = Stuf.Camelia.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit6 = Stuf.Camelia.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit7 = Stuf.Seelah.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit8 = Stuf.Seelah.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit9 = Stuf.Ember.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit10 = Stuf.Ember.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit11 = Stuf.Lann.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit12 = Stuf.Lann.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit13 = Stuf.Daeran.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit14 = Stuf.Daeran.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit15 = Stuf.Staunton.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit16 = Stuf.Staunton.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit17 = Stuf.Regill.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit18 = Stuf.Regill.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit19 = Stuf.SosielVaenic.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit20 = Stuf.SosielVaenic.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit21 = Stuf.Delamere.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit22 = Stuf.Delamere.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit23 = Stuf.Woljif.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit24 = Stuf.Woljif.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit25 = Stuf.Ciar.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit26 = Stuf.Ciar.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit27 = Stuf.Anevia.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit28 = Stuf.Anevia.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit29 = Stuf.Wenduag.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit30 = Stuf.Wenduag.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit31 = Stuf.LichGalfrey.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit32 = Stuf.LichGalfrey.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit33 = Stuf.EvilArueshalae.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit34 = Stuf.EvilArueshalae.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit35 = Stuf.Galfrey.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit36 = Stuf.Galfrey.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit39 = Stuf.Greybor.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit49 = Stuf.Greybor.GetComponent<AddClassLevels>().Levels = 0;
-
-			var BPEdit50 = Stuf.Trever.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			//var BPEdit51 = Stuf.Trever.GetComponent<AddClassLevels>().Levels = 0;
-			*/
 			var arueshalaeFeatureList = Stuf.ArueshalaeFeatureList.ToReference<BlueprintFeatureReference>();
 			var nenioFeatureList = Stuf.NenioFeatureList.ToReference<BlueprintFeatureReference>();
 			var cameliaFeatureList = Stuf.CameliaFeatureList.ToReference<BlueprintFeatureReference>();
@@ -140,7 +82,7 @@ static class ResourcesLibrary_InitializeLibrary_Patch
                 }
             }*/
 
-			
+
 			var BackgroundArray = new BlueprintFeature[] {Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
 		}
 		catch (Exception ex)
@@ -186,6 +128,20 @@ namespace RespecModBarley
 		public static BlueprintUnit Greybor => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("f72bb7c48bb3e45458f866045448fb58");
 		public static BlueprintUnit Trever => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("0bb1c03b9f7bbcf42bb74478af2c6258");
 		public static BlueprintUnit Player => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("4391e8b9afbb0cf43aeba700c089f56d");*/
+
+	    /*public static BlueprintUnit CompanionBear => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("a207eff7953731b44acf1a3fa4354c2d");
+		public static BlueprintUnit CompanionBoar => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("3eb6ad60c8b9fe34fafa32e1f429ff5b");
+		public static BlueprintUnit CompanionCentipede => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("f9df16ffd0c8cec4d99a0ae6f025a3f8");
+		public static BlueprintUnit CompanionDog => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("918939943bf32ba4a95470ea696c2ba5");
+		public static BlueprintUnit CompanionElk => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("8e43d402ca1a2ad44ac9d2c9fe99f32c");
+		public static BlueprintUnit CompanionHorse => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("fb8300e8298c08d4a9f50dfa1203e98d");
+		public static BlueprintUnit CompanionLeopard => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("54cf380dee486ff42b803174d1b9da1b");
+		public static BlueprintUnit CompanionMammoth => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("e7aa96d15a45238438ae4cfb476f6bb9");
+		public static BlueprintUnit CompanionMonitor => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("57381165c3f4b4740a872e54f62c3a14");
+		public static BlueprintUnit CompanionSmilodon => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("8a6986e17799d7d4b90f0c158b31c5b9");
+		public static BlueprintUnit CompanionTriceratops => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("51744ec49565c0340b11a1a6dac7920b");
+		public static BlueprintUnit CompanionVelociraptor => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("28d1986d57a7081439fbb581aa6f960c");
+		public static BlueprintUnit CompanionWolf => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("eab864d9ca3415644a792792fd81bf87");*/
 		public static BlueprintScriptableObject TieflingHeritageSelect => ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>("c862fd0e4046d2d4d9702dd60474a181");
 		public static BlueprintScriptableObject BackgroundSelect => ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>("f926dabeee7f8a54db8f2010b323383c");
 		public static BlueprintFeatureSelection BackgroundSelectSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("f926dabeee7f8a54db8f2010b323383c");

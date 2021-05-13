@@ -25,7 +25,11 @@ namespace RespecModBarley
 	{
 		private static void Postfix()
 		{
-			Main.GetUnitsForMemory();
+			try
+			{
+				Main.GetUnitsForMemory();
+			}
+			catch(Exception e) { Main.logger.Log(e.ToString()); }
 		}
 	}
 }
