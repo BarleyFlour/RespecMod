@@ -30,7 +30,10 @@ namespace RespecModBarley
 				Main.GetUnitsForMemory();
 				foreach (UnitEntityData data in Game.Instance.Player.AllCharacters)
 				{
-					data.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
+					if (!data.IsPet)
+					{
+						data.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
+					}
 				}
 			}
 			catch(Exception e)

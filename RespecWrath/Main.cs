@@ -136,7 +136,7 @@ namespace RespecModBarley
 				var entityPool2 = Game.Instance.Player.AllCharacters;
 				foreach(UnitEntityData unit in entityPool)
                 {
-					if (unit.Blueprint.name.Contains("Companion"))
+					if (unit.Blueprint.name.Contains("Companion") && unit.IsPet == false)
 					{
 						var unitinfoinstance = ScriptableObject.CreateInstance<UnitInfo>();
 						unitinfoinstance.Data = unit;
@@ -473,12 +473,15 @@ namespace RespecModBarley
             {
 				buff.Detach();
             }
-			foreach (Feature blueprintf in unit.Descriptor.Progression.Features.Enumerable)
+			if (unit.IsStoryCompanion())
 			{
-				if (backgroundsarray.Contains(blueprintf.Blueprint))
+				foreach (Feature blueprintf in unit.Descriptor.Progression.Features.Enumerable)
 				{
-					///Main.logger.Log(blueprintf.ToString());
-					Main.featurestoadd.Add(blueprintf.Blueprint);
+					if (backgroundsarray.Contains(blueprintf.Blueprint))
+					{
+						///Main.logger.Log(blueprintf.ToString());
+						Main.featurestoadd.Add(blueprintf.Blueprint);
+					}
 				}
 			}
 			/*var pets = new List<UnitEntityData> { };
