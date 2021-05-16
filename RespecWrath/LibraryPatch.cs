@@ -7,6 +7,7 @@ using Kingmaker.Blueprints.Classes.Experience;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.JsonSystem;
+using Kingmaker.Cheats;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.UnitLogic;
@@ -70,6 +71,14 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 			noSelectionIfAlreadyHasFeatureBackgroundSelect.AnyFeatureFromSelection = false;
 			noSelectionIfAlreadyHasFeatureBackgroundSelect.m_Features = new BlueprintFeatureReference[] { arueshalaeFeatureList, nenioFeatureList, cameliaFeatureList, seelahFeatureList, emberFeatureList, lannFeatureList, daeranFeatureList, stauntonFeatureList, regillFeatureList, sosielvaenicFeatureList, delamereFeatureList, woljifFeatureList, ciarFeatureList, aneviaFeatureList, wenduagFeatureList, galfreyFeatureList, greyborFeatureList, treverFeatureList };
 			ExtensionMethods.AddComponent(Stuf.BackgroundSelect, noSelectionIfAlreadyHasFeatureBackgroundSelect);
+			var UnitBPs = Utilities.GetScriptableObjects<BlueprintScriptableObject>().OfType<BlueprintUnit>().ToList();
+			var Companions = UnitBPs.FindAll(BPUnits => BPUnits.NameForAcronym.Contains("_Companion") && BPUnits.Components.OfType<ClassLevelLimit>().Any());
+			
+			foreach(BlueprintUnit data in Companions)
+            {
+				Main.GetUnitForMemory(data);
+				Main.logger.Log(data.name);
+            }
 			/*foreach (UnitEntityData data in Game.Instance.Player.PartyCharacters)
             {
 			    if(data.IsStoryCompanion() == true)

@@ -39,7 +39,7 @@ namespace RespecModBarley
 			get;
 			set;
         }
-		public UnitEntityData Data
+		public BlueprintUnit Data
         {
 			get;
 			set;
@@ -104,13 +104,13 @@ namespace RespecModBarley
 			}
 			return 5;
 		}
-		public static void GetUnitForMemory(UnitEntityData data)
+		public static void GetUnitForMemory(BlueprintUnit data)
 		{
 			try
 			{
 					var unitinfoinstance = ScriptableObject.CreateInstance<UnitInfo>();
 					unitinfoinstance.Data = data;
-					unitinfoinstance.OrgLvl = unitinfoinstance.Data.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit;
+					unitinfoinstance.OrgLvl = unitinfoinstance.Data.GetComponent<ClassLevelLimit>().LevelLimit;
 					foreach (UnitInfo unitInfo in UnitMemory)
 					{
 						if (unitInfo.Data.CharacterName == data.CharacterName)
@@ -139,8 +139,8 @@ namespace RespecModBarley
 					if (unit.Blueprint.name.Contains("Companion") && unit.IsPet == false)
 					{
 						var unitinfoinstance = ScriptableObject.CreateInstance<UnitInfo>();
-						unitinfoinstance.Data = unit;
-						unitinfoinstance.OrgLvl = unitinfoinstance.Data.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit;
+						unitinfoinstance.Data = unit.Blueprint;
+						unitinfoinstance.OrgLvl = unitinfoinstance.Data.GetComponent<ClassLevelLimit>().LevelLimit;
 						foreach (UnitInfo unitInfo in UnitMemory)
 						{
 							if (unitInfo.Data.CharacterName == unit.CharacterName)
@@ -160,8 +160,8 @@ namespace RespecModBarley
 					if (unit.Blueprint.name.Contains("Companion"))
 					{
 						var unitinfoinstance = ScriptableObject.CreateInstance<UnitInfo>();
-						unitinfoinstance.Data = unit;
-						unitinfoinstance.OrgLvl = unitinfoinstance.Data.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit;
+						unitinfoinstance.Data = unit.Blueprint;
+						unitinfoinstance.OrgLvl = unitinfoinstance.Data.GetComponent<ClassLevelLimit>().LevelLimit;
 						foreach (UnitInfo unitInfo in UnitMemory)
 						{
 							if (unitInfo.Data.CharacterName == unit.CharacterName)
@@ -383,7 +383,31 @@ namespace RespecModBarley
 		}
 		public static void PreRespec(UnitEntityData entityData)
 		{
-			if (IsEnabled == false) { return; }
+			var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
+			Main.IsRespec = true;
+			Main.GetUnitForMemory(entityData.Blueprint);
+			Main.EntityUnit = entityData;
+			foreach (EntityPart entityPart in entityData.Parts.Parts)
+			{
+				if (Main.partslist.Contains(entityPart.ToString()))
+				{
+					Main.partstoadd.Add(entityPart);
+					///Main.logger.Log(entityPart.ToString());
+				}
+			}
+			if (entityData.IsStoryCompanion())
+			{
+				foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
+				{
+					if (backgroundsarray.Contains(blueprintf.Blueprint))
+					{
+						///Main.logger.Log(blueprintf.ToString());
+						Main.featurestoadd.Add(blueprintf.Blueprint);
+					}
+				}
+			}
+
+			/*if (IsEnabled == false) { return; }
 			IsRespec = true;
 			EntityUnit = entityData;
 			entityView = entityData.View;
@@ -404,29 +428,6 @@ namespace RespecModBarley
 							i.Facts.Remove(fact);
 						}
 					}
-					///foreach (IHiddenUnitFacts refer in entityData.Parts.Get<UnitPartHiddenFacts>().m_HiddenFacts)
-					{
-						/// if(refer.Guid.Contains("cd6cd774fb7cc844b8417193ee3a5ebe") || refer.Guid.Contains("d6bc49651fbaa2944bba6e2e5a1720ff") || refer.Guid.Contains("KitsuneHeritageSelection"))
-						{
-							/*foreach (IHiddenUnitFacts i in entityData.Parts.Get<UnitPartHiddenFacts>().m_HiddenFacts)
-							{
-								foreach (BlueprintUnitFact a in i.Facts)
-								{
-									if (a.AssetGuid.Contains("cd6cd774fb7cc844b8417193ee3a5ebe") || a.AssetGuid.Contains("d6bc49651fbaa2944bba6e2e5a1720ff") || a.AssetGuid.Contains("KitsuneHeritageSelection"))
-									{
-										i.Facts.Remove(a);
-										Main.logger.Log(a.ToString()+" Bro");
-									}
-								}
-
-								///entityData.Parts.Get<UnitPartHiddenFacts>().m_HiddenFacts.Get<IHiddenUnitFacts>(0). .Remove(refer);
-							}*/
-							///entityData.Parts.Get<UnitPartHiddenFacts>().m_HiddenFacts.Get<IHiddenUnitFacts>(0). .Remove(refer);
-
-						}
-					}
-					///entityData.Parts.Get<UnitPartHiddenFacts>().m_HiddenFacts.re
-
 				}
 			}
 			catch(Exception e)
@@ -434,12 +435,6 @@ namespace RespecModBarley
 				Main.logger.Log(e.ToString());
             }
 			///var NenioEtude = ResourcesLibrary.TryGetBlueprint<BlueprintEtude>("f1877e6b308bc9c4a89c028c7b116ccf");
-		/*	if (!Game.Instance.Player.EtudesSystem.EtudeIsCompleted(NenioEtude))
-			{
-				Game.Instance.Player.EtudesSystem.MarkEtudeCompleted(ResourcesLibrary.TryGetBlueprint<BlueprintEtude>("f1877e6b308bc9c4a89c028c7b116ccf"));
-				Game.Instance.Player.EtudesSystem.UpdateEtudes();
-				NenioEtudeBool = true;
-			}*/
 			var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
 			BlueprintUnit defaultPlayerCharacter = Game.Instance.BlueprintRoot.DefaultPlayerCharacter;
 			UnitDescriptor descriptor = entityData.Descriptor;
@@ -483,94 +478,8 @@ namespace RespecModBarley
 						Main.featurestoadd.Add(blueprintf.Blueprint);
 					}
 				}
-			}
-			/*var pets = new List<UnitEntityData> { };
-			if (unit.Pets != null)
-			{
-				foreach(UnitEntityData petdata in unit.Pets)
-                {
-					pets.Add(petdata);
-				}
-			}
-			foreach (UnitEntityData petdata in pets)
-			{
-				unit.Pets.Remove(petdata);
-				petdata.RemoveMaster();
 			}*/
-			/*LevelUpState_ctor_Patch.hasfeat = false;
-				var feature = ScriptableObject.CreateInstance<BlueprintComponent>();
-				feature.name = Main.OriginalBPLvl.ToString();
-				ExtensionMethods.AddComponent(unit.Blueprint, feature);*/
-			///var asd = new List<UnitPartHiddenFacts> { };
-			/*foreach(UnitPart facts in unit.Parts.Parts)
-			{
-				var iss = facts;
-				if (iss.ToString() == "Kingmaker.UnitLogic.Parts.UnitPartHiddenFacts")
-				{
-					unit.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-					unit.Parts.Get<UnitPartHiddenFacts>().RemoveSelf();
-					var asdainnit = ResourcesLibrary.TryGetBlueprint<BlueprintRace>("fd188bb7bb0002e49863aec93bfb9d99");
-					var Trav = Traverse.Create<ClassLevelLimit>().Method("ReplaceRace").SetValue(asdainnit);
-				}
-			}*/
-			/*foreach(UnitPart unit1 in asd)
-            {
-				unit1.RemoveSelf();
-            }*/
-			///Traverse.Create<>().
-			///unit.Parts.Get<UnitPartHiddenFacts>().ReplaceRace.
-			///entityData.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
 			RespecClass.Respecialize(entityData);
-			/*bool asda = true;
-			try
-			{
-				if (unit.CharacterName.Contains("Nenio"))
-				{
-					var kitsuneFeatureSelect = new BlueprintFeatureSelection();
-					var classickitsune = ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("cd6cd774fb7cc844b8417193ee3a5ebe");
-					var keenkitsune = ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("d6bc49651fbaa2944bba6e2e5a1720ff");
-					var kitsuneFeatures = new List<BlueprintFeature> { keenkitsune, classickitsune };
-					var kitsuneFeaturesr = new List<BlueprintFeatureReference> { keenkitsune.ToReference<BlueprintFeatureReference>(), classickitsune.ToReference<BlueprintFeatureReference>() };
-					/*if (asda == true)
-					{
-						kitsuneFeatureSelect.SetFeatures(kitsuneFeatures);
-						asda = false;
-					}*//*
-					kitsuneFeatureSelect.Features.AddItem(classickitsune);
-					kitsuneFeatureSelect.Features.AddItem(keenkitsune);
-					kitsuneFeatureSelect.AllFeatures.AddItem(keenkitsune);
-					kitsuneFeatureSelect.AllFeatures.AddItem(classickitsune);
-					kitsuneFeatureSelect.m_AllFeatures.AddItem(classickitsune.ToReference<BlueprintFeatureReference>());
-					kitsuneFeatureSelect.m_AllFeatures.AddItem(keenkitsune.ToReference<BlueprintFeatureReference>());
-					kitsuneFeatureSelect.m_Features.AddItem(classickitsune.ToReference<BlueprintFeatureReference>());
-					kitsuneFeatureSelect.m_Features.AddItem(keenkitsune.ToReference<BlueprintFeatureReference>());
-					kitsuneFeatureSelect.m_Features = kitsuneFeaturesr.ToArray();
-					kitsuneFeatureSelect.m_AllFeatures = kitsuneFeaturesr.ToArray();
-					kitsuneFeatureSelect.Obligatory = true;
-					kitsuneFeatureSelect.name = "bruv";
-					Traverse.Create(kitsuneFeatureSelect).Field("Name").SetValue("Bro");
-					kitsuneFeatureSelect.Group = FeatureGroup.Racial;
-					kitsuneFeatureSelect.HideInCharacterSheetAndLevelUp = false;
-					kitsuneFeatureSelect.HideInUI = false;
-					kitsuneFeatureSelect.HideNotAvailibleInUI = false;
-					featureSelection = kitsuneFeatureSelect;
-					///__instance.AddSelection(null, unit.Blueprint.Race, kitsuneFeatureSelect, 0);
-				}
-			}
-			catch(Exception e) { Main.logger.Log(e.ToString()); }*/
-			/*unit.Progression.AdvanceMythicExperience(MythicXP);
-			if (unit.Progression.MythicExperience != MythicXP)
-			{
-				unit.Progression.GainMythicExperience(1);
-			}*/
-			///unitProgressionData.GainMythicExperience(MythicXP);
-			///logger.Log(MythicXP.ToString());
-			/*foreach (BlueprintFeature featuretoadd in BPBackgroundList)
-            {
-					///Main.logger.Log(featuretoadd.ToString());
-				unit.Descriptor.AddFact(featuretoadd);
-
-			}*/
 		}
 		public static UnityModManager.ModEntry.ModLogger logger;
 		public static bool IsEnabled;

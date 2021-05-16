@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using HarmonyLib;
 using JetBrains.Annotations;
 using Kingmaker;
 using Kingmaker.Blueprints;
@@ -35,6 +36,7 @@ using Kingmaker.UnitLogic.Abilities;
 using Kingmaker.UnitLogic.Buffs;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Class.LevelUp;
+using Kingmaker.UnitLogic.Class.LevelUp.Actions;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Parts;
@@ -58,6 +60,58 @@ namespace RespecModBarley
 			ReplaceUnitBlueprintForRespec replaceUnitBlueprintForRespec = unit.Blueprint.GetComponent<ReplaceUnitBlueprintForRespec>().Or(null);
 			BlueprintUnit unit2 = ((replaceUnitBlueprintForRespec != null) ? replaceUnitBlueprintForRespec.Blueprint.Or(null) : null) ?? unit.Blueprint;
 			UnitEntityData newUnit = Game.Instance.CreateUnitVacuum(unit2);
+
+
+
+			BlueprintUnit defaultPlayerCharacter = Game.Instance.BlueprintRoot.DefaultPlayerCharacter;
+			UnitDescriptor descriptor = newUnit.Descriptor;
+			var entityData = newUnit;
+			UnitProgressionData unitProgressionData = newUnit.Progression;
+			Main.MythicXP = unitProgressionData.MythicExperience;
+			LevelUpHelper.GetTotalIntelligenceSkillPoints(descriptor, 0);
+			LevelUpHelper.GetTotalSkillPoints(descriptor, 0);
+			Traverse.Create(descriptor.Progression).Field("m_Selections").GetValue<Dictionary<BlueprintFeatureSelection, FeatureSelectionData>>().Clear();
+			entityData.PrepareRespec();
+			entityData.Descriptor.Buffs.RawFacts.Clear();
+			Traverse.Create(descriptor).Field("Stats").SetValue(new CharacterStats(descriptor));
+			descriptor.Stats.HitPoints.BaseValue = defaultPlayerCharacter.MaxHP + 1;
+			descriptor.Stats.Speed.BaseValue = defaultPlayerCharacter.Speed.Value;
+			descriptor.UpdateSizeModifiers();
+			var BPBackgroundList = new List<BlueprintFeature> { };
+			/*foreach (EntityPart entityPart in unit.Parts.Parts)
+			{
+				if (Main.partslist.Contains(entityPart.ToString()))
+				{
+					Main.partstoadd.Add(entityPart);
+					///Main.logger.Log(entityPart.ToString());
+				}
+			}*/
+			Traverse.Create(unit.Parts).Field("Parts").SetValue(Main.partstoadd);
+			if (unit.Parts.Get<UnitPartCompanion>().State == CompanionState.InParty)
+			{
+				unit.Ensure<UnitPartCompanion>().SetState(CompanionState.InParty);
+			}
+			foreach (Buff buff in entityData.Buffs)
+			{
+				buff.Detach();
+			}
+			/*if (unit.IsStoryCompanion())
+			{
+				foreach (Feature blueprintf in unit.Descriptor.Progression.Features.Enumerable)
+				{
+					if (backgroundsarray.Contains(blueprintf.Blueprint))
+					{
+						///Main.logger.Log(blueprintf.ToString());
+						Main.featurestoadd.Add(blueprintf.Blueprint);
+					}
+				}
+			}*/
+
+
+
+
+
+
 			newUnit.Progression.AdvanceExperienceTo(experience, false, false);
 			if (unit.IsMainCharacter || unit.IsCloneOfMainCharacter)
 			{
@@ -109,10 +163,15 @@ namespace RespecModBarley
 			{
 				h.HandleLevelUpStart(newUnit.Descriptor, delegate
 				{
-					RespecOnCommit(unit, newUnit,petsToRemove ,successCallback);
+					RespecOnCommit(unit, newUnit, petsToRemove, successCallback);
 				}, delegate
 				{
 					newUnit.Dispose();
+					Main.IsRespec = false;
+					Main.featureSelection = null;
+					Main.featurestoadd.Clear();
+					Main.IsRespec = false;
+					Main.partstoadd.Clear();
 				}, LevelUpState.CharBuildMode.Respec);
 			});
 		}
@@ -138,20 +197,20 @@ namespace RespecModBarley
 			}
 			RestController.RemoveNegativeEffects(targetUnit);
 			targetUnit.Descriptor.ResurrectAndFullRestore();
-			IGrouping<BlueprintBuff, TimeSpan?>[] array = (from i in targetUnit.Buffs.Enumerable.Where(delegate(Buff i)
+			IGrouping<BlueprintBuff, TimeSpan?>[] array = (from i in targetUnit.Buffs.Enumerable.Where(delegate (Buff i)
 			{
 				MechanicsContext maybeContext = i.MaybeContext;
 				return ((maybeContext != null) ? maybeContext.ParentContext : null) == null && !i.Blueprint.IsClassFeature;
 			})
-			where string.IsNullOrEmpty(i.SourceAreaEffectId)
-			select i).NotNull<Buff>().GroupBy((Buff i) => i.Blueprint, delegate(Buff i)
-			{
-				if (!i.IsPermanent)
-				{
-					return new TimeSpan?(i.TimeLeft);
-				}
-				return null;
-			}).ToArray<IGrouping<BlueprintBuff, TimeSpan?>>();
+														   where string.IsNullOrEmpty(i.SourceAreaEffectId)
+														   select i).NotNull<Buff>().GroupBy((Buff i) => i.Blueprint, delegate (Buff i)
+														   {
+															   if (!i.IsPermanent)
+															   {
+																   return new TimeSpan?(i.TimeLeft);
+															   }
+															   return null;
+														   }).ToArray<IGrouping<BlueprintBuff, TimeSpan?>>();
 			UnitEntityView view = targetUnit.View;
 			targetUnit.DetachView();
 			UnitEntityView unitEntityView = view.Or(null);
@@ -220,7 +279,7 @@ namespace RespecModBarley
 			{
 				while (enumerator3.MoveNext())
 				{
-					enumerator3.Current.CallComponents<IUpdatePet>(delegate(IUpdatePet c)
+					enumerator3.Current.CallComponents<IUpdatePet>(delegate (IUpdatePet c)
 					{
 						c.TryUpdatePet();
 					});
@@ -248,7 +307,7 @@ namespace RespecModBarley
 			{
 				UnitHelper.Channel.Exception(ex2, null, Array.Empty<object>());
 			}
-			EventBus.RaiseEvent<IUnitChangedAfterRespecHandler>(delegate(IUnitChangedAfterRespecHandler h)
+			EventBus.RaiseEvent<IUnitChangedAfterRespecHandler>(delegate (IUnitChangedAfterRespecHandler h)
 			{
 				h.HandleUnitChangedAfterRespec(targetUnit);
 			}, true);
@@ -257,6 +316,7 @@ namespace RespecModBarley
 			{
 				try
 				{
+					targetUnit.Descriptor.Stats.HitPoints.BaseValue = targetUnit.Descriptor.Stats.HitPoints.BaseValue + -1;
 					Main.featurestoadd.Clear();
 					Main.IsRespec = false;
 					targetUnit.Progression.AdvanceMythicExperience(Main.MythicXP);
@@ -267,6 +327,8 @@ namespace RespecModBarley
 							part.AttachToEntity(targetUnit);
 							///part.TurnOn();
 							targetUnit.Parts.m_Parts.Add(part);
+							part.OnPostLoad();
+							part.PostLoad(targetUnit);
 						}
 					}
 					/*foreach (EntityPart part in Main.partstoadd)
@@ -305,23 +367,26 @@ namespace RespecModBarley
 						}
 						Main.NenioEtudeBool = false;
 					}
-					    /*foreach (UnitEntityData data in targetUnit.Pets)
+					/*foreach (UnitEntityData data in targetUnit.Pets)
+					{
+						///Main.PetBool = true;
+						/*data.Progression.Classes.Clear();
+						data.Progression.CharacterLevel = 0;
+						/*data.Progression.Classes.Clear();
+						Main.logger.Log(data.CharacterName.ToString());
+						data.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
+						data.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
+						EventBus.RaiseEvent<ILevelUpInitiateUIHandler>(delegate (ILevelUpInitiateUIHandler h)
 						{
-							///Main.PetBool = true;
-							/*data.Progression.Classes.Clear();
-							data.Progression.CharacterLevel = 0;
-							/*data.Progression.Classes.Clear();
-							Main.logger.Log(data.CharacterName.ToString());
-							data.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-							data.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-							EventBus.RaiseEvent<ILevelUpInitiateUIHandler>(delegate (ILevelUpInitiateUIHandler h)
-							{
-								h.HandleLevelUpStart(data.Descriptor, null, null, LevelUpState.CharBuildMode.CharGen);
-							}, true);*//*
-						}*/
+							h.HandleLevelUpStart(data.Descriptor, null, null, LevelUpState.CharBuildMode.CharGen);
+						}, true);*//*
+					}*/
 				}
 				catch (Exception e) { Main.logger.Log(e.ToString()); }
 			}
+		}
+		private static void RespecOnStop(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, Action successCallback)
+		{
 		}
 	}
 }

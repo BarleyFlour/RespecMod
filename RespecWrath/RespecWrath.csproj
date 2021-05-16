@@ -42,7 +42,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <InstallDir Condition=" '$(InstallDir)' == '' ">B:\Games\Other\Pathfinder Wrath of the Righteous Beta</InstallDir>
+    <InstallDir Condition=" '$(InstallDir)' == '' ">B:\Games\Steam\steamapps\common\Pathfinder Second Adventure Demo</InstallDir>
   </PropertyGroup>
   <Target Name="Publicise" AfterTargets="Clean">
     <ItemGroup>
@@ -53,7 +53,7 @@
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>B:\Games\Other\Pathfinder Wrath of the Righteous Beta\Wrath_Data\Managed\UnityModManager\0Harmony.dll</HintPath>
+      <HintPath>B:\Games\Steam\steamapps\common\Pathfinder Second Adventure Demo\Wrath_Data\Managed\UnityModManager\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp_public, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -114,6 +114,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CharBPortraitSelectorPatch.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="HandleRecruitPatch.cs" />
     <Compile Include="KingmakerRunnerStartPatch.cs" />
