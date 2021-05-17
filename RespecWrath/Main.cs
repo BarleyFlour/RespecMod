@@ -366,16 +366,16 @@ namespace RespecModBarley
 			int[] numArray = new int[6] { 10, 10, 10, 10, 10, 10 };
 			if (OriginalStats == true)
 			{
-				if (unit.IsStoryCompanion())
+				if (unit.IsStoryCompanion() || unit.Blueprint.ToString().Contains("_Companion"))
                 {
 					numArray = new int[6]
                     {
-					 unit.OriginalBlueprint.Strength,
-					 unit.OriginalBlueprint.Dexterity,
-					 unit.OriginalBlueprint.Constitution,
-					 unit.OriginalBlueprint.Intelligence,
-					 unit.OriginalBlueprint.Wisdom,
-					 unit.OriginalBlueprint.Charisma
+					 unit.Blueprint.Strength,
+					 unit.Blueprint.Dexterity,
+					 unit.Blueprint.Constitution,
+					 unit.Blueprint.Intelligence,
+					 unit.Blueprint.Wisdom,
+					 unit.Blueprint.Charisma
                     };
 				}
 			}
@@ -395,7 +395,7 @@ namespace RespecModBarley
 					///Main.logger.Log(entityPart.ToString());
 				}
 			}
-			if (entityData.IsStoryCompanion())
+			if (entityData.IsStoryCompanion() || entityData.Blueprint.ToString().Contains("_Companion"))
 			{
 				foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
 				{
@@ -406,7 +406,7 @@ namespace RespecModBarley
 					}
 				}
 			}
-
+			entityData.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
 			/*if (IsEnabled == false) { return; }
 			IsRespec = true;
 			EntityUnit = entityData;

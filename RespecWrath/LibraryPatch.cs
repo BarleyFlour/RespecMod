@@ -77,7 +77,7 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 			foreach(BlueprintUnit data in Companions)
             {
 				Main.GetUnitForMemory(data);
-				Main.logger.Log(data.name);
+				///Main.logger.Log(data.name);
             }
 			/*foreach (UnitEntityData data in Game.Instance.Player.PartyCharacters)
             {

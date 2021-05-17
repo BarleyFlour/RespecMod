@@ -67,7 +67,7 @@ namespace RespecModBarley
 									__instance.AddSelection(null, unit.Progression.Race, blueprintFeatureSelection, 0);
 								}
 							}*/
-							if(unit.IsStoryCompanion())
+							if(unit.IsStoryCompanion() || unit.Blueprint.ToString().Contains("_Companion"))
 							{
 								foreach (BlueprintFeatureSelection blueprintFeatureSelection in unit.Blueprint.Race.Features.OfType<BlueprintFeatureSelection>())
 								{
@@ -167,7 +167,7 @@ namespace RespecModBarley
 								__instance.CanSelectName = true;
                                 __instance.CanSelectVoice = true;
 							}
-							if (unit.IsStoryCompanion() && unit.IsPet == false)
+							if (unit.IsStoryCompanion() || unit.Blueprint.ToString().Contains("_Companion") && unit.IsPet == false)
 							{
 								Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.LevelUp);
 								Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(true);
