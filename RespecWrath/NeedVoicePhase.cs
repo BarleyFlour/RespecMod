@@ -24,7 +24,7 @@ namespace RespecModBarley
 			{
 				if (Main.IsRespec == true)
 				{
-					if (Main.EntityUnit.IsCustomCompanion() || Main.EntityUnit.IsMainCharacter)
+					if (Main.EntityUnit.IsCustomCompanion() || Main.EntityUnit.IsMainCharacter || Main.EntityUnit.IsStoryCompanion() && Main.FullRespecStoryCompanion)
 					{
 						__result = true;
 						return;

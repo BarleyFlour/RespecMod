@@ -7,6 +7,7 @@ using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Root;
+using Kingmaker.Cheats;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.EntitySystem;
 using Kingmaker.EntitySystem.Entities;
@@ -47,7 +48,8 @@ namespace RespecModBarley
     }
 	public class Main
 	{
-		public static bool NenioEtudeBool;
+		public static bool haspatched = false;
+		public static bool NenioEtudeBool = false;
 		public static BlueprintFeatureSelection featureSelection;
 		public static UnityModManager.ModEntry ModEntry;
 		public static UnitEntityView entityView;
@@ -61,6 +63,10 @@ namespace RespecModBarley
 				harmony.PatchAll();
 				modEntry.OnGUI = OnGUI;
 				IsEnabled = ModEntry.Enabled;
+				if (!Main.haspatched)
+				{
+					Main.PatchLibrary();
+				}
 			}
 			catch (Exception e)
 			{
@@ -71,12 +77,13 @@ namespace RespecModBarley
 		public static UnitEntityData EntityUnit;
 		public static int MythicXP;
 		static bool FreeRespec = false;
+		public static bool FullRespecStoryCompanion = false;
 		public static bool IsRespec = false;
 		public static List<BlueprintFeature> featurestoadd = new List<BlueprintFeature> { };
 		public static List<EntityPart> partstoadd = new List<EntityPart> { };
 		public static List<UnitInfo> UnitMemory = new List<UnitInfo> { };
 		public static UnitGroup unitgroupparty;
-		public static string[] partslist = new String[] { "Kingmaker.UnitLogic.Parts.UnitPartPartyWeatherBuff", "Kingmaker.UnitLogic.Parts.UnitPartCompanion", "Kingmaker.UnitLogic.Parts.UnitPartNonStackBonuses", "Kingmaker.Corruption.UnitPartCorruption", "Kingmaker.UnitLogic.Parts.UnitPartWeariness", "Kingmaker.UnitLogic.Parts.UnitPartInteractions", "Kingmaker.UnitLogic.Parts.UnitPartVendor","Kingmaker.UnitLogic.Parts.UnitPartAbilityModifiers","Kingmaker.UnitLogic.Parts.UnitPartDamageGrace","Kingmaker.UnitLogic.Parts.UnitPartInspectedBuffs","Kingmaker.AreaLogic.SummonPool.SummonPool+PooledPart", "Kingmaker.UnitLogic.Parts.UnitPartHiddenFacts" };
+		public static string[] partslist = new String[] { "Kingmaker.UnitLogic.Parts.UnitPartPartyWeatherBuff", "Kingmaker.UnitLogic.Parts.UnitPartCompanion", "Kingmaker.UnitLogic.Parts.UnitPartWeariness", "Kingmaker.UnitLogic.Parts.UnitPartInteractions", "Kingmaker.UnitLogic.Parts.UnitPartVendor","Kingmaker.UnitLogic.Parts.UnitPartAbilityModifiers","Kingmaker.UnitLogic.Parts.UnitPartDamageGrace","Kingmaker.UnitLogic.Parts.UnitPartInspectedBuffs","Kingmaker.AreaLogic.SummonPool.SummonPool+PooledPart", "Kingmaker.UnitLogic.Parts.UnitPartHiddenFacts" };
 		public static int PointsCount;
 		public static bool OriginalStats;
 
@@ -335,7 +342,9 @@ namespace RespecModBarley
 			GUILayout.Space(10f);
 			GUILayout.BeginHorizontal();
 			FreeRespec = GUILayout.Toggle(FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
+			FullRespecStoryCompanion = GUILayout.Toggle(FullRespecStoryCompanion, "Full Story Companion Respec", GUILayout.ExpandWidth(false));
 			GUILayout.EndHorizontal();
+			GUILayout.Space(10f);
 			if (FreeRespec == true)
 			{
 				respecCost = 0L;
@@ -381,6 +390,38 @@ namespace RespecModBarley
 			}
 			return numArray;
 		}
+		public static void PatchLibrary()
+        {
+			if (Main.IsEnabled == false) { return; }
+			if(Game.HasInstance)
+			{
+				try
+				{
+					Main.logger.Log("Library patching initiated");
+					var noSelectionIfAlreadyHasFeatureBackgroundSelect = new NoSelectionIfAlreadyHasFeature();
+					noSelectionIfAlreadyHasFeatureBackgroundSelect.AnyFeatureFromSelection = false;
+					var FeatureListsT = Utilities.GetScriptableObjects<BlueprintFeature>().ToList().FindAll(list => list.name.Contains("_FeatureList")).ToArray().Select(lis => lis.ToReference<BlueprintFeatureReference>()).ToArray();
+					/*foreach (BlueprintFeatureReference f in FeatureListsT)
+					{
+						Main.logger.Log(f.ToString());
+					}*/
+					noSelectionIfAlreadyHasFeatureBackgroundSelect.m_Features = FeatureListsT;
+					ExtensionMethods.AddComponent(Stuf.BackgroundSelect, noSelectionIfAlreadyHasFeatureBackgroundSelect);
+					var UnitBPs = Utilities.GetScriptableObjects<BlueprintScriptableObject>().OfType<BlueprintUnit>().ToList();
+					var Companions = UnitBPs.FindAll(BPUnits => BPUnits.ToString().Contains("_Companion") && BPUnits.Components.OfType<ClassLevelLimit>().Any());
+					foreach (BlueprintUnit data in Companions)
+					{
+						Main.GetUnitForMemory(data);
+					}
+					Main.haspatched = true;
+				}
+				catch (Exception ex)
+				{
+					Main.logger.Log("Error while patching library");
+					Main.logger.Log(ex.ToString());
+				}
+			}
+		}
 		public static void PreRespec(UnitEntityData entityData)
 		{
 			try
@@ -404,7 +445,7 @@ namespace RespecModBarley
 				{
 					foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
 					{
-						if (backgroundsarray.Contains(blueprintf.Blueprint))
+						if (backgroundsarray.Contains(blueprintf.Blueprint) || blueprintf.SourceRace)
 						{
 							///Main.logger.Log(blueprintf.ToString());
 							Main.featurestoadd.Add(blueprintf.Blueprint);

@@ -4,6 +4,7 @@ using System.Linq;
 using HarmonyLib;
 using JetBrains.Annotations;
 using Kingmaker;
+using Kingmaker.AreaLogic.Etudes;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
@@ -53,6 +54,11 @@ namespace RespecModBarley
 {
 	static class RespecClass
 	{
+		public static List<BlueprintUnitFact> Neniofacts 
+		{
+			get;
+			set;
+		}
 		public static void Respecialize(this UnitEntityData unit, Action successCallback = null)
 		{
 			UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: requested for {0}", unit), Array.Empty<object>());
@@ -62,7 +68,30 @@ namespace RespecModBarley
 			BlueprintUnit unit2 = ((replaceUnitBlueprintForRespec != null) ? replaceUnitBlueprintForRespec.Blueprint.Or(null) : null) ?? unit.Blueprint;
 			UnitEntityData newUnit = Game.Instance.CreateUnitVacuum(unit2);
 
-
+			try
+			{
+				if (unit.CharacterName.Contains("Nenio") && !Game.Instance.Player.EtudesSystem.EtudeIsCompleted(ResourcesLibrary.TryGetBlueprint<BlueprintEtude>("f1877e6b308bc9c4a89c028c7b116ccf")))
+				{
+					///Main.logger.Log("Nene");
+					Main.logger.Log(ResourcesLibrary.TryGetBlueprint<BlueprintEtude>("f1877e6b308bc9c4a89c028c7b116ccf").ToString());
+					Main.NenioEtudeBool = true;
+					///var KitsuneHeritageSelect = ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("ec40cc350b18c8c47a59b782feb91d1f");
+					var KitsuneHeritageClassic = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("cd6cd774fb7cc844b8417193ee3a5ebe");
+					var KitsuneHeritageKeen = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("d6bc49651fbaa2944bba6e2e5a1720ff");
+					var facts = new List<BlueprintUnitFact> { KitsuneHeritageClassic, KitsuneHeritageKeen };
+					foreach (IHiddenUnitFacts i in unit.Parts.Get<UnitPartHiddenFacts>().m_HiddenFacts)
+					{
+						foreach (BlueprintUnitFact fact in facts)
+						{
+							i.Facts.Remove(fact);
+						}
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Main.logger.Log(e.ToString());
+			}
 
 			BlueprintUnit defaultPlayerCharacter = Game.Instance.BlueprintRoot.DefaultPlayerCharacter;
 			UnitDescriptor descriptor = newUnit.Descriptor;
@@ -86,7 +115,7 @@ namespace RespecModBarley
 					///Main.logger.Log(entityPart.ToString());
 				}
 			}*/
-			Traverse.Create(unit.Parts).Field("Parts").SetValue(Main.partstoadd);
+			///Traverse.Create(unit.Parts).Field("Parts").SetValue(Main.partstoadd);
 			if (unit.Parts.Get<UnitPartCompanion>().State == CompanionState.InParty)
 			{
 				unit.Ensure<UnitPartCompanion>().SetState(CompanionState.InParty);
@@ -94,6 +123,9 @@ namespace RespecModBarley
 			foreach (Buff buff in entityData.Buffs)
 			{
 				buff.Detach();
+				buff.Remove();
+				buff.TurnOff();
+				buff.Dispose();
 			}
 			/*if (unit.IsStoryCompanion())
 			{
@@ -177,6 +209,7 @@ namespace RespecModBarley
 		}
 		private static void RespecOnCommit(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, Action successCallback)
 		{
+			
 			Vector3 position = targetUnit.Position;
 			float orientation = targetUnit.Orientation;
 			Transform parent = targetUnit.View.transform.parent;
@@ -325,25 +358,25 @@ namespace RespecModBarley
 						if (!targetUnit.Parts.Parts.Contains(part))
 						{
 							part.AttachToEntity(targetUnit);
-							///part.TurnOn();
+							part.TurnOn();
 							targetUnit.Parts.m_Parts.Add(part);
 							part.OnPostLoad();
 							part.PostLoad(targetUnit);
 						}
 					}
-					/*foreach (EntityPart part in Main.partstoadd)
+					foreach (EntityPart part in Main.partstoadd)
 					{
 						if (!targetUnit.Parts.Parts.Contains(part))
 						{
 							part.AttachToEntity(tempUnit);
 							tempUnit.Parts.m_Parts.Add(part);
 						}
-					}*/
+					}
 					foreach (EntityPart part in Main.partstoadd)
 					{
 						if (!targetUnit.Parts.m_Parts.Contains(part))
 						{
-							///part.AttachToEntity(unit);
+							part.AttachToEntity(targetUnit);
 							targetUnit.Parts.m_Parts.Add(part);
 						}
 					}

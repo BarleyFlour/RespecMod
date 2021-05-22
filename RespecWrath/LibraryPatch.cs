@@ -40,10 +40,39 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 	}*/
 	static void Postfix()
 	{
-		///if (Initialized) return;
-		Initialized = true;
-		if(Main.IsEnabled == false){return;}
-		try
+		if (!Main.haspatched)
+		{
+			try
+			{
+				///if (Initialized) return;
+				Initialized = true;
+				if (Main.IsEnabled == false) { return; }
+				Main.logger.Log("Library patching initiated");
+				var noSelectionIfAlreadyHasFeatureBackgroundSelect = new NoSelectionIfAlreadyHasFeature();
+				noSelectionIfAlreadyHasFeatureBackgroundSelect.AnyFeatureFromSelection = false;
+				var FeatureListsT = Utilities.GetScriptableObjects<BlueprintFeature>().ToList().FindAll(list => list.name.Contains("_FeatureList")).ToArray().Select(lis => lis.ToReference<BlueprintFeatureReference>()).ToArray();
+				/*foreach (BlueprintFeatureReference f in FeatureListsT)
+				{
+					Main.logger.Log(f.ToString());
+				}*/
+				noSelectionIfAlreadyHasFeatureBackgroundSelect.m_Features = FeatureListsT;
+				ExtensionMethods.AddComponent(Stuf.BackgroundSelect, noSelectionIfAlreadyHasFeatureBackgroundSelect);
+				var UnitBPs = Utilities.GetScriptableObjects<BlueprintScriptableObject>().OfType<BlueprintUnit>().ToList();
+				var Companions = UnitBPs.FindAll(BPUnits => BPUnits.ToString().Contains("_Companion") && BPUnits.Components.OfType<ClassLevelLimit>().Any());
+				foreach (BlueprintUnit data in Companions)
+				{
+					Main.GetUnitForMemory(data);
+				}
+				Main.haspatched = true;
+			}
+			catch (Exception ex)
+			{
+				Main.logger.Log("Error while patching library");
+				Main.logger.Log(ex.ToString());
+			}
+		}
+        /// if (Main.haspatched) {return;}
+		/*try
 		{
 			Main.logger.Log("Library patching initiated");
 
@@ -67,7 +96,7 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 			var treverFeatureList = Stuf.TreverFeatureList.ToReference<BlueprintFeatureReference>();
 			var noSelectionIfAlreadyHasFeature = new NoSelectionIfAlreadyHasFeature();
 			noSelectionIfAlreadyHasFeature.m_Features = new BlueprintFeatureReference[] { arueshalaeFeatureList };
-			ExtensionMethods.AddComponent(Stuf.TieflingHeritageSelect, noSelectionIfAlreadyHasFeature);*/
+			ExtensionMethods.AddComponent(Stuf.TieflingHeritageSelect, noSelectionIfAlreadyHasFeature);*//*
 			var noSelectionIfAlreadyHasFeatureBackgroundSelect = new NoSelectionIfAlreadyHasFeature();
 			noSelectionIfAlreadyHasFeatureBackgroundSelect.AnyFeatureFromSelection = false;
 			var FeatureListsT = Utilities.GetScriptableObjects<BlueprintFeature>().ToList().FindAll(list => list.name.Contains("_FeatureList")).ToArray().Select(lis => lis.ToReference<BlueprintFeatureReference>()).ToArray();
@@ -92,7 +121,7 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 
 				///data.AddFacts.AddItem(F);
 				///Main.logger.Log(data.name);
-			}
+			/*}
 			/*foreach (UnitEntityData data in Game.Instance.Player.PartyCharacters)
             {
 			    if(data.IsStoryCompanion() == true)
@@ -107,12 +136,12 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 
 
 			///var BackgroundArray = new BlueprintFeature[] {Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
-		}
+	  /*}
 		catch (Exception ex)
 		{
 			Main.logger.Log("Error while patching library");
 			Main.logger.Log(ex.ToString());
-		}
+		}*/
 	}
 }
 namespace RespecModBarley
