@@ -56,6 +56,7 @@ namespace RespecModBarley
 		public static void Respecialize(this UnitEntityData unit, Action successCallback = null)
 		{
 			UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: requested for {0}", unit), Array.Empty<object>());
+			Main.MythicXP = unit.Progression.MythicExperience;
 			int experience = unit.Descriptor.Progression.Experience;
 			ReplaceUnitBlueprintForRespec replaceUnitBlueprintForRespec = unit.Blueprint.GetComponent<ReplaceUnitBlueprintForRespec>().Or(null);
 			BlueprintUnit unit2 = ((replaceUnitBlueprintForRespec != null) ? replaceUnitBlueprintForRespec.Blueprint.Or(null) : null) ?? unit.Blueprint;
@@ -67,7 +68,6 @@ namespace RespecModBarley
 			UnitDescriptor descriptor = newUnit.Descriptor;
 			var entityData = newUnit;
 			UnitProgressionData unitProgressionData = newUnit.Progression;
-			Main.MythicXP = unitProgressionData.MythicExperience;
 			LevelUpHelper.GetTotalIntelligenceSkillPoints(descriptor, 0);
 			LevelUpHelper.GetTotalSkillPoints(descriptor, 0);
 			Traverse.Create(descriptor.Progression).Field("m_Selections").GetValue<Dictionary<BlueprintFeatureSelection, FeatureSelectionData>>().Clear();

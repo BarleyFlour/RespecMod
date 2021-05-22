@@ -6,6 +6,7 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Experience;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
+using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.JsonSystem;
 using Kingmaker.Cheats;
 using Kingmaker.Designers.Mechanics.Facts;
@@ -46,7 +47,7 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 		{
 			Main.logger.Log("Library patching initiated");
 
-			var arueshalaeFeatureList = Stuf.ArueshalaeFeatureList.ToReference<BlueprintFeatureReference>();
+			/*var arueshalaeFeatureList = Stuf.ArueshalaeFeatureList.ToReference<BlueprintFeatureReference>();
 			var nenioFeatureList = Stuf.NenioFeatureList.ToReference<BlueprintFeatureReference>();
 			var cameliaFeatureList = Stuf.CameliaFeatureList.ToReference<BlueprintFeatureReference>();
 			var seelahFeatureList = Stuf.SeelahFeatureList.ToReference<BlueprintFeatureReference>();
@@ -66,19 +67,32 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 			var treverFeatureList = Stuf.TreverFeatureList.ToReference<BlueprintFeatureReference>();
 			var noSelectionIfAlreadyHasFeature = new NoSelectionIfAlreadyHasFeature();
 			noSelectionIfAlreadyHasFeature.m_Features = new BlueprintFeatureReference[] { arueshalaeFeatureList };
-			ExtensionMethods.AddComponent(Stuf.TieflingHeritageSelect, noSelectionIfAlreadyHasFeature);
+			ExtensionMethods.AddComponent(Stuf.TieflingHeritageSelect, noSelectionIfAlreadyHasFeature);*/
 			var noSelectionIfAlreadyHasFeatureBackgroundSelect = new NoSelectionIfAlreadyHasFeature();
 			noSelectionIfAlreadyHasFeatureBackgroundSelect.AnyFeatureFromSelection = false;
-			noSelectionIfAlreadyHasFeatureBackgroundSelect.m_Features = new BlueprintFeatureReference[] { arueshalaeFeatureList, nenioFeatureList, cameliaFeatureList, seelahFeatureList, emberFeatureList, lannFeatureList, daeranFeatureList, stauntonFeatureList, regillFeatureList, sosielvaenicFeatureList, delamereFeatureList, woljifFeatureList, ciarFeatureList, aneviaFeatureList, wenduagFeatureList, galfreyFeatureList, greyborFeatureList, treverFeatureList };
+			var FeatureListsT = Utilities.GetScriptableObjects<BlueprintFeature>().ToList().FindAll(list => list.name.Contains("_FeatureList")).ToArray().Select(lis => lis.ToReference<BlueprintFeatureReference>()).ToArray();
+			foreach(BlueprintFeatureReference f in FeatureListsT)
+            {
+				Main.logger.Log(f.ToString());
+            }
+			///noSelectionIfAlreadyHasFeatureBackgroundSelect.m_Features = new BlueprintFeatureReference[] { arueshalaeFeatureList, nenioFeatureList, cameliaFeatureList, seelahFeatureList, emberFeatureList, lannFeatureList, daeranFeatureList, stauntonFeatureList, regillFeatureList, sosielvaenicFeatureList, delamereFeatureList, woljifFeatureList, ciarFeatureList, aneviaFeatureList, wenduagFeatureList, galfreyFeatureList, greyborFeatureList, treverFeatureList };
+			noSelectionIfAlreadyHasFeatureBackgroundSelect.m_Features = FeatureListsT;
 			ExtensionMethods.AddComponent(Stuf.BackgroundSelect, noSelectionIfAlreadyHasFeatureBackgroundSelect);
 			var UnitBPs = Utilities.GetScriptableObjects<BlueprintScriptableObject>().OfType<BlueprintUnit>().ToList();
 			var Companions = UnitBPs.FindAll(BPUnits => BPUnits.NameForAcronym.Contains("_Companion") && BPUnits.Components.OfType<ClassLevelLimit>().Any());
-			
 			foreach(BlueprintUnit data in Companions)
             {
 				Main.GetUnitForMemory(data);
+				/*var F = new BlueprintUnitFact();
+				F.name = "IsCompanion";
+				Traverse.Create(F).Field("Name").SetValue("IsCompanion");
+				Traverse.Create(F).Field("NameForAcronym").SetValue("IsCompanion");
+				Traverse.Create(F).Field("NameSafe").SetValue("IsCompanion");
+				Traverse.Create(F).Field("Name").SetValue("IsCompanion");*/
+
+				///data.AddFacts.AddItem(F);
 				///Main.logger.Log(data.name);
-            }
+			}
 			/*foreach (UnitEntityData data in Game.Instance.Player.PartyCharacters)
             {
 			    if(data.IsStoryCompanion() == true)
@@ -92,7 +106,7 @@ static class ResourcesLibrary_InitializeLibrary_Patch
             }*/
 
 
-			var BackgroundArray = new BlueprintFeature[] {Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
+			///var BackgroundArray = new BlueprintFeature[] {Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
 		}
 		catch (Exception ex)
 		{
@@ -224,7 +238,7 @@ namespace RespecModBarley
 		public static BlueprintRace HalfElfRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("b3646842ffbd01643ab4dac7479b20b0");
 		public static BlueprintRace HalfOrcRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("1dc20e195581a804890ddc74218bfd8e");
 
-		public static BlueprintFeature ArueshalaeFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("7993c81bd04ffda4bac123eb7f6752c4");
+		/*public static BlueprintFeature ArueshalaeFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("7993c81bd04ffda4bac123eb7f6752c4");
 		public static BlueprintFeature NenioFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("751afafb3b7017544ac6373901747f60");
 		public static BlueprintFeature CameliaFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("c84c2f0728cc18f46a9e2796fcc08ac4");
 		public static BlueprintFeature SeelahFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("777ae11136378a64883059457966a325");
@@ -241,6 +255,6 @@ namespace RespecModBarley
 		public static BlueprintFeature WenduagFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("e4fb695e280c78f4c87854598ee7e70a");
 		public static BlueprintFeature GalfreyFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("d35df3cb678f6a74b91b143362ec0451");
 		public static BlueprintFeature GreyborFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("0c487d8576cc68046a8b02bf7e94d5c2");
-		public static BlueprintFeature TreverFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("3552b16bcfb64944c8b5825661fa7b90");
+		public static BlueprintFeature TreverFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("3552b16bcfb64944c8b5825661fa7b90");*/
 	}
 }

@@ -262,8 +262,8 @@ namespace RespecModBarley
 			}
 			GUILayout.BeginHorizontal();
 			float value = PointsCount;
-			value = Math.Max(0, Math.Min(50, value));
-			float abilityscoreslider = (float)Math.Round(GUILayout.HorizontalSlider(value, 0f, 50f, GUILayout.Width(100)));
+			value = Math.Max(0, Math.Min(102, value));
+			float abilityscoreslider = (float)Math.Round(GUILayout.HorizontalSlider(value, 0f, 102f, GUILayout.Width(120)));
 			string stringstuff = GUILayout.TextField(abilityscoreslider.ToString(),GUILayout.ExpandWidth(false));
 			int pointsstring = Int32.Parse(stringstuff);
 			value = pointsstring;
@@ -383,30 +383,40 @@ namespace RespecModBarley
 		}
 		public static void PreRespec(UnitEntityData entityData)
 		{
-			var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
-			Main.IsRespec = true;
-			Main.GetUnitForMemory(entityData.Blueprint);
-			Main.EntityUnit = entityData;
-			foreach (EntityPart entityPart in entityData.Parts.Parts)
+			try
 			{
-				if (Main.partslist.Contains(entityPart.ToString()))
+				var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
+				Main.IsRespec = true;
+				if (!entityData.IsCustomCompanion())
 				{
-					Main.partstoadd.Add(entityPart);
-					///Main.logger.Log(entityPart.ToString());
+					Main.GetUnitForMemory(entityData.Blueprint);
 				}
-			}
-			if (entityData.IsStoryCompanion() || entityData.Blueprint.ToString().Contains("_Companion"))
-			{
-				foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
+				Main.EntityUnit = entityData;
+				foreach (EntityPart entityPart in entityData.Parts.Parts)
 				{
-					if (backgroundsarray.Contains(blueprintf.Blueprint))
+					if (Main.partslist.Contains(entityPart.ToString()))
 					{
-						///Main.logger.Log(blueprintf.ToString());
-						Main.featurestoadd.Add(blueprintf.Blueprint);
+						Main.partstoadd.Add(entityPart);
+						///Main.logger.Log(entityPart.ToString());
 					}
 				}
+				if (entityData.IsStoryCompanion() || entityData.Blueprint.ToString().Contains("_Companion"))
+				{
+					foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
+					{
+						if (backgroundsarray.Contains(blueprintf.Blueprint))
+						{
+							///Main.logger.Log(blueprintf.ToString());
+							Main.featurestoadd.Add(blueprintf.Blueprint);
+						}
+					}
+				}
+				if (entityData.Blueprint.GetComponent<ClassLevelLimit>())
+				{
+					entityData.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
+				}
 			}
-			entityData.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
+			catch(Exception e) { Main.logger.Log(e.ToString()); }
 			/*if (IsEnabled == false) { return; }
 			IsRespec = true;
 			EntityUnit = entityData;
