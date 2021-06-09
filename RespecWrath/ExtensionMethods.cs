@@ -476,20 +476,32 @@ namespace RespecModBarley
             var s = Helpers.Create<SpellImmunityToSpellDescriptor>();
             s.Descriptor = spell;
             return s;
+        }*/
+        public static ActionList CreateActionList(params GameAction[] actions)
+        {
+            if (actions == null || actions.Length == 1 && actions[0] == null) actions = Array.Empty<GameAction>();
+            return new ActionList() { Actions = actions };
         }
+        public static T Create<T>(Action<T> init = null) where T : new()
+        {
+            var result = new T();
+            init?.Invoke(result);
+            return result;
+        }
+
 
         public static void addAction(this Kingmaker.UnitLogic.Abilities.Components.AbilityEffectRunAction action, Kingmaker.ElementsSystem.GameAction game_action)
         {
             if (action.Actions != null)
             {
-                action.Actions = Helpers.CreateActionList(action.Actions.Actions);
+                action.Actions = CreateActionList(action.Actions.Actions);
                 action.Actions.Actions = action.Actions.Actions.AddToArray(game_action);
             }
             else
             {
-                action.Actions = Helpers.CreateActionList(game_action);
+                action.Actions = CreateActionList(game_action);
             }
-        }*/
+        }
 
         public static void ReplaceComponent(this BlueprintScriptableObject blueprint, BlueprintComponent oldComponent, BlueprintComponent newComponent)
         {

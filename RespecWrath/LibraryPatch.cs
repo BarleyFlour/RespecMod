@@ -44,26 +44,7 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 		{
 			try
 			{
-				///if (Initialized) return;
-				Initialized = true;
-				if (Main.IsEnabled == false) { return; }
-				Main.logger.Log("Library patching initiated");
-				var noSelectionIfAlreadyHasFeatureBackgroundSelect = new NoSelectionIfAlreadyHasFeature();
-				noSelectionIfAlreadyHasFeatureBackgroundSelect.AnyFeatureFromSelection = false;
-				var FeatureListsT = Utilities.GetScriptableObjects<BlueprintFeature>().ToList().FindAll(list => list.name.Contains("_FeatureList")).ToArray().Select(lis => lis.ToReference<BlueprintFeatureReference>()).ToArray();
-				/*foreach (BlueprintFeatureReference f in FeatureListsT)
-				{
-					Main.logger.Log(f.ToString());
-				}*/
-				noSelectionIfAlreadyHasFeatureBackgroundSelect.m_Features = FeatureListsT;
-				ExtensionMethods.AddComponent(Stuf.BackgroundSelect, noSelectionIfAlreadyHasFeatureBackgroundSelect);
-				var UnitBPs = Utilities.GetScriptableObjects<BlueprintScriptableObject>().OfType<BlueprintUnit>().ToList();
-				var Companions = UnitBPs.FindAll(BPUnits => BPUnits.ToString().Contains("_Companion") && BPUnits.Components.OfType<ClassLevelLimit>().Any());
-				foreach (BlueprintUnit data in Companions)
-				{
-					Main.GetUnitForMemory(data);
-				}
-				Main.haspatched = true;
+				Main.PatchLibrary();
 			}
 			catch (Exception ex)
 			{

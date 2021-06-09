@@ -9,15 +9,24 @@ using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Root;
 using Kingmaker.Cheats;
 using Kingmaker.Designers.Mechanics.Facts;
+using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.EntitySystem.Stats;
+using Kingmaker.Enums;
+using Kingmaker.Enums.Damage;
+using Kingmaker.RuleSystem;
+using Kingmaker.RuleSystem.Rules.Damage;
 using Kingmaker.UI.Common;
 using Kingmaker.UnitLogic;
+using Kingmaker.UnitLogic.Abilities.Blueprints;
+using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Buffs;
 using Kingmaker.UnitLogic.Class.LevelUp.Actions;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Groups;
+using Kingmaker.UnitLogic.Mechanics;
+using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Parts;
 using Kingmaker.Utility;
 using Kingmaker.View;
@@ -375,7 +384,7 @@ namespace RespecModBarley
 			int[] numArray = new int[6] { 10, 10, 10, 10, 10, 10 };
 			if (OriginalStats == true)
 			{
-				if (unit.IsStoryCompanion() || unit.Blueprint.ToString().Contains("_Companion"))
+				if (unit.IsStoryCompanion() && !Main.FullRespecStoryCompanion || unit.Blueprint.ToString().Contains("_Companion") && !Main.FullRespecStoryCompanion)
                 {
 					numArray = new int[6]
                     {
@@ -441,11 +450,11 @@ namespace RespecModBarley
 						///Main.logger.Log(entityPart.ToString());
 					}
 				}
-				if (entityData.IsStoryCompanion() || entityData.Blueprint.ToString().Contains("_Companion"))
+				if (entityData.IsStoryCompanion() && !Main.FullRespecStoryCompanion || entityData.Blueprint.ToString().Contains("_Companion") && !Main.FullRespecStoryCompanion)
 				{
 					foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
 					{
-						if (backgroundsarray.Contains(blueprintf.Blueprint) || blueprintf.SourceRace)
+						if (backgroundsarray.Contains(blueprintf.Blueprint) && !Main.FullRespecStoryCompanion)/// || blueprintf.SourceRace && !Main.FullRespecStoryCompanion)
 						{
 							///Main.logger.Log(blueprintf.ToString());
 							Main.featurestoadd.Add(blueprintf.Blueprint);

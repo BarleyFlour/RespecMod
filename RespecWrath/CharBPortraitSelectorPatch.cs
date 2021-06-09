@@ -1,4 +1,4 @@
-﻿/*using HarmonyLib;
+﻿using HarmonyLib;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.UI.MVVM._VM.CharGen;
@@ -19,7 +19,7 @@ using Kingmaker.Blueprints;
 using Kingmaker.Cheats;
 using Kingmaker.Enums;
 
-namespace RespecModBarley
+/*namespace RespecModBarley
 {
 	internal static class BluePrintThing
 	{
@@ -56,4 +56,5 @@ namespace RespecModBarley
 			catch (Exception e) { Main.logger.Log(e.ToString()); }
 		}
 	}
-}*/
+}
+*/

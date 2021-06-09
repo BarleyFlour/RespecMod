@@ -91,6 +91,11 @@ namespace RespecModBarley
 							}*/
 							if(unit.IsStoryCompanion() && !Main.FullRespecStoryCompanion || unit.Blueprint.ToString().Contains("_Companion") && !Main.FullRespecStoryCompanion)
 							{
+								foreach(BlueprintFeature feat in unit.Blueprint.Race.Features)
+                                {
+									Main.logger.Log(feat.ToString());
+									unit.AddFact(feat);
+								}
 								foreach (BlueprintFeatureSelection blueprintFeatureSelection in unit.Blueprint.Race.Features.OfType<BlueprintFeatureSelection>())
 								{
 									blueprintFeatureSelection.Obligatory = false;
@@ -210,7 +215,7 @@ namespace RespecModBarley
 					Main.logger.Log(ex.ToString());
 				}
 			}
-		}
+		 }
 	}
 }
 
