@@ -349,7 +349,7 @@ namespace RespecModBarley
 				}, true);
 				///patch things
 				if (Main.IsRespec == true)
-			{
+			    {
 				try
 				{
 					targetUnit.Descriptor.Stats.HitPoints.BaseValue = targetUnit.Descriptor.Stats.HitPoints.BaseValue + -1;

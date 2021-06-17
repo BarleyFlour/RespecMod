@@ -205,91 +205,92 @@ namespace RespecModBarley
 		}
 		private static void OnGUI(UnityModManager.ModEntry modEntry)
 		{
-			Main.GetUnitsForMemory();
-			if(IsEnabled == false){return;}
-			GUILayout.Space(5f);
-			GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
-			List<UnitEntityData> list = (from x in UIUtility.GetGroup(true, false)
-										 where !x.IsInCombat && !x.Descriptor.State.IsFinallyDead
-										 select x).ToList<UnitEntityData>();
+			try
+			{
+				Main.GetUnitsForMemory();
+				if (IsEnabled == false) { return; }
+				GUILayout.Space(5f);
+				GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
+				List<UnitEntityData> list = (from x in UIUtility.GetGroup(true, false)
+											 where !x.IsInCombat && !x.Descriptor.State.IsFinallyDead
+											 select x).ToList<UnitEntityData>();
 
-			bool flag2 = list.Any((UnitEntityData x) => x.Descriptor.Progression.CharacterLevel == 0);
-			if (flag2)
-			{
-				list = (from x in list
-						where x.Descriptor.Progression.CharacterLevel == 0
-						select x).ToList<UnitEntityData>();
-				Main.selectedCharacter = 0;
-			}
-			else if (Main.selectedCharacter >= list.Count)
-			{
-				Main.selectedCharacter = 0;
-			}
-			int num = 0;
-			UnitEntityData selected = null;
-			foreach (UnitEntityData unitEntityData in list)
-			{
-				if(unitEntityData.IsMainCharacter == true)
-                {
-				///	unitgroupparty = unitEntityData.m_Group;
-				}
-				///if (!unitEntityData.IsPet && unitEntityData.IsPlayerFaction && (!flag2 || unitEntityData.Descriptor.Progression.CharacterLevel <= 0))
-				if (!unitEntityData.IsPet && unitEntityData.IsPlayerFaction && (!flag2 || unitEntityData.Descriptor.Progression.CharacterLevel <= 0))
+				bool flag2 = list.Any((UnitEntityData x) => x.Descriptor.Progression.CharacterLevel == 0 && !x.IsPet);
+				if (flag2)
 				{
-					if (GUILayout.Toggle(Main.selectedCharacter == num, " " + unitEntityData.CharacterName, new GUILayoutOption[]
+					list = (from x in list
+							where x.Descriptor.Progression.CharacterLevel == 0
+							select x).ToList<UnitEntityData>();
+					Main.selectedCharacter = 0;
+				}
+				else if (Main.selectedCharacter >= list.Count)
+				{
+					Main.selectedCharacter = 0;
+				}
+				int num = 0;
+				UnitEntityData selected = null;
+				foreach (UnitEntityData unitEntityData in list)
+				{
+					Main.logger.Log(unitEntityData.CharacterName);
+					if (unitEntityData.IsMainCharacter == true)
 					{
-								GUILayout.ExpandWidth(false)
-					}))
-					{
-						Main.selectedCharacter = num;
-						selected = unitEntityData;
+						///	unitgroupparty = unitEntityData.m_Group;
 					}
-					num++;
+					///if (!unitEntityData.IsPet && unitEntityData.IsPlayerFaction && (!flag2 || unitEntityData.Descriptor.Progression.CharacterLevel <= 0))
+					if (!unitEntityData.IsPet && unitEntityData.IsPlayerFaction && (!flag2 || unitEntityData.Descriptor.Progression.CharacterLevel <= 0))
+					{
+						if (GUILayout.Toggle(Main.selectedCharacter == num, " " + unitEntityData.CharacterName, new GUILayoutOption[]
+						{
+								GUILayout.ExpandWidth(false)
+						}))
+						{
+							Main.selectedCharacter = num;
+							selected = unitEntityData;
+						}
+						num++;
+					}
 				}
-			}
-			GUILayout.EndHorizontal();
-			GUILayout.BeginHorizontal();
-			GUILayout.EndHorizontal();
-			int i = Main.tabId;
-			if (i == 0)
-			{
-				/*GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
-				GUILayout.Label("Stats: ", new GUILayoutOption[]
+				GUILayout.EndHorizontal();
+				int i = Main.tabId;
+				if (i == 0)
 				{
-							GUILayout.ExpandWidth(false)
-				});
-				for (int j = 0; j < Main.extraPointLabels.Length; j++)
-				{
-					bool flag3 = Main.extraPoints == (Main.ExtraPointsType)j;
-					bool flag4 = GUILayout.Toggle(flag3, Main.extraPointLabels[j], new GUILayoutOption[]
+					/*GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
+					GUILayout.Label("Stats: ", new GUILayoutOption[]
 					{
 								GUILayout.ExpandWidth(false)
 					});
-					if (flag4 != flag3 && flag4)
+					for (int j = 0; j < Main.extraPointLabels.Length; j++)
 					{
-						Main.extraPoints = (Main.ExtraPointsType)j;
+						bool flag3 = Main.extraPoints == (Main.ExtraPointsType)j;
+						bool flag4 = GUILayout.Toggle(flag3, Main.extraPointLabels[j], new GUILayoutOption[]
+						{
+									GUILayout.ExpandWidth(false)
+						});
+						if (flag4 != flag3 && flag4)
+						{
+							Main.extraPoints = (Main.ExtraPointsType)j;
+						}
 					}
+					GUILayout.EndHorizontal();*/
+					GUILayout.Space(10f);
+					GUILayout.BeginHorizontal();
+					OriginalStats = GUILayout.Toggle(OriginalStats, "Original Stats", GUILayout.ExpandWidth(false));
+					GUILayout.EndHorizontal();
 				}
-				GUILayout.EndHorizontal();*/
-				GUILayout.Space(10f);
 				GUILayout.BeginHorizontal();
-				OriginalStats = GUILayout.Toggle(OriginalStats, "Original Stats", GUILayout.ExpandWidth(false));
+				float value = PointsCount;
+				value = Math.Max(0, Math.Min(102, value));
+				float abilityscoreslider = (float)Math.Round(GUILayout.HorizontalSlider(value, 0f, 102f, GUILayout.Width(120)));
+				string stringstuff = GUILayout.TextField(abilityscoreslider.ToString(), GUILayout.ExpandWidth(false));
+				int pointsstring = Int32.Parse(stringstuff);
+				value = pointsstring;
+				PointsCount = (int)value;
 				GUILayout.EndHorizontal();
-			}
-			GUILayout.BeginHorizontal();
-			float value = PointsCount;
-			value = Math.Max(0, Math.Min(102, value));
-			float abilityscoreslider = (float)Math.Round(GUILayout.HorizontalSlider(value, 0f, 102f, GUILayout.Width(120)));
-			string stringstuff = GUILayout.TextField(abilityscoreslider.ToString(),GUILayout.ExpandWidth(false));
-			int pointsstring = Int32.Parse(stringstuff);
-			value = pointsstring;
-			PointsCount = (int)value;
-			GUILayout.EndHorizontal();
-			GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
+				GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
 
-			///Main.logger.Log(abilityscorepoints.ToString());
-			int[] initStatsByUnit = Main.GetInitStatsByUnit(selected);
-			int num2 = 0;
+				///Main.logger.Log(abilityscorepoints.ToString());
+				int[] initStatsByUnit = Main.GetInitStatsByUnit(selected);
+				int num2 = 0;
 				foreach (StatType stat in StatTypeHelper.Attributes)
 				{
 					GUILayout.Label(string.Format("  {0} {1}", LocalizedTexts.Instance.Stats.GetText(stat), initStatsByUnit[num2++]), new GUILayoutOption[]
@@ -297,71 +298,73 @@ namespace RespecModBarley
 								GUILayout.ExpandWidth(false)
 					});
 				}
-			/*if (Main.extraPoints != Main.ExtraPointsType.Original)
-			{
-				GUILayout.Label("  Extra points " + ((Main.extraPoints == Main.ExtraPointsType.P25) ? "+25" : "Original"), new GUILayoutOption[]
+				/*if (Main.extraPoints != Main.ExtraPointsType.Original)
 				{
-								GUILayout.ExpandWidth(false)
-				});
-			}*/
-			GUILayout.Label(("  Extra points +" + (PointsCount.ToString())), new GUILayoutOption[] { GUILayout.ExpandWidth(false) });
-			GUILayout.EndHorizontal();
-			GUILayout.Space(10f);
-			GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
-			if (selected.Descriptor.Progression.CharacterLevel != 0 && GUILayout.Button(string.Format("Submit ({0}g)", Main.respecCost), UnityModManager.UI.button, new GUILayoutOption[]
-			{
+					GUILayout.Label("  Extra points " + ((Main.extraPoints == Main.ExtraPointsType.P25) ? "+25" : "Original"), new GUILayoutOption[]
+					{
+									GUILayout.ExpandWidth(false)
+					});
+				}*/
+				GUILayout.Label(("  Extra points +" + (PointsCount.ToString())), new GUILayoutOption[] { GUILayout.ExpandWidth(false) });
+				GUILayout.EndHorizontal();
+				GUILayout.Space(10f);
+				GUILayout.BeginHorizontal();
+				if (selected.Descriptor.Progression.CharacterLevel != 0 && GUILayout.Button(string.Format("Submit ({0}g)", Main.respecCost), UnityModManager.UI.button, new GUILayoutOption[]
+				{
 							GUILayout.ExpandWidth(false)
-			}))
-			{
-				bool flag5 = false;
-				if (!selected.IsCustomCompanion())
+				}))
 				{
-					if (Game.Instance.Player.SpendMoney(Main.respecCost))
+					bool flag5 = false;
+					if (!selected.IsCustomCompanion())
+					{
+						if (Game.Instance.Player.SpendMoney(Main.respecCost))
+						{
+							flag5 = true;
+							modEntry.Logger.Log(string.Format("Money changed -{0}", Main.respecCost));
+						}
+						else
+						{
+							modEntry.Logger.Log(string.Format("Not enough money {0}", Main.respecCost));
+						}
+					}
+					else if (Game.Instance.Player.Money >= Main.respecCost)
 					{
 						flag5 = true;
-						modEntry.Logger.Log(string.Format("Money changed -{0}", Main.respecCost));
 					}
 					else
 					{
 						modEntry.Logger.Log(string.Format("Not enough money {0}", Main.respecCost));
 					}
-				}
-				else if (Game.Instance.Player.Money >= Main.respecCost)
-				{
-					flag5 = true;
-				}
-				else
-				{
-					modEntry.Logger.Log(string.Format("Not enough money {0}", Main.respecCost));
-				}
-				if (flag5)
-				{
-					try
+					if (flag5)
 					{
-						///Main.featurestoadd.Clear();
-						Main.PreRespec(selected);
-					}
-					catch (Exception ex)
-					{
-						modEntry.Logger.Error(ex.ToString());
+						try
+						{
+							///Main.featurestoadd.Clear();
+							Main.PreRespec(selected);
+						}
+						catch (Exception ex)
+						{
+							modEntry.Logger.Error(ex.ToString());
+						}
 					}
 				}
+				GUILayout.EndHorizontal();
+				GUILayout.Space(10f);
+				GUILayout.BeginHorizontal();
+				FreeRespec = GUILayout.Toggle(FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
+				FullRespecStoryCompanion = GUILayout.Toggle(FullRespecStoryCompanion, "Full Story Companion Respec", GUILayout.ExpandWidth(false));
+				GUILayout.EndHorizontal();
+				GUILayout.Space(10f);
+				if (FreeRespec == true)
+				{
+					respecCost = 0L;
+				}
+				if (FreeRespec == false)
+				{
+					respecCost = 1000L;
+				}
 			}
-			GUILayout.EndHorizontal();
-			GUILayout.Space(10f);
-			GUILayout.BeginHorizontal();
-			FreeRespec = GUILayout.Toggle(FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
-			FullRespecStoryCompanion = GUILayout.Toggle(FullRespecStoryCompanion, "Full Story Companion Respec", GUILayout.ExpandWidth(false));
-			GUILayout.EndHorizontal();
-			GUILayout.Space(10f);
-			if (FreeRespec == true)
-			{
-				respecCost = 0L;
-			}
-			if (FreeRespec == false)
-			{
-				respecCost = 1000L;
-			}
+			catch(Exception e) { Main.logger.Log(e.Message + "   " + e.StackTrace); }
 		}
 		/*internal sealed class PrivateImplementationDetails
 		{
@@ -454,9 +457,9 @@ namespace RespecModBarley
 				{
 					foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
 					{
-						if (backgroundsarray.Contains(blueprintf.Blueprint) && !Main.FullRespecStoryCompanion)/// || blueprintf.SourceRace && !Main.FullRespecStoryCompanion)
+						if (backgroundsarray.Contains(blueprintf.Blueprint) && !Main.FullRespecStoryCompanion || blueprintf.Hidden && !Main.FullRespecStoryCompanion)
 						{
-							///Main.logger.Log(blueprintf.ToString());
+							Main.logger.Log(blueprintf.ToString());
 							Main.featurestoadd.Add(blueprintf.Blueprint);
 						}
 					}
