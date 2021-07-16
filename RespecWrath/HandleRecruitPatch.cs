@@ -30,7 +30,8 @@ namespace RespecModBarley
 					///data.CompanionBlueprint.GetComponent<ClassLevelLimit>().LevelLimit = Main.GetUnitInfo(data.RecruitedCompanion);
 					///__instance.SwitchToCompanion(data);
 					///Main.logger.Log(dataR.CompanionBlueprint.name.ToString());
-					dataR.CompanionBlueprint.GetComponent<ClassLevelLimit>().LevelLimit = Main.GetUnitInfoBP(data.CompanionBlueprint);
+					dataR.CompanionBlueprint.GetComponent<ClassLevelLimit>().LevelLimit = Main.GetUnitInfoBP(data.CompanionBlueprint)[0];
+					dataR.CompanionBlueprint.GetComponent<MythicLevelLimit>().LevelLimit = Main.GetUnitInfoBP(data.CompanionBlueprint)[1];
 					Main.GetUnitsForMemory();
 				}
 			}

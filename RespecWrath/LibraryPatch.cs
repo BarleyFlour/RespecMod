@@ -7,6 +7,7 @@ using Kingmaker.Blueprints.Classes.Experience;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
+using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.JsonSystem;
 using Kingmaker.Cheats;
 using Kingmaker.Designers.Mechanics.Facts;
@@ -16,6 +17,7 @@ using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.Utility;
+using Kingmaker.Visual.CharacterSystem;
 using RespecModBarley;
 using System;
 using System.Collections.Generic;
@@ -44,10 +46,14 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 	}*/
 	static void Postfix()
 	{
+		//ResourcesLibrary.TryGetBlueprint<BlueprintItemEquipmentHead>("9b422adf4bdb9994a9690ac20ca74370").m_EquipmentEntity = ResourcesLibrary.TryGetBlueprint<KingmakerEquipmentEntity>("fea832fe875ad1748a97cf50166ce394").ToReference<KingmakerEquipmentEntityReference>();
+		//Traverse.Create(ResourcesLibrary.TryGetBlueprint<BlueprintItemEquipmentHead>("9b422adf4bdb9994a9690ac20ca74370")).Field("EquipmentEntity").SetValue(ResourcesLibrary.TryGetBlueprint<KingmakerEquipmentEntity>("fea832fe875ad1748a97cf50166ce394"));
 		if (!Main.haspatched)
 		{
 			try
 			{
+				///var asd = new AddAbilityScorePoint();
+				///ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("16612cc8d88ef83458d05fd063709af7").AddComponent(asd);
 				Main.PatchLibrary();
 			}
 			catch (Exception ex)
@@ -139,10 +145,10 @@ namespace RespecModBarley
 			if (init != null) init(result);
 			return result;
 		}
-		public static T Get<T>(this LibraryScriptableObject library, String assetId) where T : BlueprintScriptableObject
+		/*public static T Get<T>(this LibraryScriptableObject library, String assetId) where T : BlueprintScriptableObject
 		{
 			return (T)ResourcesLibrary.TryGetBlueprint(assetId);
-		}
+		}*/
 		/*public static BlueprintUnit Arueshalae => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("a352873d37ec6c54c9fa8f6da3a6b3e1");
 		public static BlueprintUnit Nenio => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("1b893f7cf2b150e4f8bc2b3c389ba71d");
 		public static BlueprintUnit Camelia => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("397b090721c41044ea3220445300e1b8");

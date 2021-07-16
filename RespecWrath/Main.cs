@@ -54,6 +54,11 @@ namespace RespecModBarley
 			get;
 			set;
 		}
+		public int orgMythLvl
+        {
+			get;
+			set;
+        }
     }
 	public class Main
 	{
@@ -83,6 +88,7 @@ namespace RespecModBarley
 			}
 			return true;
 		}
+		public static SimpleBlueprint[] blueprints;
 		public static UnitEntityData EntityUnit;
 		public static int MythicXP;
 		static bool FreeRespec = false;
@@ -96,29 +102,25 @@ namespace RespecModBarley
 		public static int PointsCount;
 		public static bool OriginalStats;
 
-		public static int GetUnitInfo(UnitEntityData unit)
+		public static int[] GetUnitInfo(UnitEntityData unit)
         {
-		   foreach(UnitInfo info in UnitMemory)
-		   {
-			    if(unit.CharacterName == info.Data.CharacterName)
-				{
-					///Main.logger.Log("MatchNameGetUnitInfo");
-                    return info.OrgLvl;
-				}
-		   }
-		   return 5;
-        }
-		public static int GetUnitInfoBP(BlueprintUnit unit)
+			var list = new List<int> { unit.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit, unit.Blueprint.GetComponent<MythicLevelLimit>().LevelLimit };
+			return list.ToArray();
+		}
+		public static int[] GetUnitInfoBP(BlueprintUnit unit)
 		{
-			foreach (UnitInfo info in UnitMemory)
+			var list = new List<int> { unit.GetComponent<ClassLevelLimit>().LevelLimit, unit.GetComponent<MythicLevelLimit>().LevelLimit };
+			return list.ToArray();
+			/*foreach (UnitInfo info in UnitMemory)
 			{
 				if (unit.CharacterName == info.Data.CharacterName)
 				{
 					///Main.logger.Log("MatchNameGetUnitInfo");
+					int info = new int[];
 					return info.OrgLvl;
 				}
 			}
-			return 5;
+			return 5;*/
 		}
 		public static void GetUnitForMemory(BlueprintUnit data)
 		{
@@ -127,13 +129,12 @@ namespace RespecModBarley
 					var unitinfoinstance = ScriptableObject.CreateInstance<UnitInfo>();
 					unitinfoinstance.Data = data;
 					unitinfoinstance.OrgLvl = unitinfoinstance.Data.GetComponent<ClassLevelLimit>().LevelLimit;
-					foreach (UnitInfo unitInfo in UnitMemory)
-					{
-						if (unitInfo.Data.CharacterName == data.CharacterName)
-						{
-							return;
-						}
-					}
+				    var myth = unitinfoinstance.Data.GetComponent<MythicLevelLimit>();
+					if (myth != null )
+				    {
+					unitinfoinstance.orgMythLvl = myth.LevelLimit;
+				    }
+				    if (UnitMemory.Any(a => a.Data.CharacterName == data.CharacterName)) return;
 					{
 						UnitMemory.Add(unitinfoinstance);
 						///Main.logger.Log(unitinfoinstance.Data.CharacterName.ToString() +" "+ unitinfoinstance.OrgLvl.ToString());
@@ -157,14 +158,12 @@ namespace RespecModBarley
 						var unitinfoinstance = ScriptableObject.CreateInstance<UnitInfo>();
 						unitinfoinstance.Data = unit.Blueprint;
 						unitinfoinstance.OrgLvl = unitinfoinstance.Data.GetComponent<ClassLevelLimit>().LevelLimit;
-						foreach (UnitInfo unitInfo in UnitMemory)
+						var myth = unitinfoinstance.Data.GetComponent<MythicLevelLimit>();
+						if (myth != null)
 						{
-							if (unitInfo.Data.CharacterName == unit.CharacterName)
-							{
-								///Main.logger.Log("alreadyexist");
-								return;
-							}
-						}
+							unitinfoinstance.orgMythLvl = myth.LevelLimit;
+					    }
+						if (UnitMemory.Any(a => a.Data.CharacterName == unit.CharacterName)) return;
 						{
 							UnitMemory.Add(unitinfoinstance);
 							///Main.logger.Log(unitinfoinstance.Data.CharacterName.ToString() + " " + unitinfoinstance.OrgLvl.ToString());
@@ -178,17 +177,15 @@ namespace RespecModBarley
 						var unitinfoinstance = ScriptableObject.CreateInstance<UnitInfo>();
 						unitinfoinstance.Data = unit.Blueprint;
 						unitinfoinstance.OrgLvl = unitinfoinstance.Data.GetComponent<ClassLevelLimit>().LevelLimit;
-						foreach (UnitInfo unitInfo in UnitMemory)
+						var myth = unitinfoinstance.Data.GetComponent<MythicLevelLimit>();
+						if (myth != null)
 						{
-							if (unitInfo.Data.CharacterName == unit.CharacterName)
-							{
-								///Main.logger.Log("alreadyexist");
-								return;
-							}
+						unitinfoinstance.orgMythLvl = myth.LevelLimit;
 						}
+						if (UnitMemory.Any(a => a.Data.CharacterName == unit.CharacterName)) return;
 						{
 							UnitMemory.Add(unitinfoinstance);
-							Main.logger.Log(unitinfoinstance.Data.CharacterName.ToString() + " " + unitinfoinstance.OrgLvl.ToString());
+							///Main.logger.Log(unitinfoinstance.Data.CharacterName.ToString() + " " + unitinfoinstance.OrgLvl.ToString());
 						}
 					}
 				}
@@ -237,7 +234,7 @@ namespace RespecModBarley
 						///	unitgroupparty = unitEntityData.m_Group;
 					}
 					///if (!unitEntityData.IsPet && unitEntityData.IsPlayerFaction && (!flag2 || unitEntityData.Descriptor.Progression.CharacterLevel <= 0))
-					if (!unitEntityData.IsPet && unitEntityData.IsPlayerFaction && (!flag2 || unitEntityData.Descriptor.Progression.CharacterLevel <= 0))
+					if (unitEntityData.IsPlayerFaction && (!flag2 || unitEntityData.Descriptor.Progression.CharacterLevel <= 0))
 					{
 						if (GUILayout.Toggle(Main.selectedCharacter == num, " " + unitEntityData.CharacterName, new GUILayoutOption[]
 						{
@@ -410,9 +407,13 @@ namespace RespecModBarley
 				try
 				{
 					Main.logger.Log("Library patching initiated");
+					var tempbp = ExtensionMethods.GetBlueprints().OfType<BlueprintFeature>();
+					var abilitybps = tempbp.OfType<BlueprintAbility>().ToList().FindAll(list => list.name.Contains("_FeatureList"));
+					var unitbps = tempbp.OfType<BlueprintUnit>().ToList().FindAll(BPUnits => BPUnits.ToString().Contains("_Companion") && BPUnits.Components.OfType<ClassLevelLimit>().Any());
+					Main.blueprints = abilitybps.Concat<SimpleBlueprint>(unitbps).ToArray();
 					var noSelectionIfAlreadyHasFeatureBackgroundSelect = new NoSelectionIfAlreadyHasFeature();
 					noSelectionIfAlreadyHasFeatureBackgroundSelect.AnyFeatureFromSelection = false;
-					var FeatureListsT = Utilities.GetScriptableObjects<BlueprintFeature>().ToList().FindAll(list => list.name.Contains("_FeatureList")).ToArray().Select(lis => lis.ToReference<BlueprintFeatureReference>()).ToArray();
+					var FeatureListsT = abilitybps.ToArray().Select(lis => lis.ToReference<BlueprintFeatureReference>()).ToArray();
 					/*foreach (BlueprintFeatureReference f in FeatureListsT)
 					{
 						Main.logger.Log(f.ToString());
@@ -420,8 +421,7 @@ namespace RespecModBarley
 					noSelectionIfAlreadyHasFeatureBackgroundSelect.m_Features = FeatureListsT;
 					ExtensionMethods.AddComponent(Stuf.BackgroundSelect, noSelectionIfAlreadyHasFeatureBackgroundSelect);
 					var UnitBPs = Utilities.GetScriptableObjects<BlueprintScriptableObject>().OfType<BlueprintUnit>().ToList();
-					var Companions = UnitBPs.FindAll(BPUnits => BPUnits.ToString().Contains("_Companion") && BPUnits.Components.OfType<ClassLevelLimit>().Any());
-					foreach (BlueprintUnit data in Companions)
+					foreach (BlueprintUnit data in unitbps)
 					{
 						Main.GetUnitForMemory(data);
 					}
@@ -467,6 +467,7 @@ namespace RespecModBarley
 				if (entityData.Blueprint.GetComponent<ClassLevelLimit>())
 				{
 					entityData.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
+					entityData.Blueprint.GetComponent<MythicLevelLimit>().LevelLimit = 0;
 				}
 			}
 			catch(Exception e) { Main.logger.Log(e.ToString()); }

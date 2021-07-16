@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using Kingmaker.Blueprints.JsonSystem;
+using HarmonyLib;
 
 namespace RespecModBarley
 {
@@ -299,7 +301,7 @@ namespace RespecModBarley
               library.AddAsset(blueprint, Helpers.MergeIds(guid1, guid2));
           }*/
 
-        public static T Get<T>(this LibraryScriptableObject library, String assetId) where T : BlueprintScriptableObject
+       /* public static T Get<T>(this LibraryScriptableObject library, String assetId) where T : BlueprintScriptableObject
         {
             return (T)library.BlueprintsByAssetId[assetId];
         }
@@ -312,7 +314,7 @@ namespace RespecModBarley
                 return (T)result;
             }
             return null;
-        }
+        }*/
 
         /*  public static T CopyAndAdd<T>(this LibraryScriptableObject library, String assetId, String newName, String newAssetId, String newAssetId2 = null) where T : BlueprintScriptableObject
           {
@@ -539,6 +541,15 @@ namespace RespecModBarley
             {
                 blueprint.AddComponent(newComponent);
             }
+        }
+        public static SimpleBlueprint[] GetBlueprints()
+        {
+
+            var blueprints = (Dictionary<BlueprintGuid, BlueprintsCache.BlueprintCacheEntry>)AccessTools
+            .Field(typeof(BlueprintsCache), "m_LoadedBlueprints")
+            .GetValue(ResourcesLibrary.BlueprintsCache);
+            var keys = blueprints.Keys.ToArray();
+            return keys.Select(k => ResourcesLibrary.TryGetBlueprint(k)).ToArray();
         }
     }
 }

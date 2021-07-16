@@ -26,10 +26,9 @@ namespace RespecModBarley
 	[HarmonyPriority(9999)]
 	internal static class LevelUpState_ctor_Patch
 	{
-	/*	private static void Prefix(LevelUpState __instance, UnitEntityData unit, LevelUpState.CharBuildMode mode, bool isPregen)
-		{
-		}*/
-
+		/*	private static void Prefix(LevelUpState __instance, UnitEntityData unit, LevelUpState.CharBuildMode mode, bool isPregen)
+			{
+			}*/
 			// Token: 0x0600000C RID: 12 RVA: 0x000041B4 File Offset: 0x000023B4
 			private static void Postfix(LevelUpState __instance, UnitEntityData unit, LevelUpState.CharBuildMode mode)
 		    {
