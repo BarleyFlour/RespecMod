@@ -2,7 +2,7 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="packages\Aze.Publicise.MSBuild.Task.1.0.0\build\Aze.Publicise.MSBuild.Task.props" Condition="Exists('packages\Aze.Publicise.MSBuild.Task.1.0.0\build\Aze.Publicise.MSBuild.Task.props')" />
   <PropertyGroup>
-    <InstallDir Condition=" '$(InstallDir)' == '' ">B:\Games\Steam\steamapps\common\Pathfinder Second Adventure Demo</InstallDir>
+    <InstallDir Condition=" '$(InstallDir)' == '' ">E:\Games\Steam\steamapps\common\Pathfinder Second Adventure</InstallDir>
   </PropertyGroup>
   <Target Name="Publicise" AfterTargets="Clean">
     <ItemGroup>
@@ -53,10 +53,10 @@
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>B:\Games\Steam\steamapps\common\Pathfinder Second Adventure Demo\Wrath_Data\Managed\UnityModManager\0Harmony.dll</HintPath>
+      <HintPath>E:\Games\Steam\steamapps\common\Pathfinder Second Adventure\Managed\UnityModManager\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp_public">
-      <HintPath>lib\Assembly-CSharp_public.dll</HintPath>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>E:\Games\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Aze.Publicise.MSBuild.Task, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>true</SpecificVersion>
@@ -136,7 +136,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="StatsDistribution_Patch.cs" />
-    <Content Include="TextFile1.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

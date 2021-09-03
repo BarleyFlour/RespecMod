@@ -18,6 +18,10 @@ namespace RespecModBarley
 
 	internal static class StatsDistributionPatch
 	{
+		private static void Prefix(ref int pointCount)
+        {
+			pointCount = Main.PointsCount;
+        }
 		private static void Postfix(StatsDistribution __instance, int pointCount)
         {
 			if (Main.IsRespec == true)
@@ -31,5 +35,17 @@ namespace RespecModBarley
 		    }
      	}
 	}
+	/*[HarmonyPatch(typeof(StatsDistribution), "IsComplete")]
+
+	internal static class StatsDistributionPatch_IsComplete
+	{
+		private static void Postfix(StatsDistribution __instance, ref bool __result)
+		{
+			if (Main.IsRespec == true)
+			{
+				//__result = true;
+			}
+		}
+	}*/
 }
 

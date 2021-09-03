@@ -27,12 +27,15 @@ namespace RespecModBarley
 		{
 			try
 			{
+				///Main.logger.Log("onload");
 				Main.GetUnitsForMemory();
 				foreach (UnitEntityData data in Game.Instance.Player.AllCharacters)
 				{
 					if (!data.IsPet && data.IsStoryCompanion())
 					{
+						///Main.logger.Log("Unit:" + data.CharacterName + data.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit);
 						data.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
+						data.Blueprint.GetComponent<MythicLevelLimit>().LevelLimit = 0;
 					}
 				}
 			}

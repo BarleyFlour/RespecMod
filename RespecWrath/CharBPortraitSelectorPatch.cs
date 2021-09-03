@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+﻿/*using HarmonyLib;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.UI.MVVM._VM.CharGen;
@@ -17,7 +17,7 @@ using Kingmaker;
 using Kingmaker.UI.MVVM._VM.CharGen.Phases.Portrait;
 using Kingmaker.Blueprints;
 using Kingmaker.Cheats;
-using Kingmaker.Enums;
+using Kingmaker.Enums;*/
 
 /*namespace RespecModBarley
 {

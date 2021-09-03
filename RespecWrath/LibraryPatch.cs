@@ -139,12 +139,13 @@ namespace RespecModBarley
 {
 	static public class Stuf
 	{
-		public static T Create<T>(Action<T> init = null) where T : ScriptableObject
+		/*public static T Create<T>(Action<T> init = null) where T : ScriptableObject
 		{
 			var result = ScriptableObject.CreateInstance<T>();
 			if (init != null) init(result);
 			return result;
-		}
+		}*/
+		public static BlueprintFeature[] deityfeatures;
 		/*public static T Get<T>(this LibraryScriptableObject library, String assetId) where T : BlueprintScriptableObject
 		{
 			return (T)ResourcesLibrary.TryGetBlueprint(assetId);
@@ -172,7 +173,7 @@ namespace RespecModBarley
 		public static BlueprintUnit Trever => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("0bb1c03b9f7bbcf42bb74478af2c6258");
 		public static BlueprintUnit Player => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("4391e8b9afbb0cf43aeba700c089f56d");*/
 
-	    /*public static BlueprintUnit CompanionBear => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("a207eff7953731b44acf1a3fa4354c2d");
+		/*public static BlueprintUnit CompanionBear => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("a207eff7953731b44acf1a3fa4354c2d");
 		public static BlueprintUnit CompanionBoar => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("3eb6ad60c8b9fe34fafa32e1f429ff5b");
 		public static BlueprintUnit CompanionCentipede => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("f9df16ffd0c8cec4d99a0ae6f025a3f8");
 		public static BlueprintUnit CompanionDog => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("918939943bf32ba4a95470ea696c2ba5");
@@ -185,6 +186,7 @@ namespace RespecModBarley
 		public static BlueprintUnit CompanionTriceratops => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("51744ec49565c0340b11a1a6dac7920b");
 		public static BlueprintUnit CompanionVelociraptor => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("28d1986d57a7081439fbb581aa6f960c");
 		public static BlueprintUnit CompanionWolf => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("eab864d9ca3415644a792792fd81bf87");*/
+		public static BlueprintFeatureSelection DeitySelect => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("59e7a76987fe3b547b9cce045f4db3e4");
 		public static BlueprintScriptableObject TieflingHeritageSelect => ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>("c862fd0e4046d2d4d9702dd60474a181");
 		public static BlueprintScriptableObject BackgroundSelect => ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>("f926dabeee7f8a54db8f2010b323383c");
 		public static BlueprintFeatureSelection BackgroundSelectSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("f926dabeee7f8a54db8f2010b323383c");

@@ -25,6 +25,7 @@ namespace RespecModBarley
 		{
 			try
 			{
+				Main.logger.Log("recruited" + data.CompanionBlueprint.CharacterName);
 				foreach (Recruit.RecruitData dataR in __instance.Recruited)
 				{
 					///data.CompanionBlueprint.GetComponent<ClassLevelLimit>().LevelLimit = Main.GetUnitInfo(data.RecruitedCompanion);
@@ -32,7 +33,7 @@ namespace RespecModBarley
 					///Main.logger.Log(dataR.CompanionBlueprint.name.ToString());
 					dataR.CompanionBlueprint.GetComponent<ClassLevelLimit>().LevelLimit = Main.GetUnitInfoBP(data.CompanionBlueprint)[0];
 					dataR.CompanionBlueprint.GetComponent<MythicLevelLimit>().LevelLimit = Main.GetUnitInfoBP(data.CompanionBlueprint)[1];
-					Main.GetUnitsForMemory();
+					Main.GetUnitForMemory(dataR.CompanionBlueprint);
 				}
 			}
 			catch(Exception e)

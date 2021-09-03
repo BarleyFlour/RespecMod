@@ -30,8 +30,8 @@ namespace RespecModBarley
 			{
 			}*/
 			// Token: 0x0600000C RID: 12 RVA: 0x000041B4 File Offset: 0x000023B4
-			private static void Postfix(LevelUpState __instance, UnitEntityData unit, LevelUpState.CharBuildMode mode)
-		    {
+	    private static void Postfix(LevelUpState __instance, UnitEntityData unit, LevelUpState.CharBuildMode mode)
+	    {
 			/*if(unit.IsPet == true)
             {
 		        ///__instance.HasSelection
@@ -50,6 +50,7 @@ namespace RespecModBarley
 				{
 					if (Main.IsEnabled == true)
 					{
+						//__instance.AttributePoints = Main.PointsCount;
 						/*if (unit.IsStoryCompanion() && !Main.FullRespecStoryCompanion)
 						{
 							if (unit.CharacterName.Contains("Nenio"))
@@ -75,7 +76,7 @@ namespace RespecModBarley
 						if (unit.Progression.Experience > 0 && unit.Progression.CharacterLevel == 0 && Main.IsRespec == true && unit.IsPet == false)
 						{
 							var bu = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("047b715d404d5f245ad37019b5b6f1de");
-							if (unit.CharacterName.Contains("Nenio"))
+							if (unit.CharacterName.Contains("Nenio") && !unit.HasFact(bu))
                             {
 								unit.AddFact(bu);
 								///Main.logger.Log("neniostuff");
@@ -92,13 +93,17 @@ namespace RespecModBarley
 							{
 								foreach(BlueprintFeature feat in unit.Blueprint.Race.Features)
                                 {
-									Main.logger.Log(feat.ToString());
-									unit.AddFact(feat);
+									//Main.logger.Log(feat.ToString());
+									if(!unit.HasFact(feat))
+									{
+										unit.AddFact(feat);
+									}
 								}
 								foreach (BlueprintFeatureSelection blueprintFeatureSelection in unit.Blueprint.Race.Features.OfType<BlueprintFeatureSelection>())
 								{
 									blueprintFeatureSelection.Obligatory = false;
 									///Main.logger.Log(blueprintFeatureSelection.ToString());
+                                    //Optimize
 									__instance.AddSelection(null, unit.Blueprint.Race, blueprintFeatureSelection, 0);
 							    }
 							}
@@ -175,7 +180,10 @@ namespace RespecModBarley
 							foreach (BlueprintFeature featuretoadd in Main.featurestoadd)
 							{
 								///Main.logger.Log(featuretoadd.ToString());
-								unit.Descriptor.AddFact(featuretoadd);
+								if (!unit.HasFact(featuretoadd))
+								{
+									unit.Descriptor.AddFact(featuretoadd);
+								}
 							}
 						    if (unit.Progression.Race == Stuf.HumanRace || unit.Progression.Race == Stuf.HalfElfRace || unit.Progression.Race == Stuf.HalfOrcRace)
 							{
@@ -186,7 +194,12 @@ namespace RespecModBarley
 							{
 								Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.CharGen);
 								Traverse.Create(__instance).Property("CanSelectVoice", null).SetValue(true);
-								__instance.CanSelectAlignment = true;
+								/*if(Main.FullRespecStoryCompanion && unit.Descriptor.Alignment.Undetectable == true && unit.Blueprint.NameForAcronym == "Camelia_Companion")
+                                {
+								 __instance.CanSelectAlignment = false;
+									///Main.logger.Log("noselect");
+								}*/
+									__instance.CanSelectAlignment = true;
 								__instance.CanSelectPortrait = true;
 								__instance.CanSelectRace = true;
 								__instance.CanSelectGender = true;
@@ -214,7 +227,7 @@ namespace RespecModBarley
 					Main.logger.Log(ex.ToString());
 				}
 			}
-		 }
+	    }
 	}
 }
 

@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.UI.MVVM._VM.CharGen;
@@ -34,4 +35,40 @@ namespace RespecModBarley
 			catch(Exception e) { Main.logger.Log(e.ToString()); }
 		 }
 	}
+	[HarmonyPatch(typeof(CharGenVM), "DefineVisibleFeatureSelections")]
+	internal static class DefineVisibleFeatureSelections_Patch
+	{
+		private static void Postfix(CharGenVM __instance, ref List<FeatureSelectionState> __result)
+		{
+			try
+			{
+				if(Main.IsRespec && !Main.BackgroundDeity && Main.EntityUnit.IsStoryCompanion() )
+                {
+					__result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.DeitySelect);
+					__result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.BackgroundsBaseSelection);
+				}
+				/*if (Main.IsRespec && !Main.FullRespecStoryCompanion && !Main.EntityUnit.Descriptor.IsCustomCompanion() && !Main.EntityUnit.Descriptor.IsMainCharacter && Main.EntityUnit.IsStoryCompanion() || Main.IsRespec && !Main.BackgroundDeity && !Main.EntityUnit.Descriptor.IsCustomCompanion() && !Main.EntityUnit.Descriptor.IsMainCharacter && Main.EntityUnit.IsStoryCompanion())
+				{
+					__result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.DeitySelect);
+					__result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.BackgroundsBaseSelection);
+				}*/
+			}
+			catch(Exception e)
+            {
+				Main.logger.Log(e.ToString());
+            }
+		}
+	}
+	/*[HarmonyPatch(typeof(CharGenVM), "NeedAlignmentPhase")]
+	internal static class NeedAlignmentPhase_Patch
+	{
+		private static void Postfix(CharGenVM __instance, ref bool __result)
+		{
+			if (Main.FullRespecStoryCompanion && __instance.PreviewUnit.Value.Blueprint.NameForAcronym == "Camelia_Companion")
+			{
+				__result = false;
+				return;
+			}
+		}
+	}*/
 }
