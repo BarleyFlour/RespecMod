@@ -218,7 +218,7 @@ namespace RespecModBarley
 				}, LevelUpState.CharBuildMode.Respec);*/
 			}//);
 		}
-		private static void RespecOnCommit(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, Action successCallback)
+		/*private static void RespecOnCommit(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, Action successCallback)
 		{
 			//Main.logger.Log("oncommit");
 			var bab = targetUnit.Progression.Classes.First().BaseAttackBonus.GetBonus(1);
@@ -447,7 +447,7 @@ namespace RespecModBarley
 				}
 				catch (Exception e) { Main.logger.Log(e.ToString()); }
 			}
-		}
+		}*/
 		private static void RespecOnCommit2(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, Action successCallback)
 		{
 			PFLog.History.Party.Log(string.Format("Respec unit: {0}, ", targetUnit) + string.Format("level: {0} ({1}), ", targetUnit.Progression.CharacterLevel, targetUnit.Progression.Experience) + string.Format("mythic: {0} ({1})", targetUnit.Progression.MythicLevel, targetUnit.Progression.MythicExperience), Array.Empty<object>());
@@ -517,6 +517,8 @@ namespace RespecModBarley
 			}
 			foreach (Kingmaker.Items.Slots.ItemSlot itemSlot2 in tempUnit.Body.EquipmentSlots)
 			{
+				itemSlot2.m_ItemRef = null;
+				itemSlot2.m_FakeItem = null;
 				itemSlot2.RemoveItem(true);
 			}
 			tempUnit.TurnOff();
@@ -626,6 +628,8 @@ namespace RespecModBarley
 			{
 				try
 				{
+					targetUnit.View.UpdateBodyEquipmentModel();
+					targetUnit.View.UpdateClassEquipment();
 					targetUnit.Descriptor.Stats.HitPoints.BaseValue = targetUnit.Descriptor.Stats.HitPoints.BaseValue + -1;
 					Main.featurestoadd.Clear();
 					Main.IsRespec = false;

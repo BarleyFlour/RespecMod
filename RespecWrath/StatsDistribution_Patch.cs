@@ -20,7 +20,10 @@ namespace RespecModBarley
 	{
 		private static void Prefix(ref int pointCount)
         {
-			pointCount = Main.PointsCount;
+			if(Main.IsRespec == true)
+			{
+				pointCount = Main.PointsCount;
+			}
         }
 		private static void Postfix(StatsDistribution __instance, int pointCount)
         {

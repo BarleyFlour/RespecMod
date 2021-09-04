@@ -187,7 +187,11 @@ namespace RespecModBarley
 							}
 						    if (unit.Progression.Race == Stuf.HumanRace || unit.Progression.Race == Stuf.HalfElfRace || unit.Progression.Race == Stuf.HalfOrcRace)
 							{
-								__instance.CanSelectRaceStat = true;
+								if(!Main.FullRespecStoryCompanion)
+                                {
+									__instance.CanSelectRaceStat = true;
+								}
+								
 							}
 							var blueprintUnit = Game.Instance.BlueprintRoot.SelectablePlayerCharacters.Where(u => u == unit.Blueprint).FirstOrDefault();
 							if (unit.IsCustomCompanion() && unit.IsPet == false || unit.IsMainCharacter && unit.IsPet == false || unit.IsStoryCompanion() && Main.FullRespecStoryCompanion)

@@ -6,6 +6,7 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.Designers.EventConditionActionSystem.Events;
+using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Buffs;
@@ -34,7 +35,7 @@ namespace RespecModBarley
 			}
         }
 	}
-	[HarmonyPatch(typeof(UnitHelper), "CopyInternal")]
+	//[HarmonyPatch(typeof(UnitHelper), "CopyInternal")]
 	internal static class CopyInternal_Patch
 	{
 		private static bool Prefix(UnitEntityData unit, bool createView, bool preview, bool copyItems, ref UnitEntityData __result)
@@ -42,9 +43,9 @@ namespace RespecModBarley
 			try
 			{
 				UnitEntityData unitEntityData;
-				//using (ContextData<UnitEntityData.DoNotCreateItems>.Request())
+				using (ContextData<UnitEntityData.DoNotCreateItems>.Request())
 				{
-					//using (ContextData<AddClassLevels.DoNotCreatePlan>.RequestIf(preview))
+					using (ContextData<AddClassLevels.DoNotCreatePlan>.RequestIf(preview))
 					{
 						unitEntityData = Game.Instance.CreateUnitVacuum(unit.OriginalBlueprint);
 					}
