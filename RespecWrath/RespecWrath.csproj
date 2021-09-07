@@ -53,10 +53,10 @@
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\Games\Steam\steamapps\common\Pathfinder Second Adventure\Managed\UnityModManager\0Harmony.dll</HintPath>
+      <HintPath>E:\Games\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>E:\Games\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\Assembly-CSharp.dll</HintPath>
+    <Reference Include="Assembly-CSharp_public">
+      <HintPath>lib\Assembly-CSharp_public.dll</HintPath>
     </Reference>
     <Reference Include="Aze.Publicise.MSBuild.Task, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>true</SpecificVersion>
@@ -125,6 +125,7 @@
     <Compile Include="OnAreaLoadedPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Respec.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Test2.cs" />
     <Compile Include="UnitHelperPatch.cs" />
   </ItemGroup>

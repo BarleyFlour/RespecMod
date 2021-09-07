@@ -22,16 +22,16 @@ namespace RespecModBarley
         {
 			if(Main.IsRespec == true)
 			{
-				pointCount = Main.PointsCount;
+				pointCount = Main.settings.PointsCount;
 			}
         }
 		private static void Postfix(StatsDistribution __instance, int pointCount)
         {
 			if (Main.IsRespec == true)
             {
-				if (pointCount != Main.PointsCount)
+				if (pointCount != Main.settings.PointsCount)
 				{
-					pointCount = Main.PointsCount;
+					pointCount = Main.settings.PointsCount;
 					__instance.Points = pointCount;
 					__instance.TotalPoints = pointCount;
 				}

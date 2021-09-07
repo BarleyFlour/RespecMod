@@ -50,27 +50,30 @@ namespace RespecModBarley
 				{
 					if (Main.IsEnabled == true)
 					{
-						//__instance.AttributePoints = Main.PointsCount;
-						/*if (unit.IsStoryCompanion() && !Main.FullRespecStoryCompanion)
-						{
-							if (unit.CharacterName.Contains("Nenio"))
-							{
-								foreach (BlueprintFeatureBase f in unit.Blueprint.Race.Features)
-								{
-									if(f.ToString() != "ChangeShapeKitsune")
-									{
-										unit.AddFact(f);
-									}
-								}
-								unit.AddFact(ResourcesLibrary.TryGetBlueprint<BlueprintActivatableAbility>("52bed4c5617625e4faf029b5c750667f"));
-							}
-							if (!unit.CharacterName.Contains("Nenio"))
-							{
-								foreach (BlueprintFeatureBase f in unit.Blueprint.Race.Features)
-								{
-									unit.AddFact(f);
-								}
-						    }
+                        /*if(__instance.AttributePoints != Main.settings.PointsCount)
+                        {
+                            __instance.AttributePoints = Main.settings.PointsCount;
+                        }*/
+                        /*if (unit.IsStoryCompanion() && !Main.FullRespecStoryCompanion)
+                        {
+                            if (unit.CharacterName.Contains("Nenio"))
+                            {
+                                foreach (BlueprintFeatureBase f in unit.Blueprint.Race.Features)
+                                {
+                                    if(f.ToString() != "ChangeShapeKitsune")
+                                    {
+                                        unit.AddFact(f);
+                                    }
+                                }
+                                unit.AddFact(ResourcesLibrary.TryGetBlueprint<BlueprintActivatableAbility>("52bed4c5617625e4faf029b5c750667f"));
+                            }
+                            if (!unit.CharacterName.Contains("Nenio"))
+                            {
+                                foreach (BlueprintFeatureBase f in unit.Blueprint.Race.Features)
+                                {
+                                    unit.AddFact(f);
+                                }
+                            }
                         }*/
 						///unit.Progression.SetRace(unit.Blueprint.Race);
 						if (unit.Progression.Experience > 0 && unit.Progression.CharacterLevel == 0 && Main.IsRespec == true && unit.IsPet == false)
@@ -89,7 +92,7 @@ namespace RespecModBarley
 									__instance.AddSelection(null, unit.Progression.Race, blueprintFeatureSelection, 0);
 								}
 							}*/
-							if(unit.IsStoryCompanion() && !Main.FullRespecStoryCompanion || unit.Blueprint.ToString().Contains("_Companion") && !Main.FullRespecStoryCompanion)
+							if(unit.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion || unit.Blueprint.ToString().Contains("_Companion") && !Main.settings.FullRespecStoryCompanion)
 							{
 								foreach(BlueprintFeature feat in unit.Blueprint.Race.Features)
                                 {
@@ -187,14 +190,14 @@ namespace RespecModBarley
 							}
 						    if (unit.Progression.Race == Stuf.HumanRace || unit.Progression.Race == Stuf.HalfElfRace || unit.Progression.Race == Stuf.HalfOrcRace)
 							{
-								if(!Main.FullRespecStoryCompanion)
+								if(!Main.settings.FullRespecStoryCompanion)
                                 {
 									__instance.CanSelectRaceStat = true;
 								}
 								
 							}
 							var blueprintUnit = Game.Instance.BlueprintRoot.SelectablePlayerCharacters.Where(u => u == unit.Blueprint).FirstOrDefault();
-							if (unit.IsCustomCompanion() && unit.IsPet == false || unit.IsMainCharacter && unit.IsPet == false || unit.IsStoryCompanion() && Main.FullRespecStoryCompanion)
+							if (unit.IsCustomCompanion() && unit.IsPet == false || unit.IsMainCharacter && unit.IsPet == false || unit.IsStoryCompanion() && Main.settings.FullRespecStoryCompanion)
 							{
 								Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.CharGen);
 								Traverse.Create(__instance).Property("CanSelectVoice", null).SetValue(true);
@@ -203,14 +206,21 @@ namespace RespecModBarley
 								 __instance.CanSelectAlignment = false;
 									///Main.logger.Log("noselect");
 								}*/
+                                if(unit.Blueprint.CharacterName != "Camellia")
+                                {
 									__instance.CanSelectAlignment = true;
-								__instance.CanSelectPortrait = true;
+								}
+                                else
+                                {
+                                    __instance.CanSelectAlignment = false;
+                                }
+                                __instance.CanSelectPortrait = true;
 								__instance.CanSelectRace = true;
 								__instance.CanSelectGender = true;
 								__instance.CanSelectName = true;
                                 __instance.CanSelectVoice = true;
 							}
-							if (unit.IsStoryCompanion() && !Main.FullRespecStoryCompanion|| unit.Blueprint.ToString().Contains("_Companion") && unit.IsPet == false && !Main.FullRespecStoryCompanion)
+							if (unit.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion|| unit.Blueprint.ToString().Contains("_Companion") && unit.IsPet == false && !Main.settings.FullRespecStoryCompanion)
 							{
 								Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.LevelUp);
 								Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(true);

@@ -25,7 +25,7 @@ namespace RespecModBarley
 			{
 				if (Main.IsRespec == true)
 				{
-					if (Main.EntityUnit.IsCustomCompanion() || Main.EntityUnit.IsMainCharacter || Main.EntityUnit.IsStoryCompanion() && Main.FullRespecStoryCompanion)
+					if (Main.EntityUnit.IsCustomCompanion() || Main.EntityUnit.IsMainCharacter || Main.EntityUnit.IsStoryCompanion() && Main.settings.FullRespecStoryCompanion)
 					{
 						__result = true;
 						return;
@@ -42,11 +42,17 @@ namespace RespecModBarley
 		{
 			try
 			{
-				if(Main.IsRespec && !Main.BackgroundDeity && Main.EntityUnit.IsStoryCompanion() )
+				if(Main.IsRespec && !Main.settings.BackgroundDeity && Main.EntityUnit.IsStoryCompanion() )
                 {
 					__result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.DeitySelect);
 					__result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.BackgroundsBaseSelection);
 				}
+				/*else if(Main.IsRespec && Main.settings.BackgroundDeity && Main.EntityUnit.IsStoryCompanion())
+                {
+					__result.Add(Stuf.DeitySelect);
+					new FeatureSelectionState(null,null,Stuf.DeitySelect,)
+					__result.Add(Stuf.BackgroundsBaseSelection.);
+				}*/
 				/*if (Main.IsRespec && !Main.FullRespecStoryCompanion && !Main.EntityUnit.Descriptor.IsCustomCompanion() && !Main.EntityUnit.Descriptor.IsMainCharacter && Main.EntityUnit.IsStoryCompanion() || Main.IsRespec && !Main.BackgroundDeity && !Main.EntityUnit.Descriptor.IsCustomCompanion() && !Main.EntityUnit.Descriptor.IsMainCharacter && Main.EntityUnit.IsStoryCompanion())
 				{
 					__result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.DeitySelect);

@@ -456,6 +456,7 @@ namespace RespecModBarley
 			targetUnit.Stats.BaseAttackBonus.BaseValue = bab;
 			targetUnit.Stats.BaseAttackBonus.m_BaseValue = bab;
 			targetUnit.Stats.BaseAttackBonus.OnPermanentValueUpdated();
+
 			Vector3 position = targetUnit.Position;
 			float orientation = targetUnit.Orientation;
 			Transform parent = targetUnit.View.transform.parent;
@@ -655,14 +656,14 @@ namespace RespecModBarley
 							tempUnit.Parts.m_Parts.Add(part);
 						}
 					}
-					foreach (EntityPart part in Main.partstoadd)
+					/*foreach (EntityPart part in Main.partstoadd)
 					{
 						if (!targetUnit.Parts.m_Parts.Contains(part))
 						{
 							part.AttachToEntity(targetUnit);
 							targetUnit.Parts.m_Parts.Add(part);
 						}
-					}
+					}*/
 					Main.partstoadd.Clear();
 					Main.EntityUnit = null;
 					foreach (EntityPart entityPart in targetUnit.Parts.m_Parts)
@@ -685,11 +686,30 @@ namespace RespecModBarley
 					}
 				}
 				catch (Exception e) { Main.logger.Log(e.ToString()); }
+                var bab2 = targetUnit.Progression.Classes.First().BaseAttackBonus.GetBonus(1);
+                targetUnit.Stats.BaseAttackBonus.PermanentValue = bab2;
+                targetUnit.Stats.BaseAttackBonus.BaseValue = bab2;
+                targetUnit.Stats.BaseAttackBonus.m_BaseValue = bab2;
+                targetUnit.Stats.BaseAttackBonus.OnPermanentValueUpdated();
 			}
 		}
 		private static void RespecOnStop(UnitEntityData targetUnit)
 		{
 			//	Main.logger.Log("Stopped");
+            if (Main.NenioEtudeBool == true)
+            {
+                var KitsuneHeritageClassic = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("cd6cd774fb7cc844b8417193ee3a5ebe");
+                var KitsuneHeritageKeen = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("d6bc49651fbaa2944bba6e2e5a1720ff");
+                var facts = new List<BlueprintUnitFact> { KitsuneHeritageClassic, KitsuneHeritageKeen };
+                foreach (IHiddenUnitFacts i in targetUnit.Parts.Get<UnitPartHiddenFacts>().m_HiddenFacts)
+                {
+                    foreach (BlueprintUnitFact fact in facts)
+                    {
+                        i.Facts.Add(fact);
+                    }
+                }
+                Main.NenioEtudeBool = false;
+            }
 			targetUnit.Dispose();
 			Main.IsRespec = false;
 			Main.featureSelection = null;

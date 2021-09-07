@@ -63,6 +63,7 @@ namespace RespecModBarley
     }
 	public class Main
 	{
+		public static Settings settings;
 		public static bool OldCost;
 		public static bool haspatched = false;
 		public static bool NenioEtudeBool = false;
@@ -75,9 +76,11 @@ namespace RespecModBarley
 			{
 				ModEntry = modEntry;
 				logger = modEntry.Logger;
+				settings = Settings.Load(modEntry);
 				var harmony = new Harmony(modEntry.Info.Id);
 				harmony.PatchAll();
 				modEntry.OnGUI = OnGUI;
+				modEntry.OnSaveGUI = OnSaveGUI;
 				IsEnabled = ModEntry.Enabled;
 				if (!Main.haspatched)
 				{
@@ -90,20 +93,19 @@ namespace RespecModBarley
 			}
 			return true;
 		}
+		static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+		{
+			settings.Save(modEntry);
+		}
 		public static SimpleBlueprint[] blueprints;
 		public static UnitEntityData EntityUnit;
 		public static int MythicXP;
-		static bool FreeRespec = false;
-		public static bool FullRespecStoryCompanion = false;
 		public static bool IsRespec = false;
 		public static List<BlueprintFeature> featurestoadd = new List<BlueprintFeature> { };
 		public static List<EntityPart> partstoadd = new List<EntityPart> { };
 		public static List<UnitInfo> UnitMemory = new List<UnitInfo> { };
 		public static UnitGroup unitgroupparty;
 		public static string[] partslist = new String[] { "Kingmaker.UnitLogic.Parts.UnitPartPartyWeatherBuff", "Kingmaker.UnitLogic.Parts.UnitPartWeariness", "Kingmaker.UnitLogic.Parts.UnitPartInteractions", "Kingmaker.UnitLogic.Parts.UnitPartVendor","Kingmaker.UnitLogic.Parts.UnitPartAbilityModifiers","Kingmaker.UnitLogic.Parts.UnitPartDamageGrace","Kingmaker.UnitLogic.Parts.UnitPartInspectedBuffs","Kingmaker.AreaLogic.SummonPool.SummonPool+PooledPart", "Kingmaker.UnitLogic.Parts.UnitPartHiddenFacts" };
-		public static int PointsCount;
-		public static bool OriginalStats;
-		public static bool BackgroundDeity;
 
 		public static int[] GetUnitInfo(UnitEntityData unit)
         {
@@ -282,22 +284,22 @@ namespace RespecModBarley
 					GUILayout.BeginHorizontal();
 					if (selected.IsStoryCompanion() && !selected.IsMainCharacter)
 					{
-						OriginalStats = GUILayout.Toggle(OriginalStats, "Original Stats", GUILayout.ExpandWidth(false));
+						settings.OriginalStats = GUILayout.Toggle(settings.OriginalStats, "Original Stats", GUILayout.ExpandWidth(false));
 					}
 					else
 				    {
-						OriginalStats = false;
+						settings.OriginalStats = false;
 					}
 					GUILayout.EndHorizontal();
 				}
 				GUILayout.BeginHorizontal();
-				float value = PointsCount;
+				float value = settings.PointsCount;
 				value = Math.Max(0, Math.Min(102, value));
 				float abilityscoreslider = (float)Math.Round(GUILayout.HorizontalSlider(value, 0f, 102f, GUILayout.Width(120)));
 				string stringstuff = GUILayout.TextField(abilityscoreslider.ToString(), GUILayout.ExpandWidth(false));
 				int pointsstring = Int32.Parse(stringstuff);
 				value = pointsstring;
-				PointsCount = (int)value;
+				settings.PointsCount = (int)value;
 				GUILayout.EndHorizontal();
 				GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
 
@@ -318,7 +320,7 @@ namespace RespecModBarley
 									GUILayout.ExpandWidth(false)
 					});
 				}*/
-				GUILayout.Label(("  Extra points +" + (PointsCount.ToString())), new GUILayoutOption[] { GUILayout.ExpandWidth(false) });
+				GUILayout.Label(("  Extra points +" + (settings.PointsCount.ToString())), new GUILayoutOption[] { GUILayout.ExpandWidth(false) });
 				GUILayout.EndHorizontal();
 				GUILayout.Space(10f);
 				GUILayout.BeginHorizontal();
@@ -364,37 +366,41 @@ namespace RespecModBarley
 				GUILayout.EndHorizontal();
 				GUILayout.Space(10f);
 				GUILayout.BeginHorizontal();
-				FreeRespec = GUILayout.Toggle(FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
+				settings.FreeRespec = GUILayout.Toggle(settings.FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
 				if(selected.IsStoryCompanion() && !selected.IsMainCharacter)
 				{
-					FullRespecStoryCompanion = GUILayout.Toggle(FullRespecStoryCompanion, "Full Story Companion Respec", GUILayout.ExpandWidth(false));
-					if(FullRespecStoryCompanion)
+					settings.FullRespecStoryCompanion = GUILayout.Toggle(settings.FullRespecStoryCompanion, "Full Story Companion Respec", GUILayout.ExpandWidth(false));
+					if(settings.FullRespecStoryCompanion)
                     {
-						BackgroundDeity = true;
+						settings.BackgroundDeity = true;
                     }
 				}
 				else
                 {
-					FullRespecStoryCompanion = false;
+					settings.FullRespecStoryCompanion = false;
                 }
-				if(selected.IsStoryCompanion() && !FullRespecStoryCompanion)
+				if(selected.IsStoryCompanion() && !settings.FullRespecStoryCompanion)
                 {
-					BackgroundDeity = GUILayout.Toggle(BackgroundDeity, "Choose Background/Deity", GUILayout.ExpandWidth(false));
+					settings.BackgroundDeity = GUILayout.Toggle(settings.BackgroundDeity, "Choose Background/Deity", GUILayout.ExpandWidth(false));
 				}
-				else
+				else if (settings.FullRespecStoryCompanion)
                 {
-					BackgroundDeity = false;
+					settings.BackgroundDeity = true;
+				}
+                else if (!settings.FullRespecStoryCompanion)
+                {
+					settings.BackgroundDeity = false;
                 }
 				GUILayout.EndHorizontal();
 				GUILayout.Space(10f);
 				GUILayout.BeginHorizontal();
 				OldCost = GUILayout.Toggle(OldCost, "Fixed/Scaling Cost", GUILayout.ExpandWidth(false));
 				GUILayout.EndHorizontal();
-				if (FreeRespec == true)
+				if (settings.FreeRespec == true)
 				{
 					respecCost = 0L;
 				}
-				if (FreeRespec == false)
+				if (settings.FreeRespec == false)
 				{
 					if (Main.OldCost)
 					{
@@ -431,9 +437,9 @@ namespace RespecModBarley
 		public static int[] GetInitStatsByUnit(UnitEntityData unit)
 		{
 			int[] numArray = new int[6] { 10, 10, 10, 10, 10, 10 };
-			if (OriginalStats == true)
+			if (settings.OriginalStats == true)
 			{
-				if (unit.IsStoryCompanion() && Main.OriginalStats || unit.Blueprint.ToString().Contains("_Companion") && Main.OriginalStats)
+				if (unit.IsStoryCompanion() && settings.OriginalStats || unit.Blueprint.ToString().Contains("_Companion") && settings.OriginalStats)
                 {
 					numArray = new int[6]
                     {
@@ -536,15 +542,21 @@ namespace RespecModBarley
 					entityData.GetFact(AmuletFact).Detach();
 					Main.logger.Log("asd");
 				}*/
-				if (entityData.IsStoryCompanion() && !Main.FullRespecStoryCompanion || entityData.Blueprint.ToString().Contains("_Companion") && !Main.FullRespecStoryCompanion)
+				if (entityData.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion || entityData.Blueprint.ToString().Contains("_Companion"))
 				{
 					foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
 					{
-						if (backgroundsarray.Contains(blueprintf.Blueprint) && !Main.BackgroundDeity || blueprintf.Hidden)
+						var nosource = blueprintf.SourceClass == null && blueprintf.SourceProgression == null;
+						if (backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && nosource)
 						{
-							///Main.logger.Log(blueprintf.ToString());
+							//Main.logger.Log("!= null " + blueprintf.ToString());
 							Main.featurestoadd.Add(blueprintf.Blueprint);
 						}
+						/*else if(backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && blueprintf.m_Source == null)
+                        {
+							Main.logger.Log("== null " + blueprintf.ToString());
+						}*/
+
 					}
 				}
 				if (entityData.Blueprint.GetComponent<ClassLevelLimit>())
