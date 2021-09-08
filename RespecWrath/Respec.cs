@@ -187,6 +187,15 @@ namespace RespecModBarley
 				newUnit.RemoveFact(feature);
 				UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: remove feature {0}", feature), Array.Empty<object>());
 			}
+			//
+            if (!Main.settings.FullRespecStoryCompanion && unit.IsStoryCompanion())
+            {
+                foreach (var VARIABLE in unit.Progression.Race.Features.m_Array)
+                {
+                    newUnit.AddFact(VARIABLE);
+                }
+            }
+            //
 			if (newUnit.Progression.CharacterLevel < 1)
 			{
 				newUnit.Progression.DropLevelPlansAll();
@@ -450,13 +459,15 @@ namespace RespecModBarley
 		}*/
 		private static void RespecOnCommit2(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, Action successCallback)
 		{
-			PFLog.History.Party.Log(string.Format("Respec unit: {0}, ", targetUnit) + string.Format("level: {0} ({1}), ", targetUnit.Progression.CharacterLevel, targetUnit.Progression.Experience) + string.Format("mythic: {0} ({1})", targetUnit.Progression.MythicLevel, targetUnit.Progression.MythicExperience), Array.Empty<object>());
+            try
+            {
+                PFLog.History.Party.Log(string.Format("Respec unit: {0}, ", targetUnit) + string.Format("level: {0} ({1}), ", targetUnit.Progression.CharacterLevel, targetUnit.Progression.Experience) + string.Format("mythic: {0} ({1})", targetUnit.Progression.MythicLevel, targetUnit.Progression.MythicExperience), Array.Empty<object>());
 			var bab = targetUnit.Progression.Classes.First().BaseAttackBonus.GetBonus(1);
 			targetUnit.Stats.BaseAttackBonus.PermanentValue = bab;
 			targetUnit.Stats.BaseAttackBonus.BaseValue = bab;
 			targetUnit.Stats.BaseAttackBonus.m_BaseValue = bab;
 			targetUnit.Stats.BaseAttackBonus.OnPermanentValueUpdated();
-
+			
 			Vector3 position = targetUnit.Position;
 			float orientation = targetUnit.Orientation;
 			Transform parent = targetUnit.View.transform.parent;
@@ -470,7 +481,7 @@ namespace RespecModBarley
 			{
 				unitEntityData.RemoveMaster();
 				unitEntityData.MarkForDestroy();
-			}
+            }
 			List<ItemEntity> list2 = new List<ItemEntity>();
 			using (ContextData<Kingmaker.Items.Slots.ItemSlot.IgnoreLock>.Request())
 			{
@@ -587,8 +598,11 @@ namespace RespecModBarley
 				{
 					enumerator5.Current.CallComponents<IUpdatePet>(delegate (IUpdatePet c)
 					{
-						c.TryUpdatePet();
-					});
+                        if (c != null)
+                        {
+                           // c.TryUpdatePet();
+						}
+                    });
 				}
 			}
 			using (ContextData<Kingmaker.Items.Slots.ItemSlot.IgnoreLock>.Request())
@@ -625,7 +639,7 @@ namespace RespecModBarley
 			{
 				h.HandleUnitChangedAfterRespec(targetUnit);
 			}, true);
-			if (Main.IsRespec == true)
+			//if (Main.IsRespec == true)
 			{
 				try
 				{
@@ -633,13 +647,13 @@ namespace RespecModBarley
 					targetUnit.View.UpdateClassEquipment();
 					targetUnit.Descriptor.Stats.HitPoints.BaseValue = targetUnit.Descriptor.Stats.HitPoints.BaseValue + -1;
 					Main.featurestoadd.Clear();
-					Main.IsRespec = false;
-					//Main.logger.Log("Commited");
+                    //Main.logger.Log("Commited");
 					targetUnit.Progression.AdvanceMythicExperience(Main.MythicXP);
 					foreach (EntityPart part in Main.partstoadd)
 					{
 						if (!targetUnit.Parts.Parts.Contains(part))
 						{
+							Main.logger.Log(part.ToString());
 							part.AttachToEntity(targetUnit);
 							part.TurnOn();
 							targetUnit.Parts.m_Parts.Add(part);
@@ -652,6 +666,7 @@ namespace RespecModBarley
 					{
 						if (!targetUnit.Parts.Parts.Contains(part))
 						{
+                           // Main.logger.Log(part.ToString());
 							part.AttachToEntity(tempUnit);
 							tempUnit.Parts.m_Parts.Add(part);
 						}
@@ -668,6 +683,7 @@ namespace RespecModBarley
 					Main.EntityUnit = null;
 					foreach (EntityPart entityPart in targetUnit.Parts.m_Parts)
 					{
+                        Main.logger.Log(entityPart.ToString());
 						targetUnit.OnPartAddedOrPostLoad(entityPart);
 					}
 					if (Main.NenioEtudeBool == true)
@@ -684,7 +700,8 @@ namespace RespecModBarley
 						}
 						Main.NenioEtudeBool = false;
 					}
-				}
+                    Main.IsRespec = false;
+                }
 				catch (Exception e) { Main.logger.Log(e.ToString()); }
                 var bab2 = targetUnit.Progression.Classes.First().BaseAttackBonus.GetBonus(1);
                 targetUnit.Stats.BaseAttackBonus.PermanentValue = bab2;
@@ -692,6 +709,12 @@ namespace RespecModBarley
                 targetUnit.Stats.BaseAttackBonus.m_BaseValue = bab2;
                 targetUnit.Stats.BaseAttackBonus.OnPermanentValueUpdated();
 			}
+            }
+            catch (Exception e)
+            {
+                Main.logger.Error(e.ToString());
+                throw;
+            }
 		}
 		private static void RespecOnStop(UnitEntityData targetUnit)
 		{

@@ -241,7 +241,12 @@ namespace RespecModBarley
 					Main.logger.Log(ex.ToString());
 				}
 			}
-	    }
+			else if (unit.Blueprint.GetComponent<ClassLevelLimit>())
+            {
+				//testy
+               // unit.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
+            }
+		}
 	}
 }
 

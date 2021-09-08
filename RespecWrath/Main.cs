@@ -43,7 +43,7 @@ using static UnityModManagerNet.UnityModManager;
 
 namespace RespecModBarley
 {
-	public class UnitInfo : ScriptableObject
+	/*public class UnitInfo : ScriptableObject
     {
 		public int OrgLvl
         {
@@ -60,7 +60,7 @@ namespace RespecModBarley
 			get;
 			set;
         }
-    }
+    }*/
 	public class Main
 	{
 		public static Settings settings;
@@ -69,7 +69,7 @@ namespace RespecModBarley
 		public static bool NenioEtudeBool = false;
 		public static BlueprintFeatureSelection featureSelection;
 		public static UnityModManager.ModEntry ModEntry;
-		public static UnitEntityView entityView;
+		//public static UnitEntityView entityView;
 		static bool Load(UnityModManager.ModEntry modEntry)
 		{
 			try
@@ -97,17 +97,19 @@ namespace RespecModBarley
 		{
 			settings.Save(modEntry);
 		}
-		public static SimpleBlueprint[] blueprints;
+
+        public static bool isrecruit = false;
+		//public static SimpleBlueprint[] blueprints;
 		public static UnitEntityData EntityUnit;
 		public static int MythicXP;
 		public static bool IsRespec = false;
 		public static List<BlueprintFeature> featurestoadd = new List<BlueprintFeature> { };
 		public static List<EntityPart> partstoadd = new List<EntityPart> { };
-		public static List<UnitInfo> UnitMemory = new List<UnitInfo> { };
-		public static UnitGroup unitgroupparty;
+		//public static List<UnitInfo> UnitMemory = new List<UnitInfo> { };
+		//public static UnitGroup unitgroupparty;
 		public static string[] partslist = new String[] { "Kingmaker.UnitLogic.Parts.UnitPartPartyWeatherBuff", "Kingmaker.UnitLogic.Parts.UnitPartWeariness", "Kingmaker.UnitLogic.Parts.UnitPartInteractions", "Kingmaker.UnitLogic.Parts.UnitPartVendor","Kingmaker.UnitLogic.Parts.UnitPartAbilityModifiers","Kingmaker.UnitLogic.Parts.UnitPartDamageGrace","Kingmaker.UnitLogic.Parts.UnitPartInspectedBuffs","Kingmaker.AreaLogic.SummonPool.SummonPool+PooledPart", "Kingmaker.UnitLogic.Parts.UnitPartHiddenFacts" };
 
-		public static int[] GetUnitInfo(UnitEntityData unit)
+		/*public static int[] GetUnitInfo(UnitEntityData unit)
         {
 			var list = new int[] { unit.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit, unit.Blueprint.GetComponent<MythicLevelLimit>().LevelLimit };
 			return list;
@@ -127,14 +129,14 @@ namespace RespecModBarley
 					return info.OrgLvl;
 				}
 			}
-			return 5;*/
-		}
-		public static void GetUnitForMemory(BlueprintUnit data)
+			return 5;*//*
+		}*/
+		/*public static void GetUnitForMemory(BlueprintUnit data)
 		{
 			try
 			{
 				if(data.CharacterName == null) return;
-				if (!UnitMemory.Any(a => a.Data.CharacterName == data.CharacterName))
+                if (!UnitMemory.Any(a => a.Data.CharacterName == data.CharacterName))
 				{
 					var unitinfoinstance = ScriptableObject.CreateInstance<UnitInfo>();
 					unitinfoinstance.Data = data;
@@ -159,8 +161,9 @@ namespace RespecModBarley
 				var entityPool = Game.Instance.State.Units.All.ToList();
 				var entityPool2 = Game.Instance.Player.AllCharacters.ToList();
 				var poolconc = entityPool.Concat(entityPool2).ToList();
-				if (poolconc.Count <= 0) return;
-				foreach (UnitEntityData unit in poolconc)
+                var poolconcc = poolconc.Concat(Game.Instance.State.Units).ToList();
+				if (poolconcc.Count <= 0) return;
+				foreach (UnitEntityData unit in poolconcc)
                 {
 					///Main.logger.Log(unit.Blueprint.CharacterName);
 					if (unit.Blueprint.ToString().Contains("_Companion") && !unit.Blueprint.ToString().Contains("!")  && !UnitMemory.Any(a => a.Data.CharacterName == unit.Blueprint.CharacterName))
@@ -175,11 +178,11 @@ namespace RespecModBarley
 					    }
 						/*if (UnitMemory.Any(a => a.Data.CharacterName == unit.CharacterName)) return;
 						{*/
-						UnitMemory.Add(unitinfoinstance);
+					//UnitMemory.Add(unitinfoinstance);
 							///Main.logger.Log(unitinfoinstance.Data.CharacterName.ToString() + " " + unitinfoinstance.OrgLvl.ToString());
 						///}
-					}
-				}
+					//}
+				//}
 				/*foreach (UnitEntityData unit in entityPool2)
 				{
 					if (unit.Blueprint.name.Contains("Companion"))
@@ -202,20 +205,19 @@ namespace RespecModBarley
 				/*foreach (UnitInfo a in UnitMemory)
 				{
 					Main.logger.Log(a.Data.CharacterName.ToString());
-				}*/
+				}*//*
 
 			}
 			catch (Exception e)
 			{
 				Main.logger.Log(e.ToString());
 			}
-		}
+		}*/
 		private static void OnGUI(UnityModManager.ModEntry modEntry)
 		{
 			try
 			{
-			//	GUILayout.Label(Main.IsRespec.ToString(),GUILayout.Width(200f));
-				Main.GetUnitsForMemory();
+               // Main.GetUnitsForMemory();
 				if (IsEnabled == false) { return; }
 				GUILayout.Space(5f);
 				GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
@@ -353,8 +355,8 @@ namespace RespecModBarley
 					if (flag5)
 					{
 						try
-						{
-							///Main.featurestoadd.Clear();
+                        {
+                            Main.IsRespec = true;
 							Main.PreRespec(selected);
 						}
 						catch (Exception ex)
@@ -363,8 +365,51 @@ namespace RespecModBarley
 						}
 					}
 				}
-				GUILayout.EndHorizontal();
-				GUILayout.Space(10f);
+				//GUILayout.EndHorizontal();
+
+                GUILayout.Space(5f);
+                //GUILayout.BeginHorizontal();
+                if (selected.Descriptor.Progression.CharacterLevel != 0 && GUILayout.Button(string.Format("Mythic Only ({0}g)", Main.respecCost * 0.25), UnityModManager.UI.button, new GUILayoutOption[]
+                {
+                    GUILayout.ExpandWidth(false)
+                }))
+                {
+                    bool flag5 = false;
+                    if (!selected.IsCustomCompanion())
+                    {
+                        if (Game.Instance.Player.SpendMoney(Main.respecCost))
+                        {
+                            flag5 = true;
+                            modEntry.Logger.Log(string.Format("Money changed -{0}", Main.respecCost));
+                        }
+                        else
+                        {
+                            modEntry.Logger.Log(string.Format("Not enough money {0}", Main.respecCost));
+                        }
+                    }
+                    else if (Game.Instance.Player.Money >= Main.respecCost)
+                    {
+                        flag5 = true;
+                    }
+                    else
+                    {
+                        modEntry.Logger.Log(string.Format("Not enough money {0}", Main.respecCost));
+                    }
+                    if (flag5)
+                    {
+                        try
+                        {
+                            ///Main.featurestoadd.Clear();
+                            MythicRespec.MyhticRespec(selected);
+                        }
+                        catch (Exception ex)
+                        {
+                            modEntry.Logger.Error(ex.ToString());
+                        }
+                    }
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.Space(10f);
 				GUILayout.BeginHorizontal();
 				settings.FreeRespec = GUILayout.Toggle(settings.FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
 				if(selected.IsStoryCompanion() && !selected.IsMainCharacter)
@@ -501,10 +546,10 @@ namespace RespecModBarley
 					///noSelectionIfAlreadyHasFeatureBackgroundSelect.m_Features = FeatureListsT;
 					///ExtensionMethods.AddComponent(Stuf.BackgroundSelect, noSelectionIfAlreadyHasFeatureBackgroundSelect);
 					///var UnitBPs = Utilities.GetScriptableObjects<BlueprintScriptableObject>().OfType<BlueprintUnit>().ToList();
-					foreach (BlueprintUnit data in unitbps.Where(a => a.CharacterName != null))
+					/*foreach (BlueprintUnit data in unitbps.Where(a => a.CharacterName != null && a.ToString().Contains("_Companion")))
 					{
 						Main.GetUnitForMemory(data);
-					}
+					}*/
 					Main.haspatched = true;
 				}
 				catch (Exception ex)
@@ -516,15 +561,17 @@ namespace RespecModBarley
 		}
 		public static void PreRespec(UnitEntityData entityData)
 		{
+            Main.IsRespec = true;
 			try
 			{
+                Main.IsRespec = true;
 				var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
 				backgroundsarray = backgroundsarray.Concat<BlueprintFeature>(Stuf.deityfeatures).ToArray();
 				Main.IsRespec = true;
-				//if (entityData.IsStoryCompanion())
+				/*if (entityData.IsStoryCompanion())
 				{
 					Main.GetUnitForMemory(entityData.Blueprint);
-				}
+				}*/
 				Main.EntityUnit = entityData;
 				foreach (EntityPart entityPart in entityData.Parts.m_Parts)
 				{
@@ -546,10 +593,10 @@ namespace RespecModBarley
 				{
 					foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
 					{
-						var nosource = blueprintf.SourceClass == null && blueprintf.SourceProgression == null;
-						if (backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && nosource)
+						var nosource = blueprintf.SourceClass == null && blueprintf.SourceProgression == null && blueprintf.SourceRace == null;
+                        if (backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && nosource && !blueprintf.NameForAcronym.Contains("Cantrip") || entityData.Progression.Race.m_Features.Any(A => A.Cached == blueprintf.Blueprint))
 						{
-							//Main.logger.Log("!= null " + blueprintf.ToString());
+						//	Main.logger.Log(blueprintf.ToString());
 							Main.featurestoadd.Add(blueprintf.Blueprint);
 						}
 						/*else if(backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && blueprintf.m_Source == null)
@@ -561,11 +608,13 @@ namespace RespecModBarley
 				}
 				if (entityData.Blueprint.GetComponent<ClassLevelLimit>())
 				{
-					entityData.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
+					//testy
+					//entityData.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
 				}
 				if (entityData.Blueprint.GetComponent<MythicLevelLimit>())
 				{
-					entityData.Blueprint.GetComponent<MythicLevelLimit>().LevelLimit = 0;
+					//testy
+					//entityData.Blueprint.GetComponent<MythicLevelLimit>().LevelLimit = 0;
 				}
 				RespecClass.Respecialize(entityData);
 			}
