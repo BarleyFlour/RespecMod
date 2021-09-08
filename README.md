@@ -21,7 +21,7 @@ CREDITS
 
 ♦ @Vek17, @Bubbles, @Balkoth, @Narria, @Spacehamster and the rest of our great Discord modding community - help.
 
-♦ PS: Spacehamster's Modding Wiki is an excellent place to start if you want to start moding on your own. (https://github.com/spacehamster/OwlcatModdingWiki/wiki/Beginner-Guide)
+♦ PS: Spacehamster's Modding Wiki is an excellent place to start if you want to start modding on your own. (https://github.com/spacehamster/OwlcatModdingWiki/wiki/Beginner-Guide)
 
 SOURCE
 https://github.com/BarleyFlour/RespecMod
