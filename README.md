@@ -3,9 +3,13 @@ Respec Mod: Wrath of the Righteous
 
 FEATURES 
 • Completely respec companions (no more 1+ useless levels)
+
 • Preserve original ability scores.
+
 • Use a custom point buy value up to 102.
+
 • Mythic respec functionality (Switching mythic paths will most likely break your game though)
+
 • Choose whether to retain background/religion.
 
 CREDITS
@@ -26,10 +30,17 @@ https://github.com/BarleyFlour/RespecMod
 
 
 Install & Use
+
  Install Unity Mod Manager﻿﻿.
+ 
  Install the mod using Unity Mod Manager﻿ or extract the archive to your game's mod folder ("Pathfinder Second Adventure\Mods").
+ 
  Open the Unity Mod Manager﻿ by pressing CTRL + F10. (Once ingame)
+ 
  Select desired character and Ability Scores & Other settings, make sure you have the appropriate ammount of gold, then hit respec.
+ 
  It is reccomended to Save and Load after finishing your Respec.
+ 
+
 
 Please also submit an issue on the github if you encounter any issues. https://github.com/BarleyFlour/RespecMod/issues
