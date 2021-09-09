@@ -596,7 +596,7 @@ namespace RespecModBarley
 						var nosource = blueprintf.SourceClass == null && blueprintf.SourceProgression == null && blueprintf.SourceRace == null;
                         if (backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && nosource && !blueprintf.NameForAcronym.Contains("Cantrip") || entityData.Progression.Race.m_Features.Any(A => A.Cached == blueprintf.Blueprint))
 						{
-						//	Main.logger.Log(blueprintf.ToString());
+							Main.logger.Log(blueprintf.ToString());
 							Main.featurestoadd.Add(blueprintf.Blueprint);
 						}
 						/*else if(backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && blueprintf.m_Source == null)
@@ -606,12 +606,12 @@ namespace RespecModBarley
 
 					}
 				}
-				if (entityData.Blueprint.GetComponent<ClassLevelLimit>())
+				//if (entityData.Blueprint.GetComponent<ClassLevelLimit>())
 				{
 					//testy
 					//entityData.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
 				}
-				if (entityData.Blueprint.GetComponent<MythicLevelLimit>())
+				//if (entityData.Blueprint.GetComponent<MythicLevelLimit>())
 				{
 					//testy
 					//entityData.Blueprint.GetComponent<MythicLevelLimit>().LevelLimit = 0;
@@ -619,7 +619,9 @@ namespace RespecModBarley
 				RespecClass.Respecialize(entityData);
 			}
 
-			catch(Exception e) { Main.logger.Log(e.ToString()); }
+			catch(Exception e) { Main.logger.Log(e.ToString());
+                Main.IsRespec = false;
+            }
 			/*if (IsEnabled == false) { return; }
 			IsRespec = true;
 			EntityUnit = entityData;

@@ -84,10 +84,10 @@ namespace RespecModBarley
 								{
 									using (ContextData<IgnorePrerequisites>.Request())
 									{
-									//	Main.logger.Log(Main.IsRespec.ToString());
-                                        if (Main.isrecruit || !unit.IsPlayerFaction)
+									    //	Main.logger.Log(Main.IsRespec.ToString());
+                                        if (Main.isrecruit || !unit.IsPlayerFaction || !Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName))
                                         {
-										//	Main.logger.Log("addedlvl");
+										    //	Main.logger.Log("addedlvl");
                                             AddClassLevels.AddLevel(c, unit, selectionsHistory, spellHistory, fact);
                                         }
                                     }

@@ -25,7 +25,7 @@ namespace RespecModBarley
         {
             try
             {
-               // Main.logger.Log("recruited" + data.CompanionBlueprint.CharacterName);
+               //Main.logger.Log("recruited" + data.CompanionBlueprint.CharacterName);
                // Main.logger.Log(Main.GetUnitInfoBP(data.CompanionBlueprint)[0].ToString());
                 Main.isrecruit = true;
                 //testy

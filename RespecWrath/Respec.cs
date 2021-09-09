@@ -13,6 +13,7 @@ using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items.Armors;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Root;
+using Kingmaker.Cheats;
 using Kingmaker.Controllers.Rest;
 using Kingmaker.Designers;
 using Kingmaker.Designers.Mechanics.Facts;
@@ -98,6 +99,16 @@ namespace RespecModBarley
 			{
 				newUnit = Game.Instance.CreateUnitVacuum(unit2);
 			}
+            var asd = newUnit.Facts.m_Facts.Where(a => a.Blueprint.name.Contains("Atheism"));
+            if (asd.Any())
+            {
+				foreach(var sdasd in asd)
+                {
+					newUnit.Progression.Features.Manager.Remove(sdasd);
+                }
+                newUnit.Facts.Remove(asd.First());
+            }
+            newUnit.Progression.Features.RemoveFact(newUnit.GetFeature(Utilities.GetBlueprint<BlueprintFeature>("92c0d2da0a836ce418a267093c09ca54")));
 
 			BlueprintUnit defaultPlayerCharacter = Game.Instance.BlueprintRoot.DefaultPlayerCharacter;
 			UnitDescriptor descriptor = newUnit.Descriptor;
@@ -112,7 +123,7 @@ namespace RespecModBarley
 			descriptor.Stats.HitPoints.BaseValue = defaultPlayerCharacter.MaxHP + 1;
 			descriptor.Stats.Speed.BaseValue = defaultPlayerCharacter.Speed.Value;
 			descriptor.UpdateSizeModifiers();
-			var BPBackgroundList = new List<BlueprintFeature> { };
+			//var BPBackgroundList = new List<BlueprintFeature> { };
 			/*foreach (EntityPart entityPart in unit.Parts.Parts)
 			{
 				if (Main.partslist.Contains(entityPart.ToString()))
@@ -144,11 +155,7 @@ namespace RespecModBarley
 					}
 				}
 			}*/
-
-
-
-
-			newUnit.PreviewOf = unit;
+            newUnit.PreviewOf = unit;
 			newUnit.Progression.AdvanceExperienceTo(unit.Descriptor.Progression.Experience, false, false);
 			newUnit.Progression.AdvanceMythicExperience(unit.Descriptor.Progression.MythicExperience, false);
 			if (unit.IsMainCharacter || unit.IsCloneOfMainCharacter)
