@@ -99,18 +99,7 @@ namespace RespecModBarley
 			{
 				newUnit = Game.Instance.CreateUnitVacuum(unit2);
 			}
-            var asd = newUnit.Facts.m_Facts.Where(a => a.Blueprint.name.Contains("Atheism"));
-            if (asd.Any())
-            {
-				foreach(var sdasd in asd)
-                {
-					newUnit.Progression.Features.Manager.Remove(sdasd);
-                }
-                newUnit.Facts.Remove(asd.First());
-            }
-            newUnit.Progression.Features.RemoveFact(newUnit.GetFeature(Utilities.GetBlueprint<BlueprintFeature>("92c0d2da0a836ce418a267093c09ca54")));
-
-			BlueprintUnit defaultPlayerCharacter = Game.Instance.BlueprintRoot.DefaultPlayerCharacter;
+            BlueprintUnit defaultPlayerCharacter = Game.Instance.BlueprintRoot.DefaultPlayerCharacter;
 			UnitDescriptor descriptor = newUnit.Descriptor;
 			var entityData = newUnit;
 			UnitProgressionData unitProgressionData = newUnit.Progression;
@@ -660,7 +649,7 @@ namespace RespecModBarley
 					{
 						if (!targetUnit.Parts.Parts.Contains(part))
 						{
-							Main.logger.Log(part.ToString());
+							//Main.logger.Log(part.ToString());
 							part.AttachToEntity(targetUnit);
 							part.TurnOn();
 							targetUnit.Parts.m_Parts.Add(part);

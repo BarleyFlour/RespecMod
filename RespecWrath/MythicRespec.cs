@@ -40,7 +40,7 @@ namespace RespecModBarley
     [HarmonyPatch(typeof(AddClassLevels), "LevelUp")]
     [HarmonyPatch(new Type[] {typeof(AddClassLevels),typeof(UnitDescriptor),typeof(int),typeof(UnitFact)})]
     [HarmonyPriority(9999)]
-    static class testy
+    static class AddClassLevels_LevelUp
     {
         static bool Prefix(AddClassLevels c, UnitDescriptor unit, int levels, UnitFact fact = null)
         {
@@ -84,8 +84,11 @@ namespace RespecModBarley
 								{
 									using (ContextData<IgnorePrerequisites>.Request())
 									{
-									    //	Main.logger.Log(Main.IsRespec.ToString());
-                                        if (Main.isrecruit || !unit.IsPlayerFaction || !Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName))
+										/*Main.logger.Log("contains:"+Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName).ToString());
+                                        Main.logger.Log("storcompanionrecruit:"+ (unit.Unit.IsStoryCompanion() && !Main.isrecruit));
+										Main.logger.Log("pet:" +unit.Unit.IsPet.ToString());*/
+										//	Main.logger.Log(Main.IsRespec.ToString());
+										if ( !Main.IsRespec && (Main.isrecruit || !Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName) || (!unit.Unit.IsStoryCompanion() && !Main.isrecruit) || unit.Unit.IsPet))
                                         {
 										    //	Main.logger.Log("addedlvl");
                                             AddClassLevels.AddLevel(c, unit, selectionsHistory, spellHistory, fact);
@@ -97,9 +100,9 @@ namespace RespecModBarley
 									SelectionEntry selectionEntry = c.Selections.FirstItem((SelectionEntry it) => it.Selection == BlueprintRoot.Instance.Progression.DeitySelection);
 									BlueprintFeature blueprintFeature = (selectionEntry != null) ? selectionEntry.Features.FirstOrDefault<BlueprintFeature>() : null;
 									bool flag = unit.Progression.Features.RawFacts.HasItem((Feature it) => it.Blueprint.Groups.Contains(FeatureGroup.Deities));
-									if (blueprintFeature != null && !flag && !unit.HasFact(blueprintFeature))
+									if (blueprintFeature != null && !flag && !unit.HasFact(blueprintFeature) && !Main.settings.BackgroundDeity)
 									{
-										((Feature)unit.AddFact(blueprintFeature, null, null)).SetSource(BlueprintRoot.Instance.Progression.FeatsProgression, 1);
+                                        ((Feature)unit.AddFact(blueprintFeature, null, null)).SetSource(BlueprintRoot.Instance.Progression.FeatsProgression, 1);
 										unit.Progression.AddSelection(BlueprintRoot.Instance.Progression.DeitySelection, BlueprintRoot.Instance.Progression.FeatsProgression, 1, blueprintFeature);
 									}
 								}
@@ -119,7 +122,7 @@ namespace RespecModBarley
 								}
 							}
 						}
-						unit.Progression.ReapplyFeaturesOnLevelUp();
+                        unit.Progression.ReapplyFeaturesOnLevelUp();
 						AddClassLevels.PrepareSpellbook(c, unit);
 						UnitEntityView view = unit.Unit.View;
 						if (view != null)

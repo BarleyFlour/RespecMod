@@ -596,7 +596,7 @@ namespace RespecModBarley
 						var nosource = blueprintf.SourceClass == null && blueprintf.SourceProgression == null && blueprintf.SourceRace == null;
                         if (backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && nosource && !blueprintf.NameForAcronym.Contains("Cantrip") || entityData.Progression.Race.m_Features.Any(A => A.Cached == blueprintf.Blueprint))
 						{
-							Main.logger.Log(blueprintf.ToString());
+							//Main.logger.Log(blueprintf.ToString());
 							Main.featurestoadd.Add(blueprintf.Blueprint);
 						}
 						/*else if(backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && blueprintf.m_Source == null)

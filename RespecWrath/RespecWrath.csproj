@@ -2,7 +2,7 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="packages\Aze.Publicise.MSBuild.Task.1.0.0\build\Aze.Publicise.MSBuild.Task.props" Condition="Exists('packages\Aze.Publicise.MSBuild.Task.1.0.0\build\Aze.Publicise.MSBuild.Task.props')" />
   <PropertyGroup>
-    <InstallDir Condition=" '$(InstallDir)' == '' ">E:\Games\Steam\steamapps\common\Pathfinder Second Adventure</InstallDir>
+    <InstallDir Condition=" '$(InstallDir)' == '' ">F:\Games\Steam\steamapps\common\Pathfinder Second Adventure</InstallDir>
   </PropertyGroup>
   <Target Name="Publicise" AfterTargets="Clean">
     <ItemGroup>
@@ -42,7 +42,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <InstallDir Condition=" '$(InstallDir)' == '' ">B:\Games\Steam\steamapps\common\Pathfinder Second Adventure Demo</InstallDir>
+    <InstallDir Condition=" '$(InstallDir)' == '' ">F:\Games\Steam\steamapps\common\Pathfinder Second Adventure</InstallDir>
   </PropertyGroup>
   <Target Name="Publicise" AfterTargets="Clean">
     <ItemGroup>
@@ -53,7 +53,7 @@
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\Games\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\0Harmony.dll</HintPath>
+      <HintPath>F:\Games\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp_public">
       <HintPath>lib\Assembly-CSharp_public.dll</HintPath>
@@ -137,4 +137,10 @@
     <Compile Include="StatsDistribution_Patch.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>echo "$(TargetPath)" "&gt;$(WrathPath)\Mods\$(ProjectName)\$(ProjectName).dll*"
+xcopy /Y "$(TargetPath)" "$(WrathPath)\Mods\$(ProjectName)\$(ProjectName).dll*"
+xcopy /Y "$(TargetDir)$(TargetName).pdb" "$(WrathPath)\Mods\$(ProjectName)\$(ProjectName).pdb*"
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>
