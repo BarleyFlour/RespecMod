@@ -24,10 +24,13 @@ namespace RespecWrathFork
                 {
                     if (Main.EntityUnit.IsMC() && Main.settings.PreserveMCBiographicalInformation)
 					{
-                        //__instance.SelectRace(Main.EntityUnit.Progression.Race);
+                        __instance.SelectRace(Main.EntityUnit.Progression.Race);
                         __instance.SelectName(Main.EntityUnit.CharacterName);
+                       
                         __instance.SelectAlignment(Main.EntityUnit.Alignment.m_Value.Value);
                         unit.Alignment.CopyFrom(Main.EntityUnit.Alignment);
+                        
+                        
                         __instance.SelectGender(Main.EntityUnit.Gender);
                         __instance.SetBirthDay(Main.EntityUnit.Descriptor.BirthDay, Main.EntityUnit.Descriptor.BirthMonth);
                         __instance.SelectVoice(Main.EntityUnit.Descriptor.Asks);

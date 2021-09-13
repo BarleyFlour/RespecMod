@@ -150,7 +150,7 @@ namespace RespecWrathFork
                             }
                         }*/
                         ///unit.Progression.SetRace(unit.Blueprint.Race);
-                        if (unit.Progression.Experience > 0 && unit.Progression.CharacterLevel == 0 && Main.IsRespec == true && unit.IsPet == false)
+                        if (Main.IsRespec == true && unit.IsPet == false)
                         {
                             var bu = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("047b715d404d5f245ad37019b5b6f1de");
                             if (unit.CharacterName.Contains("Nenio") && !unit.HasFact(bu))
@@ -274,7 +274,7 @@ namespace RespecWrathFork
                             }*/
                         /*}*/
 
-                        if (Main.IsRespec == true && unit.Progression.Experience > 0 && unit.Progression.Experience > 0)
+                        if (Main.IsRespec == true)
                         {
                             unit.Parts.m_Parts.Clear();
                             foreach (Spellbook spellbook in unit.Spellbooks)
@@ -361,7 +361,7 @@ namespace RespecWrathFork
                                 __instance.CanSelectAlignment = false;
 
                                 //Does not prevent race selection from appearing. Prossible cause of GFX bomb
-                                Traverse.Create(__instance).Property("CanSelectRace", null).SetValue(false);
+                                //Traverse.Create(__instance).Property("CanSelectRace", null).SetValue(false);
                                 __instance.CanSelectRace = true;
 
                                 
@@ -369,9 +369,9 @@ namespace RespecWrathFork
                                 __instance.CanSelectPortrait = false;
 
                                 ///Also possible GFX bomb source
-                                Traverse.Create(__instance).Property("CanSelectGender", null).SetValue(false);
+                                //Traverse.Create(__instance).Property("CanSelectGender", null).SetValue(false);
 
-                                __instance.CanSelectGender = false;
+                                __instance.CanSelectGender = true;
                                
 
                                
@@ -424,11 +424,7 @@ namespace RespecWrathFork
                     Main.logger.Log(ex.ToString());
                 }
             }
-            else if (unit.Blueprint.GetComponent<ClassLevelLimit>())
-            {
-                //testy
-                // unit.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-            }
+            
         }
     }
 }
