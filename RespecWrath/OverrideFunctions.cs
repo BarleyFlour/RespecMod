@@ -22,7 +22,7 @@ namespace RespecWrathFork
             {
                 if (Main.IsRespec == true)
                 {
-                    if (Main.EntityUnit.IsMC() && Main.settings.PreserveMCBiographicalInformation))
+                    if (Main.EntityUnit.IsMC() && Main.settings.PreserveMCBiographicalInformation)
 					{
                         //__instance.SelectRace(Main.EntityUnit.Progression.Race);
                         __instance.SelectName(Main.EntityUnit.CharacterName);

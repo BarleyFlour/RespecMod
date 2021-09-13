@@ -131,10 +131,10 @@ namespace RespecWrathFork
                
                         newUnit.Alignment.CopyFrom(unit.Alignment);
                  
-                /*if (!unit.CharacterName.IsNullOrEmpty())
+                if (!unit.CharacterName.IsNullOrEmpty())
                 {
                     newUnit.Descriptor.CustomName = unit.CharacterName;
-                }*/
+                }
 
                 /*
                 if (unit.Blueprint != null && unit.Blueprint.Race != null)

@@ -18,7 +18,7 @@ namespace RespecWrathFork
 			{
 				if (Main.IsRespec == true)
 				{
-					if (Main.EntityUnit.IsMC() && !Main.settings.PreserveMCBiographicalInformation)
+					if (Main.EntityUnit.IsMC() && Main.settings.PreserveMCBiographicalInformation)
 					{
 						__result = false;
 						return;
