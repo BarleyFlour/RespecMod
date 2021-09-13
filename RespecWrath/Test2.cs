@@ -22,7 +22,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Kingmaker.Designers.EventConditionActionSystem.Actions.Recruit;
 
-namespace RespecModBarley
+namespace RespecWrathFork
 {
 	[HarmonyPatch(typeof(AddPet), "GetPetLevel")]
 	internal static class GetPetLevel
