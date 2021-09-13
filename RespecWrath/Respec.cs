@@ -65,7 +65,7 @@ namespace RespecWrathFork
         public static void Respecialize(this UnitEntityData unit, Action successCallback = null)
         {
             UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: requested for {0}", unit), Array.Empty<object>());
-            Main.logger.Log("In Respec Class");
+            
             Main.MythicXP = unit.Progression.MythicExperience;
             int experience = unit.Descriptor.Progression.Experience;
             ReplaceUnitBlueprintForRespec replaceUnitBlueprintForRespec = unit.Blueprint.GetComponent<ReplaceUnitBlueprintForRespec>().Or(null);

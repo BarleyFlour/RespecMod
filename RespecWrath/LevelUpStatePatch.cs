@@ -34,28 +34,7 @@ namespace RespecWrathFork
         private static void Postfix(LevelUpState __instance, UnitEntityData unit, LevelUpState.CharBuildMode mode)
         {
 
-            if (__instance == null)
-            {
-                Main.logger.Log("LevelUpState is null in LevelUpState postfix");
-            }
-
-            if (unit == null)
-            {
-                Main.logger.Log("UnitEntityData is null in LevelUpState postfix");
-            }
-            else
-            {
-                Main.logger.Log($"LevelUpState Postfix called by {unit.CharacterName} in {mode.ToString()}");
-                if (unit.Blueprint == null)
-                {
-                    Main.logger.Log("UnityEntryData . Blueprint is null in LevelUpState postfix");
-                }
-                else if (unit.Blueprint.Race == null)
-                {
-                    Main.logger.Log("UnityEntryData . Blueprint . Race is null in LevelUpState postfix");
-                }
-
-            }
+       
 
 
             /*if(unit.IsPet == true)
@@ -71,56 +50,11 @@ namespace RespecWrathFork
             ///unit.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
             if (Main.IsRespec == true)
             {
-                Main.logger.Log("In LevelUpState Postfix");
+           
                 ///var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
                 try
                 {
-                    if (unit.Descriptor == null)
-                    {
-                        Main.logger.Log("Descriptor a bust");
-                    }
-                    else
-                    {
-                        if (unit.Descriptor.Progression == null)
-                        {
-                            Main.logger.Log("Descriptor.Progression a bust");
-                        }
-                        else if (unit.Descriptor.Progression.Race == null)
-                        {
-                            Main.logger.Log("Descriptor.Progression.Race a bust");
-                        }
-                        else
-                        {
-                            Main.logger.Log("Descriptor.Progression.Race is go");
-                        }
-                        if (unit.Descriptor.Blueprint == null)
-                        {
-                            Main.logger.Log("Descriptor.Blueprint a bust");
-                        }
-                        else if (unit.Descriptor.Blueprint.Race == null)
-                        {
-                            Main.logger.Log("Descriptor.Blueprint.Race a bust");
-                        }
-                        else
-                        {
-                            Main.logger.Log("Descriptor.Blueprint.Race is go");
-                        }
-                    }
-                    if (unit.Progression == null)
-                    {
-                        Main.logger.Log("Progression a bust");
-                    }
-                    else
-                    {
-                        if (unit.Progression.Race == null)
-                        {
-                            Main.logger.Log("Progression.Race a bust");
-                        }
-                        else
-                        {
-                            Main.logger.Log("Progression.Race is go");
-                        }
-                    }
+                    
 
                     if (Main.IsEnabled == true)
                     {
@@ -282,7 +216,7 @@ namespace RespecWrathFork
                                 spellbook.UpdateAllSlotsSize(true);
                                 spellbook.UpdateMythicLevel();
                             }
-                            Main.logger.Log("Starting stats block");
+
                             int[] initStatsByUnit = Main.GetInitStatsByUnit(unit);
                             unit.Descriptor.Stats.Strength.BaseValue = initStatsByUnit[0];
                             unit.Descriptor.Stats.Dexterity.BaseValue = initStatsByUnit[1];
@@ -294,7 +228,7 @@ namespace RespecWrathFork
 							{
 								unit.Pets.Clear();
 							}*/
-                            Main.logger.Log("Starting featurestoAddBlock block");
+
                             foreach (BlueprintFeature featuretoadd in Main.featurestoadd)
                             {
                                 ///Main.logger.Log(featuretoadd.ToString());
@@ -315,7 +249,7 @@ namespace RespecWrathFork
                             }
                        
                             var blueprintUnit = Game.Instance.BlueprintRoot.SelectablePlayerCharacters.Where(u => u == unit.Blueprint).FirstOrDefault();
-                            Main.logger.Log("Entering __instance setup cascade");
+
                             if (unit.IsCustomCompanion() && unit.IsPet == false || unit.IsMainCharacter && unit.IsPet == false || unit.IsStoryCompanion() && Main.settings.FullRespecStoryCompanion)
                             {
                                 
@@ -356,20 +290,18 @@ namespace RespecWrathFork
                                 Traverse.Create(__instance).Property("CanSelectVoice", null).SetValue(false);
                                 __instance.CanSelectVoice = false;
 
-                                //Does not prevent alignment from appearing, nuetral is loading but is overridden by correct val at end of sequence of events
+
                                 Traverse.Create(__instance).Property("CanSelectAlignment", null).SetValue(false);
                                 __instance.CanSelectAlignment = false;
 
-                                //Does not prevent race selection from appearing. Prossible cause of GFX bomb
-                                //Traverse.Create(__instance).Property("CanSelectRace", null).SetValue(false);
+
                                 __instance.CanSelectRace = true;
 
                                 
                                 Traverse.Create(__instance).Property("CanSelectPortrait", null).SetValue(false);
                                 __instance.CanSelectPortrait = false;
 
-                                ///Also possible GFX bomb source
-                                //Traverse.Create(__instance).Property("CanSelectGender", null).SetValue(false);
+
 
                                 __instance.CanSelectGender = true;
                                
@@ -384,7 +316,7 @@ namespace RespecWrathFork
                             else if (unit.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion || unit.Blueprint.ToString().Contains("_Companion") && unit.IsPet == false && !Main.settings.FullRespecStoryCompanion)
                             {
                                 
-                                Main.logger.Log("In limited SC Respec");
+
                                 Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.LevelUp);
                                 Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(true);
                                 Traverse.Create(__instance).Property("CanSelectName", null).SetValue(false);
@@ -400,13 +332,7 @@ namespace RespecWrathFork
                             }
                             else
                             {
-                                Main.logger.Log("MISSED ALL THE SETUP CASCADES IN LevelUpStatePatch");
-                                Main.logger.Log($"Unit Name: {unit.CharacterName}");
-                                Main.logger.Log($"Is Main Character: {unit.IsMainCharacter}");
-                                Main.logger.Log($"Is Clone of MC: {unit.IsCloneOfMainCharacter}");
-                                Main.logger.Log($"Is SC: {unit.IsStoryCompanion()}");
-                                Main.logger.Log($"Respec MC Setting: {Main.settings.FullRespecStoryCompanion}");
-                                Main.logger.Log($"Respec B and D Setting: {Main.settings.BackgroundDeity}");
+                             
                             }
                         }
                     }
