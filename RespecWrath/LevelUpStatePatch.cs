@@ -76,7 +76,7 @@ namespace RespecModBarley
                             }
                         }*/
 						///unit.Progression.SetRace(unit.Blueprint.Race);
-						if (unit.Progression.Experience > 0 && unit.Progression.CharacterLevel == 0 && Main.IsRespec == true && unit.IsPet == false)
+						if ( Main.IsRespec == true && unit.IsPet == false)
 						{
 							var bu = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("047b715d404d5f245ad37019b5b6f1de");
 							if (unit.CharacterName.Contains("Nenio") && !unit.HasFact(bu))
@@ -161,7 +161,7 @@ namespace RespecModBarley
                             }*/
                         /*}*/
 
-						if (Main.IsRespec == true && unit.Progression.Experience > 0 && unit.Progression.Experience > 0)
+						if (Main.IsRespec == true)
 						{
 							unit.Parts.m_Parts.Clear();
 							foreach (Spellbook spellbook in unit.Spellbooks)
@@ -241,12 +241,7 @@ namespace RespecModBarley
 					Main.logger.Log(ex.ToString());
 				}
 			}
-			else if (unit.Blueprint.GetComponent<ClassLevelLimit>())
-            {
-				//testy
-               // unit.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-            }
-		}
+        }
 	}
 }
 
