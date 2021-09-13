@@ -9,15 +9,17 @@ using UnityEngine;
 using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
 
-namespace RespecModBarley
+namespace RespecWrathFork
 {
     public class Settings : UnityModManager.ModSettings
     {
         public int PointsCount;
         public bool OriginalStats;
         public bool BackgroundDeity;
+        public bool PreserveMCBiographicalInformation = true;
         public bool FreeRespec = false;
         public bool FullRespecStoryCompanion = false;
+        
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             var filepath = Path.Combine(modEntry.Path, "Settings.json");
