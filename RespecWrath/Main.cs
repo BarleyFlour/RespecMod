@@ -431,7 +431,7 @@ namespace RespecWrathFork
                 GUILayout.Space(10f);
 				GUILayout.BeginHorizontal();
 				settings.FreeRespec = GUILayout.Toggle(settings.FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
-				if(selected.IsStoryCompanion() || selected.IsMainCharacter )
+				if(selected.IsStoryCompanion() && !selected.IsMC() )
 				{
 					settings.FullRespecStoryCompanion = GUILayout.Toggle(settings.FullRespecStoryCompanion, "Full Story Companion Respec", GUILayout.ExpandWidth(false));
 					if(settings.FullRespecStoryCompanion)
@@ -443,16 +443,24 @@ namespace RespecWrathFork
                 {
 					settings.FullRespecStoryCompanion = false;
                 }
-				
-				if(selected.IsStoryCompanion() && !settings.FullRespecStoryCompanion || selected.IsMainCharacter && !settings.FullRespecStoryCompanion)
+				if (selected.IsMC())
+                {
+					settings.PreserveMCBiographicalInformation = GUILayout.Toggle(settings.PreserveMCBiographicalInformation, "Retain Name/Alignment/Birthday/Portrait", GUILayout.ExpandWidth(false));
+				}
+				else
+                {
+					settings.PreserveMCBiographicalInformation = false;
+				}
+
+
+				if(selected.IsStoryCompanion() && !settings.FullRespecStoryCompanion)
                 {
 					settings.BackgroundDeity = GUILayout.Toggle(settings.BackgroundDeity, "Choose Background/Deity", GUILayout.ExpandWidth(false));
 				}
-				else if ((selected.IsMainCharacter || selected.IsStoryCompanion()) && settings.FullRespecStoryCompanion)
+				else if (( selected.IsStoryCompanion()) && settings.FullRespecStoryCompanion)
                 {
 					settings.BackgroundDeity = true;
 				}
-				
                 else if (!settings.FullRespecStoryCompanion)
                 {
 					settings.BackgroundDeity = false;
@@ -613,7 +621,7 @@ namespace RespecWrathFork
 					entityData.GetFact(AmuletFact).Detach();
 					Main.logger.Log("asd");
 				}*/
-				if (entityData.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion || entityData.IsMC() && !Main.settings.FullRespecStoryCompanion || entityData.Blueprint.ToString().Contains("_Companion"))
+				if (entityData.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion || entityData.Blueprint.ToString().Contains("_Companion"))
 				{
 					foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
 					{

@@ -18,7 +18,7 @@ namespace RespecWrathFork
 			{
 				if (Main.IsRespec == true)
 				{
-					if (Main.EntityUnit.IsMC() && !Main.settings.FullRespecStoryCompanion)
+					if (Main.EntityUnit.IsMC() && !Main.settings.PreserveMCBiographicalInformation)
 					{
 						__result = false;
 						return;
@@ -28,7 +28,7 @@ namespace RespecWrathFork
 			catch (Exception e) { Main.logger.Log(e.ToString()); }
 		}
 	}
-
+/*
 	[HarmonyPatch(typeof(CharGenVM), "NeedRacePhase")]
 	internal static class NeedRace_Patch
 	{
@@ -40,7 +40,7 @@ namespace RespecWrathFork
 				{
 					if (Main.EntityUnit.IsMC() && !Main.settings.FullRespecStoryCompanion)
 					{
-						__result = false;
+						//__result = false;
 						return;
 					}
 				}
@@ -48,7 +48,7 @@ namespace RespecWrathFork
 			catch (Exception e) { Main.logger.Log(e.ToString()); }
 		}
 	}
-
+*/
 	[HarmonyPatch(typeof(CharGenVM), "NeedAlignmentPhase")]
 	internal static class NeedAlignment_Patch
 	{
@@ -58,7 +58,7 @@ namespace RespecWrathFork
 			{
 				if (Main.IsRespec == true)
 				{
-					if (Main.EntityUnit.IsMC() && !Main.settings.FullRespecStoryCompanion)
+					if (Main.EntityUnit.IsMC() && Main.settings.PreserveMCBiographicalInformation)
 					{
 						__result = false;
 						return;
@@ -78,7 +78,7 @@ namespace RespecWrathFork
 			{
 				if (Main.IsRespec == true)
 				{
-					if (Main.EntityUnit.IsMC() && !Main.settings.FullRespecStoryCompanion)
+					if (Main.EntityUnit.IsMC() && Main.settings.PreserveMCBiographicalInformation)
 					{
 						__result = false;
 						return;

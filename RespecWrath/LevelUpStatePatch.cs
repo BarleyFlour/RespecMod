@@ -167,7 +167,7 @@ namespace RespecWrathFork
 								}
 							}*/
 
-                            if (unit.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion || unit.Blueprint.ToString().Contains("_Companion") && !Main.settings.FullRespecStoryCompanion)
+                            if (unit.IsStoryCompanion() && !unit.IsMC() && !Main.settings.FullRespecStoryCompanion || unit.Blueprint.ToString().Contains("_Companion"))
                             {
                                
                                     
@@ -187,9 +187,10 @@ namespace RespecWrathFork
                                     __instance.AddSelection(null, unit.Blueprint.Race, blueprintFeatureSelection, 0);
                                 }
                             }
+                            /*
                             else if (unit.IsMC() && !Main.settings.FullRespecStoryCompanion)
                             {
-                                /*
+                                
                                 BlueprintRace unitBluePrintRace = unit.Blueprint.Race;
                                 if (unitBluePrintRace == null)
                                 {
@@ -220,8 +221,8 @@ namespace RespecWrathFork
                                     __instance.AddSelection(null, unitBluePrintRace, blueprintFeatureSelection, 0);
                                 }
                                 Main.logger.Log("Done Cloning MC race features");
-                                */
-                            }
+                                
+                            }*/
                             /*if (unit.CharacterName.Contains("Nenio"))
                             {
 								var Kitsune = ResourcesLibrary.TryGetBlueprint<BlueprintRace>("fd188bb7bb0002e49863aec93bfb9d99");
@@ -306,7 +307,7 @@ namespace RespecWrathFork
 
                             if (unit.Progression.Race == Stuf.HumanRace || unit.Progression.Race == Stuf.HalfElfRace || unit.Progression.Race == Stuf.HalfOrcRace)
                             {
-                                if (!Main.settings.FullRespecStoryCompanion)
+                                if (!Main.settings.FullRespecStoryCompanion && !unit.IsMC())
                                 {
                                     __instance.CanSelectRaceStat = true;
                                 }
@@ -315,18 +316,9 @@ namespace RespecWrathFork
                        
                             var blueprintUnit = Game.Instance.BlueprintRoot.SelectablePlayerCharacters.Where(u => u == unit.Blueprint).FirstOrDefault();
                             Main.logger.Log("Entering __instance setup cascade");
-                            if (unit.IsCustomCompanion() && unit.IsPet == false || unit.IsMC() && unit.IsPet == false && Main.settings.FullRespecStoryCompanion || unit.IsStoryCompanion() && Main.settings.FullRespecStoryCompanion)
+                            if (unit.IsCustomCompanion() && unit.IsPet == false || unit.IsMainCharacter && unit.IsPet == false || unit.IsStoryCompanion() && Main.settings.FullRespecStoryCompanion)
                             {
-                                if (unit.IsMC())
-                                {
-                                    Main.logger.Log("In Full Custom MC Respec");
-
-
-                                }
-                                else
-                                {
-                                    Main.logger.Log("In Full Custom SC Respec");
-                                }
+                                
                                 Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.CharGen);
                                 Traverse.Create(__instance).Property("CanSelectVoice", null).SetValue(true);
                                 /*if(Main.FullRespecStoryCompanion && unit.Descriptor.Alignment.Undetectable == true && unit.Blueprint.NameForAcronym == "Camelia_Companion")
@@ -350,9 +342,9 @@ namespace RespecWrathFork
                                 
 
                             }
-                            else if (unit.IsMC() && unit.IsPet == false && !Main.settings.FullRespecStoryCompanion)
+                            else if (unit.IsMC() && unit.IsPet == false && Main.settings.PreserveMCBiographicalInformation)
                             {
-                                Main.logger.Log("In limited MC Respec");
+                                
                                 Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.CharGen);
                                 Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(true);
 
@@ -365,29 +357,21 @@ namespace RespecWrathFork
                                 __instance.CanSelectVoice = false;
 
                                 //Does not prevent alignment from appearing, nuetral is loading but is overridden by correct val at end of sequence of events
-                                //Traverse.Create(__instance).Property("CanSelectAlignment", null).SetValue(false);
-                                __instance.CanSelectAlignment = true;
+                                Traverse.Create(__instance).Property("CanSelectAlignment", null).SetValue(false);
+                                __instance.CanSelectAlignment = false;
 
                                 //Does not prevent race selection from appearing. Prossible cause of GFX bomb
-                                //Traverse.Create(__instance).Property("CanSelectRace", null).SetValue(false);
+                                Traverse.Create(__instance).Property("CanSelectRace", null).SetValue(false);
                                 __instance.CanSelectRace = true;
 
-                                //unit.Descriptor.CustomGender = Main.EntityUnit.Gender;
-
-                                //BlueprintRace race = Main.EntityUnit.Progression.Race;
-
-
-                                //LevelUpHelper.AddFeaturesFromProgression(__instance, unit, race.Features.ToArray<BlueprintFeatureBase>(), race, 0);
-
-
-                                //Does not prevent protrait selection from appearing, am currently successfully overridng
-                                //Traverse.Create(__instance).Property("CanSelectPortrait", null).SetValue(false);
-                                __instance.CanSelectPortrait = true;
+                                
+                                Traverse.Create(__instance).Property("CanSelectPortrait", null).SetValue(false);
+                                __instance.CanSelectPortrait = false;
 
                                 ///Also possible GFX bomb source
-                                //Traverse.Create(__instance).Property("CanSelectGender", null).SetValue(false);
+                                Traverse.Create(__instance).Property("CanSelectGender", null).SetValue(false);
 
-                                __instance.CanSelectGender = true;
+                                __instance.CanSelectGender = false;
                                
 
                                
@@ -396,13 +380,6 @@ namespace RespecWrathFork
 
 
 
-                                /*
-                                UnitPartDollData unitPartDollData = unit.Get<UnitPartDollData>();
-                                if (unitPartDollData != null)
-                                {
-                                    unitPartDollData.CopyTo(unit);
-                                }
-                                */
                             }
                             else if (unit.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion || unit.Blueprint.ToString().Contains("_Companion") && unit.IsPet == false && !Main.settings.FullRespecStoryCompanion)
                             {

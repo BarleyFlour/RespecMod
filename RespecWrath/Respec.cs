@@ -118,34 +118,25 @@ namespace RespecWrathFork
             UnitDescriptor descriptor = newUnit.Descriptor;
             var entityData = newUnit;
             UnitProgressionData unitProgressionData = newUnit.Progression;
-            BlueprintRace raceref = null;
+            
 
 
 
-            if (!Main.settings.FullRespecStoryCompanion && unit.IsMC())
+            if (Main.settings.PreserveMCBiographicalInformation && unit.IsMC())
             {
 
-                if (unit.Portrait != null)
-                {
+               
                     newUnit.UISettings.SetPortrait(unit.Portrait);
-                }
-                if (unit.Alignment != null)
-                {
-                    if (newUnit.Alignment == null)
-                    {
-                        Main.logger.Log("Alignment is initially null, problem");
-
-                    }
-                    else
-                    {
+                
+               
                         newUnit.Alignment.CopyFrom(unit.Alignment);
-                    }
-                }
-                if (!unit.CharacterName.IsNullOrEmpty())
+                 
+                /*if (!unit.CharacterName.IsNullOrEmpty())
                 {
                     newUnit.Descriptor.CustomName = unit.CharacterName;
-                }
+                }*/
 
+                /*
                 if (unit.Blueprint != null && unit.Blueprint.Race != null)
                 {
                     raceref = unit.Blueprint.Race;
@@ -158,26 +149,18 @@ namespace RespecWrathFork
 
                     Main.logger.Log("Race from unit progression");
                 }
-                
+                */
                
                 
                 newUnit.Descriptor.LeftHandedOverride = unit.Descriptor.IsLeftHanded;
-                newUnit.Descriptor.CustomGender = unit.Gender;
-                Main.logger.Log($"Birthday is {unit.Descriptor.BirthMonth} /{unit.Descriptor.BirthDay}");
-                newUnit.Descriptor.BirthDay = unit.Descriptor.BirthDay;
-                newUnit.Descriptor.BirthMonth = unit.Descriptor.BirthMonth;
-                newUnit.Descriptor.CustomAsks = unit.Descriptor.CustomAsks;
+                //newUnit.Descriptor.CustomGender = unit.Gender;
+                //Main.logger.Log($"Birthday is {unit.Descriptor.BirthMonth} /{unit.Descriptor.BirthDay}");
+                //newUnit.Descriptor.BirthDay = unit.Descriptor.BirthDay;
+                //newUnit.Descriptor.BirthMonth = unit.Descriptor.BirthMonth;
+                //newUnit.Descriptor.CustomAsks = unit.Descriptor.CustomAsks;
             
                 
-                if (raceref != null)
-                {
-                    //unitProgressionData.SetRace(raceref);
-
-                }
-                else
-                {
-                    Main.logger.Log("Raceref missing");
-                }
+                
             }
 
 
@@ -263,22 +246,14 @@ namespace RespecWrathFork
                 UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: remove feature {0}", feature), Array.Empty<object>());
             }
             //
-            if (!Main.settings.FullRespecStoryCompanion && unit.IsStoryCompanion())
+            if (!Main.settings.FullRespecStoryCompanion && unit.IsStoryCompanion() && !unit.IsMC())
             {
                 foreach (var VARIABLE in unit.Progression.Race.Features.m_Array)
                 {
                     newUnit.AddFact(VARIABLE);
                 }
             }
-            else if (!Main.settings.FullRespecStoryCompanion && unit.IsMC())
-            {
-                Main.logger.Log("In MC feature paste element");
-                foreach (var VARIABLE in unit.Progression.Race.Features.m_Array)
-                {
-                    newUnit.AddFact(VARIABLE);
-                }
-            }
-            //
+            
             if (newUnit.Progression.CharacterLevel < 1)
             {
                 newUnit.Progression.DropLevelPlansAll();

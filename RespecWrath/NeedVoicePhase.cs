@@ -25,12 +25,12 @@ namespace RespecWrathFork
 			{
 				if (Main.IsRespec == true)
 				{
-					if (Main.EntityUnit.IsCustomCompanion() || Main.EntityUnit.IsMC() && Main.settings.FullRespecStoryCompanion || Main.EntityUnit.IsStoryCompanion() && Main.settings.FullRespecStoryCompanion)
+					if (Main.EntityUnit.IsCustomCompanion() || Main.EntityUnit.IsStoryCompanion() && Main.settings.FullRespecStoryCompanion)
 					{
 						__result = true;
 						return;
 					}
-					if (Main.IsRespec && Main.EntityUnit.IsMC() && !Main.settings.FullRespecStoryCompanion)
+					if (Main.IsRespec && Main.EntityUnit.IsMC() && Main.settings.PreserveMCBiographicalInformation)
 					{
 						__result = false;
 						return;
@@ -49,7 +49,7 @@ namespace RespecWrathFork
 		{
 			try
 			{
-				if(Main.IsRespec && !Main.settings.BackgroundDeity && (Main.EntityUnit.IsStoryCompanion() || Main.EntityUnit.IsMC()) )
+				if(Main.IsRespec && !Main.settings.BackgroundDeity && (Main.EntityUnit.IsStoryCompanion()) )
                 {
 					__result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.DeitySelect);
 					__result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.BackgroundsBaseSelection);
