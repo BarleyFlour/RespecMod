@@ -25,10 +25,10 @@ namespace RespecModBarley
                 {
                     if (Main.EntityUnit.IsMC())
 					{
-                        if (Main.settings.PreserveMCRace)
+                        /*if (Main.settings.PreserveMCRace)
                         {
                             __instance.SelectRace(Main.EntityUnit.Progression.Race);
-                        }
+                        }*/
 
                         if (Main.settings.PreserveMCName)
                         {

@@ -504,14 +504,14 @@ namespace RespecModBarley
                 targetUnit.Stats.BaseAttackBonus.BaseValue = bab;
                 targetUnit.Stats.BaseAttackBonus.m_BaseValue = bab;
                 targetUnit.Stats.BaseAttackBonus.OnPermanentValueUpdated();
-               
-               
-
-
+                
                 Vector3 position = targetUnit.Position;
                 float orientation = targetUnit.Orientation;
                 Transform parent = targetUnit.View.transform.parent;
                 List<IUnitPartSurviveRespec> list = targetUnit.Parts.GetAll<IUnitPartSurviveRespec>((IUnitPartSurviveRespec p) => p.ShouldSurviveRespec).ToTempList<IUnitPartSurviveRespec>();
+                ClassData[] collection = (from _class in targetUnit.Progression.Classes
+                    where _class.CharacterClass.IsMythic
+                    select new ClassData(_class.CharacterClass)).ToArray<ClassData>();
                 UnitPartRider riderPart = targetUnit.RiderPart;
                 if (riderPart != null)
                 {
@@ -569,8 +569,6 @@ namespace RespecModBarley
                 }
                 foreach (Kingmaker.Items.Slots.ItemSlot itemSlot2 in tempUnit.Body.EquipmentSlots)
                 {
-                    itemSlot2.m_ItemRef = null;
-                    itemSlot2.m_FakeItem = null;
                     itemSlot2.RemoveItem(true);
                 }
                 tempUnit.TurnOff();
@@ -578,28 +576,26 @@ namespace RespecModBarley
                 PortraitData customPortraitRaw = tempUnit.UISettings.CustomPortraitRaw;
                 BlueprintPortrait portraitBlueprintRaw = tempUnit.UISettings.PortraitBlueprintRaw;
                 tempUnit.PrepareRespec();
-                IContractResolver contractResolver = DefaultJsonSettings.DefaultSettings.ContractResolver;
+                JObject jobject = JObject.FromObject(tempUnit);
+                jobject.Remove("UniqueId");
+                jobject.Remove("m_AutoUseAbility");
+                JObject jobject2 = (JObject)jobject["Descriptor"];
+                jobject2.Remove("m_Inventory");
+                jobject2.Remove("Body");
+                jobject2.Remove("UISettings");
+                string value = jobject.ToString().Replace(tempUnit.UniqueId, targetUnit.UniqueId);
                 try
                 {
-                    DefaultJsonSettings.DefaultSettings.ContractResolver = new RespecContractResolver();
-                    JObject jobject = JObject.FromObject(tempUnit);
-                    jobject.Remove("UniqueId");
-                    jobject.Remove("m_AutoUseAbility");
-                    JObject jobject2 = (JObject)jobject["Descriptor"];
-                    jobject2.Remove("m_Inventory");
-                    jobject2.Remove("Body");
-                    jobject2.Remove("UISettings");
-                    JsonConvert.PopulateObject(jobject.ToString().Replace(tempUnit.UniqueId, targetUnit.UniqueId), targetUnit);
+                    IContractResolver contractResolver = DefaultJsonSettings.DefaultSettings.ContractResolver;
+                    DefaultJsonSettings.DefaultSettings.ContractResolver = new CollectionClearingContractResolver();
+                    JsonConvert.PopulateObject(value, targetUnit);
+                    DefaultJsonSettings.DefaultSettings.ContractResolver = contractResolver;
                     targetUnit.Resources.PersistantResources = tempUnit.Resources.PersistantResources;
                 }
                 catch (Exception ex)
                 {
                     UnitHelper.Channel.Exception(ex, null, Array.Empty<object>());
                     throw;
-                }
-                finally
-                {
-                    DefaultJsonSettings.DefaultSettings.ContractResolver = contractResolver;
                 }
                 targetUnit.Parts.ClearCache();
                 foreach (IUnitPartSurviveRespec unitPartSurviveRespec in list)
@@ -613,6 +609,7 @@ namespace RespecModBarley
                         targetUnit.PostLoad();
                     }
                 }
+                targetUnit.Progression.Classes.AddRange(collection);
                 targetUnit.Descriptor.FixInventoryOnPlayerPostLoad();
                 targetUnit.Position = position;
                 targetUnit.Orientation = orientation;

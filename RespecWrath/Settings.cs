@@ -20,7 +20,7 @@ namespace RespecModBarley
         public bool PreserveMCBirthday = true;
         public bool PreserveMCAlignment = true;
         public bool PreservePortrait = true;
-        public bool PreserveMCRace = true;
+        //public bool PreserveMCRace = true;
         public bool PreserveVoice = true;
         public bool FreeRespec = false;
         public bool FullRespecStoryCompanion = false;

@@ -321,10 +321,10 @@ namespace RespecModBarley
                                     Traverse.Create(__instance).Property("CanSelectAlignment", null).SetValue(true);
                                     __instance.CanSelectAlignment = true;
                                 }
-                                if (Main.settings.PreserveMCRace)
+                               /* if (Main.settings.PreserveMCRace)
                                 {
                                     __instance.CanSelectRace = true;
-                                }
+                                }*/
 
                                 if (Main.settings.PreservePortrait)
                                 {
