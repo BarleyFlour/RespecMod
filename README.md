@@ -17,6 +17,8 @@ CREDITS
 
 ♦ Spacehamster - awesome tutorials.
 
+♦ pheonix99 for the option to retain Portrait/Voice, etc.
+
 ♦ Newman55 for the concept and some bits of code.
 
 ♦ @Vek17, @Bubbles, @Balkoth, @Narria, @Spacehamster and the rest of our great Discord modding community - help.
