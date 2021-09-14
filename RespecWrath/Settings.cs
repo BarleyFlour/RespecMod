@@ -18,6 +18,7 @@ namespace RespecModBarley
         public bool BackgroundDeity;
         public bool FreeRespec = false;
         public bool FullRespecStoryCompanion = false;
+        public bool KeepMCAlignment = false;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             var filepath = Path.Combine(modEntry.Path, "Settings.json");

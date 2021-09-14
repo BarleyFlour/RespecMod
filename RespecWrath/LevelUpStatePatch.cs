@@ -196,8 +196,7 @@ namespace RespecModBarley
 								}
 								
 							}
-							var blueprintUnit = Game.Instance.BlueprintRoot.SelectablePlayerCharacters.Where(u => u == unit.Blueprint).FirstOrDefault();
-							if (unit.IsCustomCompanion() && unit.IsPet == false || unit.IsMainCharacter && unit.IsPet == false || unit.IsStoryCompanion() && Main.settings.FullRespecStoryCompanion)
+                            if (unit.IsCustomCompanion() && unit.IsPet == false || unit.IsMainCharacter && unit.IsPet == false || unit.IsStoryCompanion() && Main.settings.FullRespecStoryCompanion)
 							{
 								Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.CharGen);
 								Traverse.Create(__instance).Property("CanSelectVoice", null).SetValue(true);
@@ -210,7 +209,11 @@ namespace RespecModBarley
                                 {
 									__instance.CanSelectAlignment = true;
 								}
-                                else
+                                else if (Main.settings.KeepMCAlignment && unit.IsMainCharacter)
+                                {
+                                    __instance.CanSelectAlignment = false;
+                                }
+								else
                                 {
                                     __instance.CanSelectAlignment = false;
                                 }

@@ -45,7 +45,7 @@ namespace RespecModBarley
 			{
 				if(Main.IsRespec && !Main.settings.BackgroundDeity && Main.EntityUnit.IsStoryCompanion() )
                 {
-					__result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.DeitySelect);
+                    __result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.DeitySelect);
 					__result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.BackgroundsBaseSelection);
 				}
             }

@@ -412,6 +412,11 @@ namespace RespecModBarley
                 GUILayout.Space(10f);
 				GUILayout.BeginHorizontal();
 				settings.FreeRespec = GUILayout.Toggle(settings.FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
+                if (selected.IsMainCharacter)
+                {
+                    settings.KeepMCAlignment = GUILayout.Toggle(settings.KeepMCAlignment, "Preserve Alignment",
+                        GUILayout.ExpandWidth(false));
+                }
 				if(selected.IsStoryCompanion() && !selected.IsMainCharacter)
 				{
 					settings.FullRespecStoryCompanion = GUILayout.Toggle(settings.FullRespecStoryCompanion, "Full Story Companion Respec", GUILayout.ExpandWidth(false));

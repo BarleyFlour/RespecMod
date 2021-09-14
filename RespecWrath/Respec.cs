@@ -36,6 +36,7 @@ using Kingmaker.UI.ServiceWindow;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Abilities;
 using Kingmaker.UnitLogic.ActivatableAbilities;
+using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Class.LevelUp;
@@ -196,6 +197,8 @@ namespace RespecModBarley
 			{
 				newUnit.Progression.DropLevelPlansAll();
 			}
+
+            
 			UnitEntityData[] petsToRemove = (from i in unit.Pets
 											 select i.Entity).NotNull<UnitEntityData>().ToArray<UnitEntityData>();
 			//EventBus.RaiseEvent<ILevelUpInitiateUIHandler>(delegate (ILevelUpInitiateUIHandler h)
@@ -203,7 +206,7 @@ namespace RespecModBarley
 				//LevelUpConfig()
 				LevelUpConfig.Create(newUnit, LevelUpState.CharBuildMode.Respec).SetOnCommit(delegate
 				{
-					 RespecOnCommit2(unit, newUnit, petsToRemove, successCallback);
+					 RespecOnCommit2(unit, newUnit, petsToRemove, unit.Alignment.m_History, successCallback);
 			    }).SetOnStop(delegate
 				{
 					 RespecOnStop(newUnit);
@@ -453,18 +456,19 @@ namespace RespecModBarley
 				catch (Exception e) { Main.logger.Log(e.ToString()); }
 			}
 		}*/
-		private static void RespecOnCommit2(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, Action successCallback)
+		private static void RespecOnCommit2(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, List<AlignmentHistoryRecord> history , Action successCallback)
 		{
             try
             {
+                tempUnit.Alignment.m_History = history;
                 PFLog.History.Party.Log(string.Format("Respec unit: {0}, ", targetUnit) + string.Format("level: {0} ({1}), ", targetUnit.Progression.CharacterLevel, targetUnit.Progression.Experience) + string.Format("mythic: {0} ({1})", targetUnit.Progression.MythicLevel, targetUnit.Progression.MythicExperience), Array.Empty<object>());
 			var bab = targetUnit.Progression.Classes.First().BaseAttackBonus.GetBonus(1);
 			targetUnit.Stats.BaseAttackBonus.PermanentValue = bab;
 			targetUnit.Stats.BaseAttackBonus.BaseValue = bab;
 			targetUnit.Stats.BaseAttackBonus.m_BaseValue = bab;
 			targetUnit.Stats.BaseAttackBonus.OnPermanentValueUpdated();
-			
-			Vector3 position = targetUnit.Position;
+
+            Vector3 position = targetUnit.Position;
 			float orientation = targetUnit.Orientation;
 			Transform parent = targetUnit.View.transform.parent;
 			List<IUnitPartSurviveRespec> list = targetUnit.Parts.GetAll<IUnitPartSurviveRespec>((IUnitPartSurviveRespec p) => p.ShouldSurviveRespec).ToTempList<IUnitPartSurviveRespec>();
@@ -636,69 +640,83 @@ namespace RespecModBarley
 				h.HandleUnitChangedAfterRespec(targetUnit);
 			}, true);
 			//if (Main.IsRespec == true)
-			{
-				try
-				{
-					targetUnit.View.UpdateBodyEquipmentModel();
-					targetUnit.View.UpdateClassEquipment();
-					targetUnit.Descriptor.Stats.HitPoints.BaseValue = targetUnit.Descriptor.Stats.HitPoints.BaseValue + -1;
-					Main.featurestoadd.Clear();
+            {
+                try
+                {
+                    targetUnit.View.UpdateBodyEquipmentModel();
+                    targetUnit.View.UpdateClassEquipment();
+                    targetUnit.Descriptor.Stats.HitPoints.BaseValue =
+                        targetUnit.Descriptor.Stats.HitPoints.BaseValue + -1;
+                    Main.featurestoadd.Clear();
                     //Main.logger.Log("Commited");
-					targetUnit.Progression.AdvanceMythicExperience(Main.MythicXP);
-					foreach (EntityPart part in Main.partstoadd)
-					{
-						if (!targetUnit.Parts.Parts.Contains(part))
-						{
-							//Main.logger.Log(part.ToString());
-							part.AttachToEntity(targetUnit);
-							part.TurnOn();
-							targetUnit.Parts.m_Parts.Add(part);
-							part.OnPostLoad();
-							part.PostLoad();
-							///part.PostLoad(targetUnit);
-						}
-					}
-					foreach (EntityPart part in Main.partstoadd)
-					{
-						if (!targetUnit.Parts.Parts.Contains(part))
-						{
-                           // Main.logger.Log(part.ToString());
-							part.AttachToEntity(tempUnit);
-							tempUnit.Parts.m_Parts.Add(part);
-						}
-					}
-					/*foreach (EntityPart part in Main.partstoadd)
-					{
-						if (!targetUnit.Parts.m_Parts.Contains(part))
-						{
-							part.AttachToEntity(targetUnit);
-							targetUnit.Parts.m_Parts.Add(part);
-						}
-					}*/
-					Main.partstoadd.Clear();
-					Main.EntityUnit = null;
-					foreach (EntityPart entityPart in targetUnit.Parts.m_Parts)
-					{
+                    targetUnit.Progression.AdvanceMythicExperience(Main.MythicXP);
+                    foreach (EntityPart part in Main.partstoadd)
+                    {
+                        if (!targetUnit.Parts.Parts.Contains(part))
+                        {
+                            //Main.logger.Log(part.ToString());
+                            part.AttachToEntity(targetUnit);
+                            part.TurnOn();
+                            targetUnit.Parts.m_Parts.Add(part);
+                            part.OnPostLoad();
+                            part.PostLoad();
+                            ///part.PostLoad(targetUnit);
+                        }
+                    }
+
+                    foreach (EntityPart part in Main.partstoadd)
+                    {
+                        if (!targetUnit.Parts.Parts.Contains(part))
+                        {
+                            // Main.logger.Log(part.ToString());
+                            part.AttachToEntity(tempUnit);
+                            tempUnit.Parts.m_Parts.Add(part);
+                        }
+                    }
+
+                    /*foreach (EntityPart part in Main.partstoadd)
+                    {
+                        if (!targetUnit.Parts.m_Parts.Contains(part))
+                        {
+                            part.AttachToEntity(targetUnit);
+                            targetUnit.Parts.m_Parts.Add(part);
+                        }
+                    }*/
+                    Main.partstoadd.Clear();
+                    Main.EntityUnit = null;
+                    foreach (EntityPart entityPart in targetUnit.Parts.m_Parts)
+                    {
                         Main.logger.Log(entityPart.ToString());
-						targetUnit.OnPartAddedOrPostLoad(entityPart);
-					}
-					if (Main.NenioEtudeBool == true)
-					{
-						var KitsuneHeritageClassic = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("cd6cd774fb7cc844b8417193ee3a5ebe");
-						var KitsuneHeritageKeen = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("d6bc49651fbaa2944bba6e2e5a1720ff");
-						var facts = new List<BlueprintUnitFact> { KitsuneHeritageClassic, KitsuneHeritageKeen };
-						foreach (IHiddenUnitFacts i in targetUnit.Parts.Get<UnitPartHiddenFacts>().m_HiddenFacts)
-						{
-							foreach (BlueprintUnitFact fact in facts)
-							{
-								i.Facts.Add(fact);
-							}
-						}
-						Main.NenioEtudeBool = false;
-					}
+                        targetUnit.OnPartAddedOrPostLoad(entityPart);
+                    }
+
+                    if (Main.NenioEtudeBool == true)
+                    {
+                        var KitsuneHeritageClassic =
+                            ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("cd6cd774fb7cc844b8417193ee3a5ebe");
+                        var KitsuneHeritageKeen =
+                            ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("d6bc49651fbaa2944bba6e2e5a1720ff");
+                        var facts = new List<BlueprintUnitFact> { KitsuneHeritageClassic, KitsuneHeritageKeen };
+                        foreach (IHiddenUnitFacts i in targetUnit.Parts.Get<UnitPartHiddenFacts>().m_HiddenFacts)
+                        {
+                            foreach (BlueprintUnitFact fact in facts)
+                            {
+                                i.Facts.Add(fact);
+                            }
+                        }
+
+                        Main.NenioEtudeBool = false;
+                    }
+
                     Main.IsRespec = false;
+
+                    if (Main.settings.KeepMCAlignment)
+                {
+                    targetUnit.Alignment.m_History = history;
+					
                 }
-				catch (Exception e) { Main.logger.Log(e.ToString()); }
+            }
+            catch (Exception e) { Main.logger.Log(e.ToString()); }
                 var bab2 = targetUnit.Progression.Classes.First().BaseAttackBonus.GetBonus(1);
                 targetUnit.Stats.BaseAttackBonus.PermanentValue = bab2;
                 targetUnit.Stats.BaseAttackBonus.BaseValue = bab2;
