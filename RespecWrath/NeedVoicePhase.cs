@@ -7,7 +7,6 @@ using Kingmaker.UI.MVVM._VM.CharGen.Phases.Voice;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Class.LevelUp;
 using Kingmaker.UnitLogic.Class.LevelUp.Actions;
-using RespecModBarley;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,11 +25,18 @@ namespace RespecModBarley
 			{
 				if (Main.IsRespec == true)
 				{
-					if (Main.EntityUnit.IsCustomCompanion() || Main.EntityUnit.IsMainCharacter || Main.EntityUnit.IsStoryCompanion() && Main.settings.FullRespecStoryCompanion)
+					if (Main.EntityUnit.IsCustomCompanion() || Main.EntityUnit.IsStoryCompanion() && Main.settings.FullRespecStoryCompanion)
 					{
 						__result = true;
 						return;
 					}
+					if (Main.IsRespec && Main.settings.PreserveVoice)
+					{
+						__result = false;
+						return;
+					}
+
+
 				}
 			}
 			catch(Exception e) { Main.logger.Log(e.ToString()); }
@@ -43,10 +49,12 @@ namespace RespecModBarley
 		{
 			try
 			{
-				if(Main.IsRespec && !Main.settings.BackgroundDeity && Main.EntityUnit.IsStoryCompanion() )
+				if(Main.IsRespec && !Main.settings.BackgroundDeity && (Main.EntityUnit.IsStoryCompanion()) )
                 {
                     __result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.DeitySelect);
 					__result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.BackgroundsBaseSelection);
+
+					
 				}
             }
 			catch(Exception e)

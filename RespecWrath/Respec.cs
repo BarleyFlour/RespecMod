@@ -41,6 +41,7 @@ using Kingmaker.UnitLogic.Buffs;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Class.LevelUp;
 using Kingmaker.UnitLogic.Class.LevelUp.Actions;
+using Kingmaker.UnitLogic.Components;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Parts;
@@ -55,66 +56,103 @@ using UnityEngine;
 
 namespace RespecModBarley
 {
-	static class RespecClass
-	{
-		public static List<BlueprintUnitFact> Neniofacts
-		{
-			get;
-			set;
-		}
-		public static void Respecialize(this UnitEntityData unit, Action successCallback = null)
-		{
-			UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: requested for {0}", unit), Array.Empty<object>());
-			Main.MythicXP = unit.Progression.MythicExperience;
-			int experience = unit.Descriptor.Progression.Experience;
-			ReplaceUnitBlueprintForRespec replaceUnitBlueprintForRespec = unit.Blueprint.GetComponent<ReplaceUnitBlueprintForRespec>().Or(null);
-			BlueprintUnit unit2 = ((replaceUnitBlueprintForRespec != null) ? replaceUnitBlueprintForRespec.Blueprint.Or(null) : null) ?? unit.Blueprint;
-			UnitEntityData newUnit;
+    static class RespecClass
+    {
+        public static List<BlueprintUnitFact> Neniofacts
+        {
+            get;
+            set;
+        }
+        public static void Respecialize(this UnitEntityData unit, Action successCallback = null)
+        {
+            UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: requested for {0}", unit), Array.Empty<object>());
+            
+            Main.MythicXP = unit.Progression.MythicExperience;
+            int experience = unit.Descriptor.Progression.Experience;
+            ReplaceUnitBlueprintForRespec replaceUnitBlueprintForRespec = unit.Blueprint.GetComponent<ReplaceUnitBlueprintForRespec>().Or(null);
+            BlueprintUnit unit2 = ((replaceUnitBlueprintForRespec != null) ? replaceUnitBlueprintForRespec.Blueprint.Or(null) : null) ?? unit.Blueprint;
+            UnitEntityData newUnit;
+           
 
-			try
-			{
-				if (unit.CharacterName.Contains("Nenio") && !Game.Instance.Player.EtudesSystem.EtudeIsCompleted(ResourcesLibrary.TryGetBlueprint<BlueprintEtude>("f1877e6b308bc9c4a89c028c7b116ccf")))
-				{
-					///Main.logger.Log("Nene");
-					///Main.logger.Log(ResourcesLibrary.TryGetBlueprint<BlueprintEtude>("f1877e6b308bc9c4a89c028c7b116ccf").ToString());
-					Main.NenioEtudeBool = true;
-					///var KitsuneHeritageSelect = ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("ec40cc350b18c8c47a59b782feb91d1f");
-					var KitsuneHeritageClassic = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("cd6cd774fb7cc844b8417193ee3a5ebe");
-					var KitsuneHeritageKeen = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("d6bc49651fbaa2944bba6e2e5a1720ff");
-					var facts = new List<BlueprintUnitFact> { KitsuneHeritageClassic, KitsuneHeritageKeen };
-					foreach (IHiddenUnitFacts i in unit.Parts.Get<UnitPartHiddenFacts>().m_HiddenFacts)
-					{
-						foreach (BlueprintUnitFact fact in facts)
-						{
-							i.Facts.Remove(fact);
-						}
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				Main.logger.Log(e.ToString());
-			}
 
-			using (ContextData<UnitEntityData.DoNotCreateItems>.Request())
-			{
-				newUnit = Game.Instance.CreateUnitVacuum(unit2);
-			}
+            try
+            {
+                if (unit.CharacterName.Contains("Nenio") && !Game.Instance.Player.EtudesSystem.EtudeIsCompleted(ResourcesLibrary.TryGetBlueprint<BlueprintEtude>("f1877e6b308bc9c4a89c028c7b116ccf")))
+                {
+                    ///Main.logger.Log("Nene");
+                    ///Main.logger.Log(ResourcesLibrary.TryGetBlueprint<BlueprintEtude>("f1877e6b308bc9c4a89c028c7b116ccf").ToString());
+                    Main.NenioEtudeBool = true;
+                    ///var KitsuneHeritageSelect = ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("ec40cc350b18c8c47a59b782feb91d1f");
+                    var KitsuneHeritageClassic = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("cd6cd774fb7cc844b8417193ee3a5ebe");
+                    var KitsuneHeritageKeen = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("d6bc49651fbaa2944bba6e2e5a1720ff");
+                    var facts = new List<BlueprintUnitFact> { KitsuneHeritageClassic, KitsuneHeritageKeen };
+                    foreach (IHiddenUnitFacts i in unit.Parts.Get<UnitPartHiddenFacts>().m_HiddenFacts)
+                    {
+                        foreach (BlueprintUnitFact fact in facts)
+                        {
+                            i.Facts.Remove(fact);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Main.logger.Log(e.ToString());
+            }
+
+            using (ContextData<UnitEntityData.DoNotCreateItems>.Request())
+            {
+                newUnit = Game.Instance.CreateUnitVacuum(unit2);
+            }
+            /*var asd = newUnit.Facts.m_Facts.Where(a => a.Blueprint.name.Contains("Atheism"));
+            if (asd.Any())
+            {
+                foreach (var sdasd in asd)
+                {
+                    newUnit.Progression.Features.Manager.Remove(sdasd);
+                }
+                newUnit.Facts.Remove(asd.First());
+            }
+            newUnit.Progression.Features.RemoveFact(newUnit.GetFeature(Utilities.GetBlueprint<BlueprintFeature>("92c0d2da0a836ce418a267093c09ca54")));
+			*/
             BlueprintUnit defaultPlayerCharacter = Game.Instance.BlueprintRoot.DefaultPlayerCharacter;
-			UnitDescriptor descriptor = newUnit.Descriptor;
-			var entityData = newUnit;
-			UnitProgressionData unitProgressionData = newUnit.Progression;
-			LevelUpHelper.GetTotalIntelligenceSkillPoints(descriptor, 0);
-			LevelUpHelper.GetTotalSkillPoints(descriptor, 0);
-			Traverse.Create(descriptor.Progression).Field("m_Selections").GetValue<Dictionary<BlueprintFeatureSelection, FeatureSelectionData>>().Clear();
-			entityData.PrepareRespec();
-			entityData.Descriptor.Buffs.RawFacts.Clear();
-			Traverse.Create(descriptor).Field("Stats").SetValue(new CharacterStats(descriptor));
-			descriptor.Stats.HitPoints.BaseValue = defaultPlayerCharacter.MaxHP + 1;
-			descriptor.Stats.Speed.BaseValue = defaultPlayerCharacter.Speed.Value;
-			descriptor.UpdateSizeModifiers();
-			//var BPBackgroundList = new List<BlueprintFeature> { };
-			/*foreach (EntityPart entityPart in unit.Parts.Parts)
+            UnitDescriptor descriptor = newUnit.Descriptor;
+            var entityData = newUnit;
+            UnitProgressionData unitProgressionData = newUnit.Progression;
+            
+
+
+
+            if (Main.settings.PreservePortrait && unit.IsMC())
+            {
+                newUnit.UISettings.SetPortrait(unit.Portrait);
+            }
+
+            if (Main.settings.PreserveMCName && unit.IsMC())
+            {
+                if (!unit.CharacterName.IsNullOrEmpty())
+                {
+                    newUnit.Descriptor.CustomName = unit.CharacterName;
+                }
+            }
+            if (Main.settings.PreserveMCAlignment && unit.IsMC())
+            {
+                newUnit.Alignment.CopyFrom(unit.Alignment);
+            }
+
+
+            LevelUpHelper.GetTotalIntelligenceSkillPoints(descriptor, 0);
+            LevelUpHelper.GetTotalSkillPoints(descriptor, 0);
+            Traverse.Create(descriptor.Progression).Field("m_Selections").GetValue<Dictionary<BlueprintFeatureSelection, FeatureSelectionData>>().Clear();
+            entityData.PrepareRespec();
+            entityData.Descriptor.Buffs.RawFacts.Clear();
+            Traverse.Create(descriptor).Field("Stats").SetValue(new CharacterStats(descriptor));
+            descriptor.Stats.HitPoints.BaseValue = defaultPlayerCharacter.MaxHP + 1;
+            descriptor.Stats.Speed.BaseValue = defaultPlayerCharacter.Speed.Value;
+            descriptor.UpdateSizeModifiers();
+
+            //var BPBackgroundList = new List<BlueprintFeature> { };
+            /*foreach (EntityPart entityPart in unit.Parts.Parts)
 			{
 				if (Main.partslist.Contains(entityPart.ToString()))
 				{
@@ -122,111 +160,111 @@ namespace RespecModBarley
 					///Main.logger.Log(entityPart.ToString());
 				}
 			}*/
-			///Traverse.Create(unit.Parts).Field("Parts").SetValue(Main.partstoadd);
-			if (unit.Parts.Get<UnitPartCompanion>().State == CompanionState.InParty)
-			{
-				unit.Ensure<UnitPartCompanion>().SetState(CompanionState.InParty);
-			}
-			foreach (Buff buff in entityData.Buffs)
-			{
-				buff.Detach();
-				buff.Remove();
-				buff.TurnOff();
-				buff.Dispose();
-			}
-			/*if (unit.IsStoryCompanion())
-			{
-				foreach (Feature blueprintf in unit.Descriptor.Progression.Features.Enumerable)
-				{
-					if (backgroundsarray.Contains(blueprintf.Blueprint))
-					{
-						///Main.logger.Log(blueprintf.ToString());
-						Main.featurestoadd.Add(blueprintf.Blueprint);
-					}
-				}
-			}*/
+            ///Traverse.Create(unit.Parts).Field("Parts").SetValue(Main.partstoadd);
+            if (unit.Parts.Get<UnitPartCompanion>().State == CompanionState.InParty)
+            {
+                unit.Ensure<UnitPartCompanion>().SetState(CompanionState.InParty);
+            }
+            foreach (Buff buff in entityData.Buffs)
+            {
+                buff.Detach();
+                buff.Remove();
+                buff.TurnOff();
+                buff.Dispose();
+            }
+            /*if (unit.IsStoryCompanion())
+            {
+                foreach (Feature blueprintf in unit.Descriptor.Progression.Features.Enumerable)
+                {
+                    if (backgroundsarray.Contains(blueprintf.Blueprint))
+                    {
+                        ///Main.logger.Log(blueprintf.ToString());
+                        Main.featurestoadd.Add(blueprintf.Blueprint);
+                    }
+                }
+            }*/
             newUnit.PreviewOf = unit;
-			newUnit.Progression.AdvanceExperienceTo(unit.Descriptor.Progression.Experience, false, false);
-			newUnit.Progression.AdvanceMythicExperience(unit.Descriptor.Progression.MythicExperience, false);
-			if (unit.IsMainCharacter || unit.IsCloneOfMainCharacter)
-			{
-				newUnit.MarkAsCloneOfMainCharacter();
-			}
-			if (newUnit.Progression.CharacterLevel < 1)
-			{
-				foreach (ModifiableValueAttributeStat modifiableValueAttributeStat in newUnit.Stats.Attributes)
-				{
-					modifiableValueAttributeStat.BaseValue = 10;
-				}
-			}
-			UICommon uicommon = Game.Instance.UI.Common.Or(null);
-			DollRoom dollRoom = (uicommon != null) ? uicommon.DollRoom : null;
-			if (dollRoom != null)
-			{
-				dollRoom.CreateDefaultDolls();
-				dollRoom.m_Unit = (newUnit);
-			}
-			BlueprintFeature[] array = (from i in unit.Progression.Features.Enumerable.Except((Feature i) => i.SourceProgression || i.SourceClass || i.SourceRace || i.Blueprint.IsClassFeature)
-										select i.Blueprint).ToArray<BlueprintFeature>();
-			Feature[] array2 = (from i in newUnit.Progression.Features.Enumerable
-								where !i.Blueprint.IsClassFeature && !unit.HasFact(i.Blueprint)
-								select i).ToArray<Feature>();
-			foreach (BlueprintFeature blueprintFeature in array)
-			{
-				if (!newUnit.HasFact(blueprintFeature))
-				{
-					newUnit.AddFact(blueprintFeature, null, null);
-					UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: restore feature {0}", blueprintFeature), Array.Empty<object>());
-				}
-			}
-			foreach (Feature feature in array2)
-			{
-				newUnit.RemoveFact(feature);
-				UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: remove feature {0}", feature), Array.Empty<object>());
-			}
-			//
-            if (!Main.settings.FullRespecStoryCompanion && unit.IsStoryCompanion())
+            newUnit.Progression.AdvanceExperienceTo(unit.Descriptor.Progression.Experience, false, false);
+            newUnit.Progression.AdvanceMythicExperience(unit.Descriptor.Progression.MythicExperience, false);
+            if (unit.IsMainCharacter || unit.IsCloneOfMainCharacter)
+            {
+                newUnit.MarkAsCloneOfMainCharacter();
+            }
+            if (newUnit.Progression.CharacterLevel < 1)
+            {
+                foreach (ModifiableValueAttributeStat modifiableValueAttributeStat in newUnit.Stats.Attributes)
+                {
+                    modifiableValueAttributeStat.BaseValue = 10;
+                }
+            }
+            UICommon uicommon = Game.Instance.UI.Common.Or(null);
+            DollRoom dollRoom = (uicommon != null) ? uicommon.DollRoom : null;
+            if (dollRoom != null)
+            {
+                dollRoom.CreateDefaultDolls();
+                dollRoom.m_Unit = (newUnit);
+            }
+            BlueprintFeature[] array = (from i in unit.Progression.Features.Enumerable.Except((Feature i) => i.SourceProgression || i.SourceClass || i.SourceRace || i.Blueprint.IsClassFeature)
+                                        select i.Blueprint).ToArray<BlueprintFeature>();
+            Feature[] array2 = (from i in newUnit.Progression.Features.Enumerable
+                                where !i.Blueprint.IsClassFeature && !unit.HasFact(i.Blueprint)
+                                select i).ToArray<Feature>();
+            foreach (BlueprintFeature blueprintFeature in array)
+            {
+                if (!newUnit.HasFact(blueprintFeature))
+                {
+                    newUnit.AddFact(blueprintFeature, null, null);
+                    UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: restore feature {0}", blueprintFeature), Array.Empty<object>());
+                }
+            }
+            foreach (Feature feature in array2)
+            {
+                newUnit.RemoveFact(feature);
+                UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: remove feature {0}", feature), Array.Empty<object>());
+            }
+            //
+            if (!Main.settings.FullRespecStoryCompanion && unit.IsStoryCompanion() && !unit.IsMC())
             {
                 foreach (var VARIABLE in unit.Progression.Race.Features.m_Array)
                 {
                     newUnit.AddFact(VARIABLE);
                 }
             }
-            //
-			if (newUnit.Progression.CharacterLevel < 1)
-			{
-				newUnit.Progression.DropLevelPlansAll();
-			}
-
             
-			UnitEntityData[] petsToRemove = (from i in unit.Pets
-											 select i.Entity).NotNull<UnitEntityData>().ToArray<UnitEntityData>();
-			//EventBus.RaiseEvent<ILevelUpInitiateUIHandler>(delegate (ILevelUpInitiateUIHandler h)
-			{
-				//LevelUpConfig()
-				LevelUpConfig.Create(newUnit, LevelUpState.CharBuildMode.Respec).SetOnCommit(delegate
-				{
-					 RespecOnCommit2(unit, newUnit, petsToRemove, unit.Alignment.m_History, successCallback);
-			    }).SetOnStop(delegate
-				{
-					 RespecOnStop(newUnit);
-				}).OpenUI();
-				//h.HandleLevelUpStart(lvlupcfg);
-				///h.HandleLevelUpStart(newUnit.Descriptor, delegate
-				/*{
-					RespecOnCommit(unit, newUnit, petsToRemove, successCallback);
-				}, delegate
-				{
-					newUnit.Dispose();
-					Main.IsRespec = false;
-					Main.featureSelection = null;
-					Main.featurestoadd.Clear();
-					Main.IsRespec = false;
-					Main.partstoadd.Clear();
-				}, LevelUpState.CharBuildMode.Respec);*/
-			}//);
-		}
-		/*private static void RespecOnCommit(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, Action successCallback)
+            if (newUnit.Progression.CharacterLevel < 1)
+            {
+                newUnit.Progression.DropLevelPlansAll();
+            }
+            
+
+            UnitEntityData[] petsToRemove = (from i in unit.Pets
+                                             select i.Entity).NotNull<UnitEntityData>().ToArray<UnitEntityData>();
+            //EventBus.RaiseEvent<ILevelUpInitiateUIHandler>(delegate (ILevelUpInitiateUIHandler h)
+            {
+                //LevelUpConfig()
+                LevelUpConfig.Create(newUnit, LevelUpState.CharBuildMode.Respec).SetOnCommit(delegate
+                {
+                    RespecOnCommit2(unit, newUnit, petsToRemove, successCallback);
+                }).SetOnStop(delegate
+                {
+                    RespecOnStop(newUnit);
+                }).OpenUI();
+                //h.HandleLevelUpStart(lvlupcfg);
+                ///h.HandleLevelUpStart(newUnit.Descriptor, delegate
+                /*{
+                    RespecOnCommit(unit, newUnit, petsToRemove, successCallback);
+                }, delegate
+                {
+                    newUnit.Dispose();
+                    Main.IsRespec = false;
+                    Main.featureSelection = null;
+                    Main.featurestoadd.Clear();
+                    Main.IsRespec = false;
+                    Main.partstoadd.Clear();
+                }, LevelUpState.CharBuildMode.Respec);*/
+            }//);
+        }
+        /*private static void RespecOnCommit(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, Action successCallback)
 		{
 			//Main.logger.Log("oncommit");
 			var bab = targetUnit.Progression.Classes.First().BaseAttackBonus.GetBonus(1);
@@ -456,283 +494,277 @@ namespace RespecModBarley
 				catch (Exception e) { Main.logger.Log(e.ToString()); }
 			}
 		}*/
-		private static void RespecOnCommit2(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, List<AlignmentHistoryRecord> history , Action successCallback)
-		{
+        private static void RespecOnCommit2(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, Action successCallback)
+        {
             try
             {
-                tempUnit.Alignment.m_History = history;
                 PFLog.History.Party.Log(string.Format("Respec unit: {0}, ", targetUnit) + string.Format("level: {0} ({1}), ", targetUnit.Progression.CharacterLevel, targetUnit.Progression.Experience) + string.Format("mythic: {0} ({1})", targetUnit.Progression.MythicLevel, targetUnit.Progression.MythicExperience), Array.Empty<object>());
-			var bab = targetUnit.Progression.Classes.First().BaseAttackBonus.GetBonus(1);
-			targetUnit.Stats.BaseAttackBonus.PermanentValue = bab;
-			targetUnit.Stats.BaseAttackBonus.BaseValue = bab;
-			targetUnit.Stats.BaseAttackBonus.m_BaseValue = bab;
-			targetUnit.Stats.BaseAttackBonus.OnPermanentValueUpdated();
+                var bab = targetUnit.Progression.Classes.First().BaseAttackBonus.GetBonus(1);
+                targetUnit.Stats.BaseAttackBonus.PermanentValue = bab;
+                targetUnit.Stats.BaseAttackBonus.BaseValue = bab;
+                targetUnit.Stats.BaseAttackBonus.m_BaseValue = bab;
+                targetUnit.Stats.BaseAttackBonus.OnPermanentValueUpdated();
+               
+               
 
-            Vector3 position = targetUnit.Position;
-			float orientation = targetUnit.Orientation;
-			Transform parent = targetUnit.View.transform.parent;
-			List<IUnitPartSurviveRespec> list = targetUnit.Parts.GetAll<IUnitPartSurviveRespec>((IUnitPartSurviveRespec p) => p.ShouldSurviveRespec).ToTempList<IUnitPartSurviveRespec>();
-			UnitPartRider riderPart = targetUnit.RiderPart;
-			if (riderPart != null)
-			{
-				riderPart.DismountForce();
-			}
-			foreach (UnitEntityData unitEntityData in petsToRemove)
-			{
-				unitEntityData.RemoveMaster();
-				unitEntityData.MarkForDestroy();
-            }
-			List<ItemEntity> list2 = new List<ItemEntity>();
-			using (ContextData<Kingmaker.Items.Slots.ItemSlot.IgnoreLock>.Request())
-			{
-				foreach (Kingmaker.Items.Slots.ItemSlot itemSlot in targetUnit.Body.EquipmentSlots)
-				{
-					list2.Add(itemSlot.MaybeItem);
-					itemSlot.RemoveItem(true);
-				}
-			}
-			foreach (ActivatableAbility activatableAbility in targetUnit.ActivatableAbilities.RawFacts.ToTempList<ActivatableAbility>())
-			{
-				activatableAbility.TurnOffImmediately();
-			}
-			if (targetUnit.Body.IsPolymorphed)
-			{
-				targetUnit.Body.CancelPolymorphEffect();
-			}
-			bool isTurnedOn = targetUnit.IsTurnedOn;
-			if (isTurnedOn)
-			{
-				targetUnit.TurnOff();
-			}
-			RestController.RemoveNegativeEffects(targetUnit);
-			targetUnit.Descriptor.ResurrectAndFullRestore();
-			IGrouping<BlueprintBuff, TimeSpan?>[] array = (from i in targetUnit.Buffs.Enumerable.Where(delegate (Buff i)
-			{
-				MechanicsContext maybeContext = i.MaybeContext;
-				return ((maybeContext != null) ? maybeContext.ParentContext : null) == null && !i.Blueprint.IsClassFeature;
-			})
-														   where string.IsNullOrEmpty(i.SourceAreaEffectId)
-														   select i).NotNull<Buff>().GroupBy((Buff i) => i.Blueprint, delegate (Buff i)
-														   {
-															   if (!i.IsPermanent)
-															   {
-																   return new TimeSpan?(i.TimeLeft);
-															   }
-															   return null;
-														   }).ToArray<IGrouping<BlueprintBuff, TimeSpan?>>();
-			UnitEntityView view = targetUnit.View;
-			targetUnit.DetachView();
-			UnitEntityView unitEntityView = view.Or(null);
-			if (unitEntityView != null)
-			{
-				unitEntityView.DestroyViewObject();
-			}
-			foreach (Kingmaker.Items.Slots.ItemSlot itemSlot2 in tempUnit.Body.EquipmentSlots)
-			{
-				itemSlot2.m_ItemRef = null;
-				itemSlot2.m_FakeItem = null;
-				itemSlot2.RemoveItem(true);
-			}
-			tempUnit.TurnOff();
-			tempUnit.PreSave();
-			PortraitData customPortraitRaw = tempUnit.UISettings.CustomPortraitRaw;
-			BlueprintPortrait portraitBlueprintRaw = tempUnit.UISettings.PortraitBlueprintRaw;
-			tempUnit.PrepareRespec();
-			IContractResolver contractResolver = DefaultJsonSettings.DefaultSettings.ContractResolver;
-			try
-			{
-				DefaultJsonSettings.DefaultSettings.ContractResolver = new RespecContractResolver();
-				JObject jobject = JObject.FromObject(tempUnit);
-				jobject.Remove("UniqueId");
-				jobject.Remove("m_AutoUseAbility");
-				JObject jobject2 = (JObject)jobject["Descriptor"];
-				jobject2.Remove("m_Inventory");
-				jobject2.Remove("Body");
-				jobject2.Remove("UISettings");
-				JsonConvert.PopulateObject(jobject.ToString().Replace(tempUnit.UniqueId, targetUnit.UniqueId), targetUnit);
-				targetUnit.Resources.PersistantResources = tempUnit.Resources.PersistantResources;
-			}
-			catch (Exception ex)
-			{
-				UnitHelper.Channel.Exception(ex, null, Array.Empty<object>());
-				throw;
-			}
-			finally
-			{
-				DefaultJsonSettings.DefaultSettings.ContractResolver = contractResolver;
-			}
-			targetUnit.Parts.ClearCache();
-			foreach (IUnitPartSurviveRespec unitPartSurviveRespec in list)
-			{
-				unitPartSurviveRespec.CopyAfterRespec(targetUnit);
-			}
-			using (ContextData<EntityDataBase.ForcePostLoad>.Request())
-			{
-				using (ContextData<UnitEntityData.Respec>.Request())
-				{
-					targetUnit.PostLoad();
-				}
-			}
-			targetUnit.Descriptor.FixInventoryOnPlayerPostLoad();
-			targetUnit.Position = position;
-			targetUnit.Orientation = orientation;
-			targetUnit.AttachToViewOnLoad(null);
-			targetUnit.View.transform.SetParent(parent, true);
-			if (isTurnedOn)
-			{
-				targetUnit.TurnOn();
-			}
-			targetUnit.Alignment.UpdateValue();
-			targetUnit.UISettings.SetPortraitUnsafe(portraitBlueprintRaw, customPortraitRaw);
-			foreach (IGrouping<BlueprintBuff, TimeSpan?> grouping in array)
-			{
-				foreach (TimeSpan? timeSpan in grouping)
-				{
-					targetUnit.AddBuff(grouping.Key, null, timeSpan);
-					UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: restore buff {0} (duration: {1})", grouping.Key, timeSpan), Array.Empty<object>());
-				}
-			}
-			using (List<EntityFact>.Enumerator enumerator5 = targetUnit.Facts.List.GetEnumerator())
-			{
-				while (enumerator5.MoveNext())
-				{
-					enumerator5.Current.CallComponents<IUpdatePet>(delegate (IUpdatePet c)
-					{
-                        if (c != null)
-                        {
-                           // c.TryUpdatePet();
-						}
-                    });
-				}
-			}
-			using (ContextData<Kingmaker.Items.Slots.ItemSlot.IgnoreLock>.Request())
-			{
-				for (int j = 0; j < list2.Count; j++)
-				{
-					ItemEntity itemEntity = list2[j];
-					Kingmaker.Items.Slots.ItemSlot itemSlot3 = targetUnit.Body.EquipmentSlots[j];
-					if (itemEntity != null && itemSlot3.CanInsertItem(itemEntity))
-					{
-						itemSlot3.InsertItem(itemEntity);
-					}
-				}
-			}
-			targetUnit.Stats.CleanupModifiers();
-			foreach (ModifiableValue modifiableValue in targetUnit.Stats.AllStats)
-			{
-				modifiableValue.UpdateValue();
-			}
-			targetUnit.UISettings.CleanupSlots();
-			targetUnit.UISettings.TryToInitialize();
-			try
-			{
-				if (successCallback != null)
-				{
-					successCallback();
-				}
-			}
-			catch (Exception ex2)
-			{
-				UnitHelper.Channel.Exception(ex2, null, Array.Empty<object>());
-			}
-			EventBus.RaiseEvent<IUnitChangedAfterRespecHandler>(delegate (IUnitChangedAfterRespecHandler h)
-			{
-				h.HandleUnitChangedAfterRespec(targetUnit);
-			}, true);
-			//if (Main.IsRespec == true)
-            {
+
+                Vector3 position = targetUnit.Position;
+                float orientation = targetUnit.Orientation;
+                Transform parent = targetUnit.View.transform.parent;
+                List<IUnitPartSurviveRespec> list = targetUnit.Parts.GetAll<IUnitPartSurviveRespec>((IUnitPartSurviveRespec p) => p.ShouldSurviveRespec).ToTempList<IUnitPartSurviveRespec>();
+                UnitPartRider riderPart = targetUnit.RiderPart;
+                if (riderPart != null)
+                {
+                    riderPart.DismountForce();
+                }
+                foreach (UnitEntityData unitEntityData in petsToRemove)
+                {
+                    unitEntityData.RemoveMaster();
+                    unitEntityData.MarkForDestroy();
+                }
+                List<ItemEntity> list2 = new List<ItemEntity>();
+                using (ContextData<Kingmaker.Items.Slots.ItemSlot.IgnoreLock>.Request())
+                {
+                    foreach (Kingmaker.Items.Slots.ItemSlot itemSlot in targetUnit.Body.EquipmentSlots)
+                    {
+                        list2.Add(itemSlot.MaybeItem);
+                        itemSlot.RemoveItem(true);
+                    }
+                }
+                foreach (ActivatableAbility activatableAbility in targetUnit.ActivatableAbilities.RawFacts.ToTempList<ActivatableAbility>())
+                {
+                    activatableAbility.TurnOffImmediately();
+                }
+                if (targetUnit.Body.IsPolymorphed)
+                {
+                    targetUnit.Body.CancelPolymorphEffect();
+                }
+                bool isTurnedOn = targetUnit.IsTurnedOn;
+                if (isTurnedOn)
+                {
+                    targetUnit.TurnOff();
+                }
+                RestController.RemoveNegativeEffects(targetUnit);
+                targetUnit.Descriptor.ResurrectAndFullRestore();
+                IGrouping<BlueprintBuff, TimeSpan?>[] array = (from i in targetUnit.Buffs.Enumerable.Where(delegate (Buff i)
+                {
+                    MechanicsContext maybeContext = i.MaybeContext;
+                    return ((maybeContext != null) ? maybeContext.ParentContext : null) == null && !i.Blueprint.IsClassFeature;
+                })
+                                                               where string.IsNullOrEmpty(i.SourceAreaEffectId)
+                                                               select i).NotNull<Buff>().GroupBy((Buff i) => i.Blueprint, delegate (Buff i)
+                                                               {
+                                                                   if (!i.IsPermanent)
+                                                                   {
+                                                                       return new TimeSpan?(i.TimeLeft);
+                                                                   }
+                                                                   return null;
+                                                               }).ToArray<IGrouping<BlueprintBuff, TimeSpan?>>();
+                UnitEntityView view = targetUnit.View;
+                targetUnit.DetachView();
+                UnitEntityView unitEntityView = view.Or(null);
+                if (unitEntityView != null)
+                {
+                    unitEntityView.DestroyViewObject();
+                }
+                foreach (Kingmaker.Items.Slots.ItemSlot itemSlot2 in tempUnit.Body.EquipmentSlots)
+                {
+                    itemSlot2.m_ItemRef = null;
+                    itemSlot2.m_FakeItem = null;
+                    itemSlot2.RemoveItem(true);
+                }
+                tempUnit.TurnOff();
+                tempUnit.PreSave();
+                PortraitData customPortraitRaw = tempUnit.UISettings.CustomPortraitRaw;
+                BlueprintPortrait portraitBlueprintRaw = tempUnit.UISettings.PortraitBlueprintRaw;
+                tempUnit.PrepareRespec();
+                IContractResolver contractResolver = DefaultJsonSettings.DefaultSettings.ContractResolver;
                 try
                 {
-                    targetUnit.View.UpdateBodyEquipmentModel();
-                    targetUnit.View.UpdateClassEquipment();
-                    targetUnit.Descriptor.Stats.HitPoints.BaseValue =
-                        targetUnit.Descriptor.Stats.HitPoints.BaseValue + -1;
-                    Main.featurestoadd.Clear();
-                    //Main.logger.Log("Commited");
-                    targetUnit.Progression.AdvanceMythicExperience(Main.MythicXP);
-                    foreach (EntityPart part in Main.partstoadd)
+                    DefaultJsonSettings.DefaultSettings.ContractResolver = new RespecContractResolver();
+                    JObject jobject = JObject.FromObject(tempUnit);
+                    jobject.Remove("UniqueId");
+                    jobject.Remove("m_AutoUseAbility");
+                    JObject jobject2 = (JObject)jobject["Descriptor"];
+                    jobject2.Remove("m_Inventory");
+                    jobject2.Remove("Body");
+                    jobject2.Remove("UISettings");
+                    JsonConvert.PopulateObject(jobject.ToString().Replace(tempUnit.UniqueId, targetUnit.UniqueId), targetUnit);
+                    targetUnit.Resources.PersistantResources = tempUnit.Resources.PersistantResources;
+                }
+                catch (Exception ex)
+                {
+                    UnitHelper.Channel.Exception(ex, null, Array.Empty<object>());
+                    throw;
+                }
+                finally
+                {
+                    DefaultJsonSettings.DefaultSettings.ContractResolver = contractResolver;
+                }
+                targetUnit.Parts.ClearCache();
+                foreach (IUnitPartSurviveRespec unitPartSurviveRespec in list)
+                {
+                    unitPartSurviveRespec.CopyAfterRespec(targetUnit);
+                }
+                using (ContextData<EntityDataBase.ForcePostLoad>.Request())
+                {
+                    using (ContextData<UnitEntityData.Respec>.Request())
                     {
-                        if (!targetUnit.Parts.Parts.Contains(part))
+                        targetUnit.PostLoad();
+                    }
+                }
+                targetUnit.Descriptor.FixInventoryOnPlayerPostLoad();
+                targetUnit.Position = position;
+                targetUnit.Orientation = orientation;
+                targetUnit.AttachToViewOnLoad(null);
+                targetUnit.View.transform.SetParent(parent, true);
+                if (isTurnedOn)
+                {
+                    targetUnit.TurnOn();
+                }
+                targetUnit.Alignment.UpdateValue();
+                targetUnit.UISettings.SetPortraitUnsafe(portraitBlueprintRaw, customPortraitRaw);
+                foreach (IGrouping<BlueprintBuff, TimeSpan?> grouping in array)
+                {
+                    foreach (TimeSpan? timeSpan in grouping)
+                    {
+                        if (!targetUnit.Buffs.HasFact(grouping.Key))
                         {
-                            //Main.logger.Log(part.ToString());
-                            part.AttachToEntity(targetUnit);
-                            part.TurnOn();
-                            targetUnit.Parts.m_Parts.Add(part);
-                            part.OnPostLoad();
-                            part.PostLoad();
-                            ///part.PostLoad(targetUnit);
+                            targetUnit.AddBuff(grouping.Key, null, timeSpan);
+                            UnitHelper.Channel.Log(
+                                string.Format("UnitHelper.Respec: restore buff {0} (duration: {1})", grouping.Key,
+                                    timeSpan), Array.Empty<object>());
                         }
                     }
-
-                    foreach (EntityPart part in Main.partstoadd)
+                }
+                using (List<EntityFact>.Enumerator enumerator5 = targetUnit.Facts.List.GetEnumerator())
+                {
+                    while (enumerator5.MoveNext())
                     {
-                        if (!targetUnit.Parts.Parts.Contains(part))
+                        enumerator5.Current.CallComponents<IUpdatePet>(delegate (IUpdatePet c)
                         {
-                            // Main.logger.Log(part.ToString());
-                            part.AttachToEntity(tempUnit);
-                            tempUnit.Parts.m_Parts.Add(part);
-                        }
-                    }
-
-                    /*foreach (EntityPart part in Main.partstoadd)
-                    {
-                        if (!targetUnit.Parts.m_Parts.Contains(part))
-                        {
-                            part.AttachToEntity(targetUnit);
-                            targetUnit.Parts.m_Parts.Add(part);
-                        }
-                    }*/
-                    Main.partstoadd.Clear();
-                    Main.EntityUnit = null;
-                    foreach (EntityPart entityPart in targetUnit.Parts.m_Parts)
-                    {
-                        Main.logger.Log(entityPart.ToString());
-                        targetUnit.OnPartAddedOrPostLoad(entityPart);
-                    }
-
-                    if (Main.NenioEtudeBool == true)
-                    {
-                        var KitsuneHeritageClassic =
-                            ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("cd6cd774fb7cc844b8417193ee3a5ebe");
-                        var KitsuneHeritageKeen =
-                            ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("d6bc49651fbaa2944bba6e2e5a1720ff");
-                        var facts = new List<BlueprintUnitFact> { KitsuneHeritageClassic, KitsuneHeritageKeen };
-                        foreach (IHiddenUnitFacts i in targetUnit.Parts.Get<UnitPartHiddenFacts>().m_HiddenFacts)
-                        {
-                            foreach (BlueprintUnitFact fact in facts)
+                            if (c != null)
                             {
-                                i.Facts.Add(fact);
+                        // c.TryUpdatePet();
+                    }
+                        });
+                    }
+                }
+                using (ContextData<Kingmaker.Items.Slots.ItemSlot.IgnoreLock>.Request())
+                {
+                    for (int j = 0; j < list2.Count; j++)
+                    {
+                        ItemEntity itemEntity = list2[j];
+                        Kingmaker.Items.Slots.ItemSlot itemSlot3 = targetUnit.Body.EquipmentSlots[j];
+                        if (itemEntity != null && itemSlot3.CanInsertItem(itemEntity))
+                        {
+                            itemSlot3.InsertItem(itemEntity);
+                        }
+                    }
+                }
+                targetUnit.Stats.CleanupModifiers();
+                foreach (ModifiableValue modifiableValue in targetUnit.Stats.AllStats)
+                {
+                    modifiableValue.UpdateValue();
+                }
+                targetUnit.UISettings.CleanupSlots();
+                targetUnit.UISettings.TryToInitialize();
+                try
+                {
+                    if (successCallback != null)
+                    {
+                        successCallback();
+                    }
+                }
+                catch (Exception ex2)
+                {
+                    UnitHelper.Channel.Exception(ex2, null, Array.Empty<object>());
+                }
+                EventBus.RaiseEvent<IUnitChangedAfterRespecHandler>(delegate (IUnitChangedAfterRespecHandler h)
+                {
+                    h.HandleUnitChangedAfterRespec(targetUnit);
+                }, true);
+                //if (Main.IsRespec == true)
+                {
+                    try
+                    {
+                        targetUnit.View.UpdateBodyEquipmentModel();
+                        targetUnit.View.UpdateClassEquipment();
+                        targetUnit.Descriptor.Stats.HitPoints.BaseValue = targetUnit.Descriptor.Stats.HitPoints.BaseValue + -1;
+                        Main.featurestoadd.Clear();
+                        //Main.logger.Log("Commited");
+                        targetUnit.Progression.AdvanceMythicExperience(Main.MythicXP);
+                        foreach (EntityPart part in Main.partstoadd)
+                        {
+                            if (!targetUnit.Parts.Parts.Contains(part))
+                            {
+                                Main.logger.Log(part.ToString());
+                                part.AttachToEntity(targetUnit);
+                                part.TurnOn();
+                                targetUnit.Parts.m_Parts.Add(part);
+                                part.OnPostLoad();
+                                part.PostLoad();
+                                ///part.PostLoad(targetUnit);
                             }
                         }
-
-                        Main.NenioEtudeBool = false;
+                        foreach (EntityPart part in Main.partstoadd)
+                        {
+                            if (!targetUnit.Parts.Parts.Contains(part))
+                            {
+                                // Main.logger.Log(part.ToString());
+                                part.AttachToEntity(tempUnit);
+                                tempUnit.Parts.m_Parts.Add(part);
+                            }
+                        }
+                        /*foreach (EntityPart part in Main.partstoadd)
+                        {
+                            if (!targetUnit.Parts.m_Parts.Contains(part))
+                            {
+                                part.AttachToEntity(targetUnit);
+                                targetUnit.Parts.m_Parts.Add(part);
+                            }
+                        }*/
+                        Main.partstoadd.Clear();
+                        
+                        Main.EntityUnit = null;
+                        foreach (EntityPart entityPart in targetUnit.Parts.m_Parts)
+                        {
+                            Main.logger.Log(entityPart.ToString());
+                            targetUnit.OnPartAddedOrPostLoad(entityPart);
+                        }
+                        if (Main.NenioEtudeBool == true)
+                        {
+                            var KitsuneHeritageClassic = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("cd6cd774fb7cc844b8417193ee3a5ebe");
+                            var KitsuneHeritageKeen = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("d6bc49651fbaa2944bba6e2e5a1720ff");
+                            var facts = new List<BlueprintUnitFact> { KitsuneHeritageClassic, KitsuneHeritageKeen };
+                            foreach (IHiddenUnitFacts i in targetUnit.Parts.Get<UnitPartHiddenFacts>().m_HiddenFacts)
+                            {
+                                foreach (BlueprintUnitFact fact in facts)
+                                {
+                                    i.Facts.Add(fact);
+                                }
+                            }
+                            Main.NenioEtudeBool = false;
+                        }
+                        Main.IsRespec = false;
                     }
-
-                    Main.IsRespec = false;
-
-                    if (Main.settings.KeepMCAlignment)
-                {
-                    targetUnit.Alignment.m_History = history;
-					
+                    catch (Exception e) { Main.logger.Log(e.ToString()); }
+                    var bab2 = targetUnit.Progression.Classes.First().BaseAttackBonus.GetBonus(1);
+                    targetUnit.Stats.BaseAttackBonus.PermanentValue = bab2;
+                    targetUnit.Stats.BaseAttackBonus.BaseValue = bab2;
+                    targetUnit.Stats.BaseAttackBonus.m_BaseValue = bab2;
+                    targetUnit.Stats.BaseAttackBonus.OnPermanentValueUpdated();
                 }
-            }
-            catch (Exception e) { Main.logger.Log(e.ToString()); }
-                var bab2 = targetUnit.Progression.Classes.First().BaseAttackBonus.GetBonus(1);
-                targetUnit.Stats.BaseAttackBonus.PermanentValue = bab2;
-                targetUnit.Stats.BaseAttackBonus.BaseValue = bab2;
-                targetUnit.Stats.BaseAttackBonus.m_BaseValue = bab2;
-                targetUnit.Stats.BaseAttackBonus.OnPermanentValueUpdated();
-			}
             }
             catch (Exception e)
             {
                 Main.logger.Error(e.ToString());
                 throw;
             }
-		}
-		private static void RespecOnStop(UnitEntityData targetUnit)
-		{
-			//	Main.logger.Log("Stopped");
+        }
+        private static void RespecOnStop(UnitEntityData targetUnit)
+        {
+            //	Main.logger.Log("Stopped");
             if (Main.NenioEtudeBool == true)
             {
                 var KitsuneHeritageClassic = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("cd6cd774fb7cc844b8417193ee3a5ebe");
@@ -747,11 +779,12 @@ namespace RespecModBarley
                 }
                 Main.NenioEtudeBool = false;
             }
-			targetUnit.Dispose();
-			Main.IsRespec = false;
-			Main.featureSelection = null;
-			Main.featurestoadd.Clear();
-			Main.partstoadd.Clear();
-		}
-	}
+            targetUnit.Dispose();
+            Main.IsRespec = false;
+            Main.featureSelection = null;
+            Main.featurestoadd.Clear();
+            Main.partstoadd.Clear();
+            
+        }
+    }
 }

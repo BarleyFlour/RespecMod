@@ -18,10 +18,10 @@ using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.Utility;
 using Kingmaker.Visual.CharacterSystem;
-using RespecModBarley;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RespecModBarley;
 using UnityEngine;
 
 [HarmonyPatch(typeof(BlueprintsCache), "Init")]

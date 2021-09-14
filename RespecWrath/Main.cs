@@ -69,6 +69,7 @@ namespace RespecModBarley
 		public static bool NenioEtudeBool = false;
 		public static BlueprintFeatureSelection featureSelection;
 		public static UnityModManager.ModEntry ModEntry;
+		
 		//public static UnitEntityView entityView;
 		static bool Load(UnityModManager.ModEntry modEntry)
 		{
@@ -331,6 +332,24 @@ namespace RespecModBarley
 							GUILayout.ExpandWidth(false)
 				}))
 				{
+					string nameandtype = "";
+					if (selected.IsPet)
+                    {
+						nameandtype = $"pet {selected.CharacterName}";
+                    }
+					else if (selected.IsMainCharacter)
+                    {
+						nameandtype = $"main character {selected.CharacterName}";
+                    }
+					else if (selected.IsStoryCompanion())
+                    {
+						nameandtype = $"story character {selected.CharacterName}";
+					}
+					else
+                    {
+						nameandtype = $"merc {selected.CharacterName}";
+					}
+					modEntry.Logger.Log($"Initiating respec of {nameandtype}");
 					bool flag5 = false;
 					if (!selected.IsCustomCompanion())
 					{
@@ -412,28 +431,57 @@ namespace RespecModBarley
                 GUILayout.Space(10f);
 				GUILayout.BeginHorizontal();
 				settings.FreeRespec = GUILayout.Toggle(settings.FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
-                if (selected.IsMainCharacter)
-                {
-                    settings.KeepMCAlignment = GUILayout.Toggle(settings.KeepMCAlignment, "Preserve Alignment",
-                        GUILayout.ExpandWidth(false));
-                }
-				if(selected.IsStoryCompanion() && !selected.IsMainCharacter)
+				if(selected.IsStoryCompanion() && !selected.IsMC() )
 				{
-					settings.FullRespecStoryCompanion = GUILayout.Toggle(settings.FullRespecStoryCompanion, "Full Story Companion Respec", GUILayout.ExpandWidth(false));
-					if(settings.FullRespecStoryCompanion)
+					GUILayout.BeginVertical();
                     {
-						settings.BackgroundDeity = true;
+                        settings.FullRespecStoryCompanion = GUILayout.Toggle(settings.FullRespecStoryCompanion,
+                            "Full Story Companion Respec", GUILayout.ExpandWidth(false));
+                        if (settings.FullRespecStoryCompanion)
+                        {
+                            settings.BackgroundDeity = true;
+                        }
                     }
-				}
+					GUILayout.EndVertical();
+                }
 				else
                 {
 					settings.FullRespecStoryCompanion = false;
                 }
-				if(selected.IsStoryCompanion() && !settings.FullRespecStoryCompanion)
+				if (selected.IsMC())
                 {
-					settings.BackgroundDeity = GUILayout.Toggle(settings.BackgroundDeity, "Choose Background/Deity", GUILayout.ExpandWidth(false));
-				}
-				else if (settings.FullRespecStoryCompanion)
+					GUILayout.BeginVertical();
+					settings.PreserveVoice = GUILayout.Toggle(settings.PreserveVoice, "Retain Voice", GUILayout.ExpandWidth(false));
+                    settings.PreserveMCAlignment = GUILayout.Toggle(settings.PreserveMCAlignment, "Retain Alignment", GUILayout.ExpandWidth(false));
+                    settings.PreserveMCBirthday = GUILayout.Toggle(settings.PreserveMCBirthday, "Retain Birthday", GUILayout.ExpandWidth(false));
+                    settings.PreserveMCName = GUILayout.Toggle(settings.PreserveMCName, "Retain Name", GUILayout.ExpandWidth(false));
+                    settings.PreserveMCRace = GUILayout.Toggle(settings.PreserveMCRace, "Retain Race", GUILayout.ExpandWidth(false));
+                    settings.PreservePortrait= GUILayout.Toggle(settings.PreservePortrait, "Retain Portrait", GUILayout.ExpandWidth(false));
+					GUILayout.EndVertical();
+
+
+                }
+                else
+                {
+                    settings.PreserveVoice = false;
+                    settings.PreserveMCAlignment = false;
+                    settings.PreserveMCBirthday = false;
+                    settings.PreserveMCName = false;
+                    settings.PreserveMCRace = false;
+                    settings.PreservePortrait = false;
+                }
+                if(selected.IsStoryCompanion() && !settings.FullRespecStoryCompanion)
+                {
+					GUILayout.BeginVertical();
+                    {
+
+                        settings.BackgroundDeity = GUILayout.Toggle(settings.BackgroundDeity, "Choose Background/Deity", GUILayout.ExpandWidth(false));
+                        settings.PreserveVoice = GUILayout.Toggle(settings.PreserveVoice, "Retain Voice", GUILayout.ExpandWidth(false));
+                        settings.PreservePortrait = GUILayout.Toggle(settings.PreservePortrait, "Retain Portrait", GUILayout.ExpandWidth(false));
+					}
+					GUILayout.EndVertical();
+                }
+				else if (( selected.IsStoryCompanion()) && settings.FullRespecStoryCompanion)
                 {
 					settings.BackgroundDeity = true;
 				}
@@ -573,6 +621,7 @@ namespace RespecModBarley
 				var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
 				backgroundsarray = backgroundsarray.Concat<BlueprintFeature>(Stuf.deityfeatures).ToArray();
 				Main.IsRespec = true;
+				
 				/*if (entityData.IsStoryCompanion())
 				{
 					Main.GetUnitForMemory(entityData.Blueprint);
@@ -582,6 +631,8 @@ namespace RespecModBarley
 				{
 					if (Main.partslist.Contains(entityPart.ToString()))
 					{
+						
+
 						Main.partstoadd.Add(entityPart);
 						///Main.logger.Log(entityPart.ToString());
 					}
@@ -621,6 +672,7 @@ namespace RespecModBarley
 					//testy
 					//entityData.Blueprint.GetComponent<MythicLevelLimit>().LevelLimit = 0;
 				}
+				
 				RespecClass.Respecialize(entityData);
 			}
 

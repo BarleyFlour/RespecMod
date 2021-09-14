@@ -19,7 +19,6 @@ using Kingmaker.UnitLogic.Class.LevelUp;
 using Kingmaker.UnitLogic.Parts;
 using Kingmaker.Utility;
 using Kingmaker.View;
-using RespecModBarley;
 using Kingmaker.UnitLogic;
 
 namespace RespecModBarley

@@ -16,9 +16,14 @@ namespace RespecModBarley
         public int PointsCount;
         public bool OriginalStats;
         public bool BackgroundDeity;
+        public bool PreserveMCName = true;
+        public bool PreserveMCBirthday = true;
+        public bool PreserveMCAlignment = true;
+        public bool PreservePortrait = true;
+        public bool PreserveMCRace = true;
+        public bool PreserveVoice = true;
         public bool FreeRespec = false;
         public bool FullRespecStoryCompanion = false;
-        public bool KeepMCAlignment = false;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             var filepath = Path.Combine(modEntry.Path, "Settings.json");
