@@ -54,7 +54,7 @@ using Owlcat.Runtime.Core.Logging;
 using Owlcat.Runtime.Core.Utils;
 using UnityEngine;
 
-namespace RespecWrathFork
+namespace RespecModBarley
 {
     static class RespecClass
     {
@@ -123,45 +123,21 @@ namespace RespecWrathFork
 
 
 
-            if (Main.settings.PreserveMCBiographicalInformation && unit.IsMC())
+            if (Main.settings.PreservePortrait && unit.IsMC())
             {
+                newUnit.UISettings.SetPortrait(unit.Portrait);
+            }
 
-               
-                    newUnit.UISettings.SetPortrait(unit.Portrait);
-                
-               
-                        newUnit.Alignment.CopyFrom(unit.Alignment);
-                 
+            if (Main.settings.PreserveMCName && unit.IsMC())
+            {
                 if (!unit.CharacterName.IsNullOrEmpty())
                 {
                     newUnit.Descriptor.CustomName = unit.CharacterName;
                 }
-
-                /*
-                if (unit.Blueprint != null && unit.Blueprint.Race != null)
-                {
-                    raceref = unit.Blueprint.Race;
-                    Main.logger.Log("Race from unit bp");
-                }
-                else if (unit.Progression != null && unit.Progression.Race != null)
-                {
-
-                    raceref = unit.Progression.Race;
-
-                    Main.logger.Log("Race from unit progression");
-                }
-                */
-               
-                
-                newUnit.Descriptor.LeftHandedOverride = unit.Descriptor.IsLeftHanded;
-                //newUnit.Descriptor.CustomGender = unit.Gender;
-                //Main.logger.Log($"Birthday is {unit.Descriptor.BirthMonth} /{unit.Descriptor.BirthDay}");
-                //newUnit.Descriptor.BirthDay = unit.Descriptor.BirthDay;
-                //newUnit.Descriptor.BirthMonth = unit.Descriptor.BirthMonth;
-                //newUnit.Descriptor.CustomAsks = unit.Descriptor.CustomAsks;
-            
-                
-                
+            }
+            if (Main.settings.PreserveMCAlignment && unit.IsMC())
+            {
+                newUnit.Alignment.CopyFrom(unit.Alignment);
             }
 
 
@@ -522,7 +498,6 @@ namespace RespecWrathFork
         {
             try
             {
-                tempUnit.Alignment.m_History = history;
                 PFLog.History.Party.Log(string.Format("Respec unit: {0}, ", targetUnit) + string.Format("level: {0} ({1}), ", targetUnit.Progression.CharacterLevel, targetUnit.Progression.Experience) + string.Format("mythic: {0} ({1})", targetUnit.Progression.MythicLevel, targetUnit.Progression.MythicExperience), Array.Empty<object>());
                 var bab = targetUnit.Progression.Classes.First().BaseAttackBonus.GetBonus(1);
                 targetUnit.Stats.BaseAttackBonus.PermanentValue = bab;
@@ -653,8 +628,13 @@ namespace RespecWrathFork
                 {
                     foreach (TimeSpan? timeSpan in grouping)
                     {
-                        targetUnit.AddBuff(grouping.Key, null, timeSpan);
-                        UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: restore buff {0} (duration: {1})", grouping.Key, timeSpan), Array.Empty<object>());
+                        if (!targetUnit.Buffs.HasFact(grouping.Key))
+                        {
+                            targetUnit.AddBuff(grouping.Key, null, timeSpan);
+                            UnitHelper.Channel.Log(
+                                string.Format("UnitHelper.Respec: restore buff {0} (duration: {1})", grouping.Key,
+                                    timeSpan), Array.Empty<object>());
+                        }
                     }
                 }
                 using (List<EntityFact>.Enumerator enumerator5 = targetUnit.Facts.List.GetEnumerator())

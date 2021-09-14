@@ -9,14 +9,19 @@ using UnityEngine;
 using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
 
-namespace RespecWrathFork
+namespace RespecModBarley
 {
     public class Settings : UnityModManager.ModSettings
     {
         public int PointsCount;
         public bool OriginalStats;
         public bool BackgroundDeity;
-        public bool PreserveMCBiographicalInformation = true;
+        public bool PreserveMCName = true;
+        public bool PreserveMCBirthday = true;
+        public bool PreserveMCAlignment = true;
+        public bool PreservePortrait = true;
+        public bool PreserveMCRace = true;
+        public bool PreserveVoice = true;
         public bool FreeRespec = false;
         public bool FullRespecStoryCompanion = false;
         public override void Save(UnityModManager.ModEntry modEntry)

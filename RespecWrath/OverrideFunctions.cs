@@ -8,8 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Kingmaker.UnitLogic;
 
-namespace RespecWrathFork
+namespace RespecModBarley
 {
     [HarmonyPatch(typeof(LevelUpController), MethodType.Constructor)]
     [HarmonyPatch(new Type[] { typeof(UnitEntityData), typeof(bool), typeof(LevelUpState.CharBuildMode) })]
@@ -22,22 +23,38 @@ namespace RespecWrathFork
             {
                 if (Main.IsRespec == true)
                 {
-                    if (Main.EntityUnit.IsMC() && Main.settings.PreserveMCBiographicalInformation)
+                    if (Main.EntityUnit.IsMC())
 					{
-                        __instance.SelectRace(Main.EntityUnit.Progression.Race);
-                        __instance.SelectName(Main.EntityUnit.CharacterName);
-                       
-                        __instance.SelectAlignment(Main.EntityUnit.Alignment.m_Value.Value);
-                        unit.Alignment.CopyFrom(Main.EntityUnit.Alignment);
-                        
-                        
+                        if (Main.settings.PreserveMCRace)
+                        {
+                            __instance.SelectRace(Main.EntityUnit.Progression.Race);
+                        }
+
+                        if (Main.settings.PreserveMCName)
+                        {
+                            __instance.SelectName(Main.EntityUnit.CharacterName);
+                        }
+
+                        if (Main.settings.PreserveMCAlignment)
+                        {
+                            __instance.SelectAlignment(Main.EntityUnit.Alignment.m_Value.Value);
+                            unit.Alignment.CopyFrom(Main.EntityUnit.Alignment);
+                        }
+
+                        if (Main.settings.PreserveMCBirthday)
+                        {
+                            __instance.SetBirthDay(Main.EntityUnit.Descriptor.BirthDay, Main.EntityUnit.Descriptor.BirthMonth);
+                        }
+                        if (Main.settings.PreserveVoice)
+                        {
+                            __instance.SelectGender(Main.EntityUnit.Gender);
+                            __instance.SelectVoice(Main.EntityUnit.Descriptor.Asks);
+                        }
+                    }
+                    else if(Main.EntityUnit.IsStoryCompanion() && Main.settings.PreserveVoice)
+                    {
                         __instance.SelectGender(Main.EntityUnit.Gender);
-                        __instance.SetBirthDay(Main.EntityUnit.Descriptor.BirthDay, Main.EntityUnit.Descriptor.BirthMonth);
                         __instance.SelectVoice(Main.EntityUnit.Descriptor.Asks);
-                       
-
-
-                        return;
                     }
                 }
             }

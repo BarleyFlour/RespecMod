@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RespecWrathFork
+namespace RespecModBarley
 {
 	[HarmonyPatch(typeof(CharGenVM), "NeedNamePhase")]
 	internal static class NeedName_Patch
@@ -18,7 +18,7 @@ namespace RespecWrathFork
 			{
 				if (Main.IsRespec == true)
 				{
-					if (Main.EntityUnit.IsMC() && Main.settings.PreserveMCBiographicalInformation)
+					if (Main.EntityUnit.IsMC() && Main.settings.PreserveMCName)
 					{
 						__result = false;
 						return;
@@ -58,7 +58,7 @@ namespace RespecWrathFork
 			{
 				if (Main.IsRespec == true)
 				{
-					if (Main.EntityUnit.IsMC() && Main.settings.PreserveMCBiographicalInformation)
+					if (Main.EntityUnit.IsMC() && Main.settings.PreserveMCAlignment)
 					{
 						__result = false;
 						return;
@@ -78,7 +78,7 @@ namespace RespecWrathFork
 			{
 				if (Main.IsRespec == true)
 				{
-					if (Main.EntityUnit.IsMC() && Main.settings.PreserveMCBiographicalInformation)
+					if (Main.settings.PreservePortrait)
 					{
 						__result = false;
 						return;

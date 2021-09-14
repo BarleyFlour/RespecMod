@@ -7,7 +7,6 @@ using Kingmaker.UI.MVVM._VM.CharGen.Phases.Voice;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Class.LevelUp;
 using Kingmaker.UnitLogic.Class.LevelUp.Actions;
-using RespecWrathFork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Kingmaker.UI.MVVM._VM.CharGen.Phases.FeatureSelector;
 
-namespace RespecWrathFork
+namespace RespecModBarley
 {
 	[HarmonyPatch(typeof(CharGenVM), "NeedVoicePhase")]
 	internal static class NeedVoice_Patch
@@ -31,7 +30,7 @@ namespace RespecWrathFork
 						__result = true;
 						return;
 					}
-					if (Main.IsRespec && Main.EntityUnit.IsMC() && Main.settings.PreserveMCBiographicalInformation)
+					if (Main.IsRespec && Main.settings.PreserveVoice)
 					{
 						__result = false;
 						return;

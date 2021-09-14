@@ -1,11 +1,11 @@
 ﻿{
-	"Id": "RespecWrathFork",
-	"DisplayName": "Respec Mod Fork",
-	"Author": "Pheonix89",
+	"Id": "RespecModBarley",
+	"DisplayName": "Respec Mod",
+	"Author": "Barley",
 	"Version": "1.0",
 	"ManagerVersion": "0.21.3",
 	"GameVersion": "0",
-	"EntryMethod": "RespecWrathFork.Main.Load",
+	"EntryMethod": "RespecModBarley.Main.Load",
 	"HomePage": "https://github.com/BarleyFlour/RespecMod",
 	"Repository": "https://github.com/BarleyFlour/RespecMod"
 }

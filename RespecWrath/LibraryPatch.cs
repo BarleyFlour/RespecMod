@@ -18,10 +18,10 @@ using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.Utility;
 using Kingmaker.Visual.CharacterSystem;
-using RespecWrathFork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RespecModBarley;
 using UnityEngine;
 
 [HarmonyPatch(typeof(BlueprintsCache), "Init")]
@@ -135,7 +135,7 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 		}*/
 	}
 }
-namespace RespecWrathFork
+namespace RespecModBarley
 {
 	static public class Stuf
 	{

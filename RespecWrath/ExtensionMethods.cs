@@ -22,7 +22,7 @@ using Kingmaker.Blueprints.JsonSystem;
 using HarmonyLib;
 using Kingmaker.EntitySystem.Entities;
 
-namespace RespecWrathFork
+namespace RespecModBarley
 {
     static class ExtensionMethods
     {

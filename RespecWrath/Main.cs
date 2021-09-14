@@ -41,7 +41,7 @@ using UnityEngine;
 using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
 
-namespace RespecWrathFork
+namespace RespecModBarley
 {
 	/*public class UnitInfo : ScriptableObject
     {
@@ -433,30 +433,54 @@ namespace RespecWrathFork
 				settings.FreeRespec = GUILayout.Toggle(settings.FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
 				if(selected.IsStoryCompanion() && !selected.IsMC() )
 				{
-					settings.FullRespecStoryCompanion = GUILayout.Toggle(settings.FullRespecStoryCompanion, "Full Story Companion Respec", GUILayout.ExpandWidth(false));
-					if(settings.FullRespecStoryCompanion)
+					GUILayout.BeginVertical();
                     {
-						settings.BackgroundDeity = true;
+                        settings.FullRespecStoryCompanion = GUILayout.Toggle(settings.FullRespecStoryCompanion,
+                            "Full Story Companion Respec", GUILayout.ExpandWidth(false));
+                        if (settings.FullRespecStoryCompanion)
+                        {
+                            settings.BackgroundDeity = true;
+                        }
                     }
-				}
+					GUILayout.EndVertical();
+                }
 				else
                 {
 					settings.FullRespecStoryCompanion = false;
                 }
 				if (selected.IsMC())
                 {
-					settings.PreserveMCBiographicalInformation = GUILayout.Toggle(settings.PreserveMCBiographicalInformation, "Retain Name/Alignment/Birthday/Portrait", GUILayout.ExpandWidth(false));
-				}
-				else
-                {
-					settings.PreserveMCBiographicalInformation = false;
-				}
+					GUILayout.BeginVertical();
+					settings.PreserveVoice = GUILayout.Toggle(settings.PreserveVoice, "Retain Voice", GUILayout.ExpandWidth(false));
+                    settings.PreserveMCAlignment = GUILayout.Toggle(settings.PreserveMCAlignment, "Retain Alignment", GUILayout.ExpandWidth(false));
+                    settings.PreserveMCBirthday = GUILayout.Toggle(settings.PreserveMCBirthday, "Retain Birthday", GUILayout.ExpandWidth(false));
+                    settings.PreserveMCName = GUILayout.Toggle(settings.PreserveMCName, "Retain Name", GUILayout.ExpandWidth(false));
+                    settings.PreserveMCRace = GUILayout.Toggle(settings.PreserveMCRace, "Retain Race", GUILayout.ExpandWidth(false));
+                    settings.PreservePortrait= GUILayout.Toggle(settings.PreservePortrait, "Retain Portrait", GUILayout.ExpandWidth(false));
+					GUILayout.EndVertical();
 
 
-				if(selected.IsStoryCompanion() && !settings.FullRespecStoryCompanion)
+                }
+                else
                 {
-					settings.BackgroundDeity = GUILayout.Toggle(settings.BackgroundDeity, "Choose Background/Deity", GUILayout.ExpandWidth(false));
-				}
+                    settings.PreserveVoice = false;
+                    settings.PreserveMCAlignment = false;
+                    settings.PreserveMCBirthday = false;
+                    settings.PreserveMCName = false;
+                    settings.PreserveMCRace = false;
+                    settings.PreservePortrait = false;
+                }
+                if(selected.IsStoryCompanion() && !settings.FullRespecStoryCompanion)
+                {
+					GUILayout.BeginVertical();
+                    {
+
+                        settings.BackgroundDeity = GUILayout.Toggle(settings.BackgroundDeity, "Choose Background/Deity", GUILayout.ExpandWidth(false));
+                        settings.PreserveVoice = GUILayout.Toggle(settings.PreserveVoice, "Retain Voice", GUILayout.ExpandWidth(false));
+                        settings.PreservePortrait = GUILayout.Toggle(settings.PreservePortrait, "Retain Portrait", GUILayout.ExpandWidth(false));
+					}
+					GUILayout.EndVertical();
+                }
 				else if (( selected.IsStoryCompanion()) && settings.FullRespecStoryCompanion)
                 {
 					settings.BackgroundDeity = true;

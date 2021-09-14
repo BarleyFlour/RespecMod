@@ -16,10 +16,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Kingmaker.View.Equipment;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace RespecWrathFork
+namespace RespecModBarley
 {
     // Token: 0x02000003 RID: 3
     [HarmonyPatch(typeof(LevelUpState), MethodType.Constructor)]
@@ -263,50 +264,74 @@ namespace RespecWrathFork
                                 {
                                     __instance.CanSelectAlignment = false;
                                 }
-                                __instance.CanSelectPortrait = true;
+                                if (Main.settings.PreservePortrait)
+                                {
+                                    __instance.CanSelectPortrait = false;
+                                }
+                                else
+                                {
+                                    __instance.CanSelectPortrait = true;
+                                }
                                 __instance.CanSelectRace = true;
                                 __instance.CanSelectGender = true;
                                 __instance.CanSelectName = true;
-                                __instance.CanSelectVoice = true;
-                                
-
+                                if (Main.settings.PreserveVoice)
+                                {
+                                    __instance.CanSelectVoice = false;
+                                }
+                                else
+                                {
+                                    __instance.CanSelectVoice = true;
+                                }
                             }
-                            else if (unit.IsMC() && unit.IsPet == false && Main.settings.PreserveMCBiographicalInformation)
+                            else if(unit.IsMC() && !unit.IsPet)
                             {
-                                
+
                                 Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.CharGen);
                                 Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(true);
 
                                 //Does not prevent name from appearing, does cause corrent value to load into input field and disregarding changes with current input timing
-                                Traverse.Create(__instance).Property("CanSelectName", null).SetValue(false);
-                                __instance.CanSelectName = false;
+                                if (Main.settings.PreserveMCName)
+                                {
+                                    Traverse.Create(__instance).Property("CanSelectName", null).SetValue(false);
+                                    __instance.CanSelectName = false;
+                                }
+                                else
+                                {
+                                    Traverse.Create(__instance).Property("CanSelectName", null).SetValue(true);
+                                    __instance.CanSelectName = true;
+                                }
+                                if (Main.settings.PreserveVoice)
+                                {
+                                    Traverse.Create(__instance).Property("CanSelectVoice", null).SetValue(false);
+                                    __instance.CanSelectVoice = false;
+                                }
+                                else
+                                {
+                                    Traverse.Create(__instance).Property("CanSelectVoice", null).SetValue(true);
+                                    __instance.CanSelectVoice = true;
+                                }
+                                if (Main.settings.PreserveMCAlignment)
+                                {
+                                    Traverse.Create(__instance).Property("CanSelectAlignment", null).SetValue(false);
+                                    __instance.CanSelectAlignment = false;
+                                }
+                                else
+                                {
+                                    Traverse.Create(__instance).Property("CanSelectAlignment", null).SetValue(true);
+                                    __instance.CanSelectAlignment = true;
+                                }
+                                if (Main.settings.PreserveMCRace)
+                                {
+                                    __instance.CanSelectRace = true;
+                                }
 
-
-                                Traverse.Create(__instance).Property("CanSelectVoice", null).SetValue(false);
-                                __instance.CanSelectVoice = false;
-
-
-                                Traverse.Create(__instance).Property("CanSelectAlignment", null).SetValue(false);
-                                __instance.CanSelectAlignment = false;
-
-
-                                __instance.CanSelectRace = true;
-
-                                
-                                Traverse.Create(__instance).Property("CanSelectPortrait", null).SetValue(false);
-                                __instance.CanSelectPortrait = false;
-
-
-
+                                if (Main.settings.PreservePortrait)
+                                {
+                                    Traverse.Create(__instance).Property("CanSelectPortrait", null).SetValue(false);
+                                    __instance.CanSelectPortrait = false;
+                                }
                                 __instance.CanSelectGender = true;
-                               
-
-                               
-
-
-
-
-
                             }
                             else if (unit.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion || unit.Blueprint.ToString().Contains("_Companion") && unit.IsPet == false && !Main.settings.FullRespecStoryCompanion)
                             {
@@ -322,8 +347,6 @@ namespace RespecWrathFork
                                 __instance.CanSelectGender = false;
                                 __instance.CanSelectName = false;
                                 __instance.CanSelectVoice = false;
-                               
-                                
                             }
                             else
                             {

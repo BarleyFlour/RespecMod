@@ -69,8 +69,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure Demo\Wrath_Data\Managed\Newtonsoft.Json.dll</HintPath>
+      <HintPath>F:\Games\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Owlcat.Runtime.Core">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure Demo\Wrath_Data\Managed\Owlcat.Runtime.Core.dll</HintPath>
