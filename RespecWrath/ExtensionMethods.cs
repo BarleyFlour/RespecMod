@@ -20,8 +20,9 @@ using System.Linq;
 using UnityEngine;
 using Kingmaker.Blueprints.JsonSystem;
 using HarmonyLib;
+using Kingmaker.EntitySystem.Entities;
 
-namespace RespecModBarley
+namespace RespecWrathFork
 {
     static class ExtensionMethods
     {
@@ -65,6 +66,11 @@ namespace RespecModBarley
                 return value;
             }
             return oldValue;
+        }
+
+        public static bool IsMC(this UnitEntityData unitEntityData)
+        {
+            return unitEntityData.IsMainCharacter || unitEntityData.IsCloneOfMainCharacter;
         }
 
         public static V PutIfAbsent<K, V>(this IDictionary<K, V> self, K key, Func<V> ifAbsent) where V : class

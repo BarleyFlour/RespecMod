@@ -19,10 +19,10 @@ using Kingmaker.UnitLogic.Class.LevelUp;
 using Kingmaker.UnitLogic.Parts;
 using Kingmaker.Utility;
 using Kingmaker.View;
-using RespecModBarley;
+using RespecWrathFork;
 using Kingmaker.UnitLogic;
 
-namespace RespecModBarley
+namespace RespecWrathFork
 {
     public static class MythicRespec
     {

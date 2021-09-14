@@ -10,6 +10,7 @@ using Kingmaker.UI.MVVM._VM.CharGen;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.ActivatableAbilities;
 using Kingmaker.UnitLogic.Class.LevelUp;
+using Kingmaker.UnitLogic.Class.LevelUp.Actions;
 using Kingmaker.UnitLogic.Parts;
 using System;
 using System.Collections.Generic;
@@ -18,38 +19,45 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace RespecModBarley
+namespace RespecWrathFork
 {
-	// Token: 0x02000003 RID: 3
-	[HarmonyPatch(typeof(LevelUpState), MethodType.Constructor)]
-	[HarmonyPatch(new Type[] { typeof(UnitEntityData), typeof(LevelUpState.CharBuildMode), typeof(bool) })]
-	[HarmonyPriority(9999)]
-	internal static class LevelUpState_ctor_Patch
-	{
-		/*	private static void Prefix(LevelUpState __instance, UnitEntityData unit, LevelUpState.CharBuildMode mode, bool isPregen)
+    // Token: 0x02000003 RID: 3
+    [HarmonyPatch(typeof(LevelUpState), MethodType.Constructor)]
+    [HarmonyPatch(new Type[] { typeof(UnitEntityData), typeof(LevelUpState.CharBuildMode), typeof(bool) })]
+    [HarmonyPriority(9999)]
+    internal static class LevelUpState_ctor_Patch
+    {
+        /*	private static void Prefix(LevelUpState __instance, UnitEntityData unit, LevelUpState.CharBuildMode mode, bool isPregen)
 			{
 			}*/
-			// Token: 0x0600000C RID: 12 RVA: 0x000041B4 File Offset: 0x000023B4
-	    private static void Postfix(LevelUpState __instance, UnitEntityData unit, LevelUpState.CharBuildMode mode)
-	    {
-			/*if(unit.IsPet == true)
+        // Token: 0x0600000C RID: 12 RVA: 0x000041B4 File Offset: 0x000023B4
+        private static void Postfix(LevelUpState __instance, UnitEntityData unit, LevelUpState.CharBuildMode mode)
+        {
+
+       
+
+
+            /*if(unit.IsPet == true)
             {
 		        ///__instance.HasSelection
 				///Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.LevelUp);
 			}*/
-			/*if(Main.PetBool == true && unit.IsPet == true)
+            /*if(Main.PetBool == true && unit.IsPet == true)
             {
 				unit.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
 				mode = LevelUpState.CharBuildMode.CharGen;
 			}*/
-			///unit.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-			if (Main.IsRespec == true)
-			{
-				///var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
-				try
-				{
-					if (Main.IsEnabled == true)
-					{
+            ///unit.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
+            if (Main.IsRespec == true)
+            {
+           
+                ///var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
+                try
+                {
+                    
+
+                    if (Main.IsEnabled == true)
+                    {
                         /*if(__instance.AttributePoints != Main.settings.PointsCount)
                         {
                             __instance.AttributePoints = Main.settings.PointsCount;
@@ -81,10 +89,10 @@ namespace RespecModBarley
 							var bu = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>("047b715d404d5f245ad37019b5b6f1de");
 							if (unit.CharacterName.Contains("Nenio") && !unit.HasFact(bu))
                             {
-								unit.AddFact(bu);
-								///Main.logger.Log("neniostuff");
+                                unit.AddFact(bu);
+                                ///Main.logger.Log("neniostuff");
                             }
-							/*if (unit.IsCustomCompanion() || unit.IsMainCharacter)
+                            /*if (unit.IsCustomCompanion() || unit.IsMainCharacter)
 							{
 								foreach (BlueprintFeatureSelection blueprintFeatureSelection in unit.Blueprint.Race.Features.OfType<BlueprintFeatureSelection>())
 								{
@@ -92,25 +100,64 @@ namespace RespecModBarley
 									__instance.AddSelection(null, unit.Progression.Race, blueprintFeatureSelection, 0);
 								}
 							}*/
-							if(unit.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion || unit.Blueprint.ToString().Contains("_Companion") && !Main.settings.FullRespecStoryCompanion)
-							{
-								foreach(BlueprintFeature feat in unit.Blueprint.Race.Features)
+
+                            if (unit.IsStoryCompanion() && !unit.IsMC() && !Main.settings.FullRespecStoryCompanion || unit.Blueprint.ToString().Contains("_Companion"))
+                            {
+                               
+                                    
+                                foreach (BlueprintFeature feat in unit.Blueprint.Race.Features)
                                 {
-									//Main.logger.Log(feat.ToString());
-									if(!unit.HasFact(feat))
-									{
-										unit.AddFact(feat);
-									}
-								}
-								foreach (BlueprintFeatureSelection blueprintFeatureSelection in unit.Blueprint.Race.Features.OfType<BlueprintFeatureSelection>())
-								{
-									blueprintFeatureSelection.Obligatory = false;
-									///Main.logger.Log(blueprintFeatureSelection.ToString());
+                                    //Main.logger.Log(feat.ToString());
+                                    if (!unit.HasFact(feat))
+                                    {
+                                        unit.AddFact(feat);
+                                    }
+                                }
+                                foreach (BlueprintFeatureSelection blueprintFeatureSelection in unit.Blueprint.Race.Features.OfType<BlueprintFeatureSelection>())
+                                {
+                                    blueprintFeatureSelection.Obligatory = false;
+                                    ///Main.logger.Log(blueprintFeatureSelection.ToString());
                                     //Optimize
-									__instance.AddSelection(null, unit.Blueprint.Race, blueprintFeatureSelection, 0);
-							    }
-							}
-							/*if (unit.CharacterName.Contains("Nenio"))
+                                    __instance.AddSelection(null, unit.Blueprint.Race, blueprintFeatureSelection, 0);
+                                }
+                            }
+                            /*
+                            else if (unit.IsMC() && !Main.settings.FullRespecStoryCompanion)
+                            {
+                                
+                                BlueprintRace unitBluePrintRace = unit.Blueprint.Race;
+                                if (unitBluePrintRace == null)
+                                {
+                                    unitBluePrintRace = unit.Descriptor.Progression.Race;
+                                    
+                                }
+                                if (unitBluePrintRace == null)
+                                {
+                                    unitBluePrintRace = unit.Progression.Race;
+                                }
+                                Main.logger.Log("Cloning MC race features");
+
+                                foreach (BlueprintFeature feat in unitBluePrintRace.Features)
+                                {
+                                    //Main.logger.Log(feat.ToString());
+                                    if (!unit.HasFact(feat))
+                                    {
+                                        unit.AddFact(feat);
+                                    }
+                                }
+
+                                Main.logger.Log("Cloning MC race features foreach number 2");
+                                foreach (BlueprintFeatureSelection blueprintFeatureSelection in unitBluePrintRace.Features.OfType<BlueprintFeatureSelection>())
+                                {
+                                    blueprintFeatureSelection.Obligatory = false;
+                                    ///Main.logger.Log(blueprintFeatureSelection.ToString());
+                                    //Optimize
+                                    __instance.AddSelection(null, unitBluePrintRace, blueprintFeatureSelection, 0);
+                                }
+                                Main.logger.Log("Done Cloning MC race features");
+                                
+                            }*/
+                            /*if (unit.CharacterName.Contains("Nenio"))
                             {
 								var Kitsune = ResourcesLibrary.TryGetBlueprint<BlueprintRace>("fd188bb7bb0002e49863aec93bfb9d99");
 								var kitsuneFeatureSelect = new BlueprintFeatureSelection();
@@ -134,9 +181,9 @@ namespace RespecModBarley
 								unit.AddFact(kitsuneFeatureSelect);
 								__instance.AddSelection(null, Kitsune, kitsuneFeatureSelect, 0);
                             }*/
-						}
+                        }
 
-						/*var KitsuneHeritage1 = ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("cd6cd774fb7cc844b8417193ee3a5ebe");
+                        /*var KitsuneHeritage1 = ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("cd6cd774fb7cc844b8417193ee3a5ebe");
 						var KitsuneHeritage2 = ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("d6bc49651fbaa2944bba6e2e5a1720ff");
 						var Kitsune = ResourcesLibrary.TryGetBlueprint<BlueprintRace>("fd188bb7bb0002e49863aec93bfb9d99");
 						var KitsuneSelect = ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("ec40cc350b18c8c47a59b782feb91d1f");
@@ -180,17 +227,20 @@ namespace RespecModBarley
 							{
 								unit.Pets.Clear();
 							}*/
-							foreach (BlueprintFeature featuretoadd in Main.featurestoadd)
-							{
-								///Main.logger.Log(featuretoadd.ToString());
-								if (!unit.HasFact(featuretoadd))
-								{
-									unit.Descriptor.AddFact(featuretoadd);
-								}
-							}
-						    if (unit.Progression.Race == Stuf.HumanRace || unit.Progression.Race == Stuf.HalfElfRace || unit.Progression.Race == Stuf.HalfOrcRace)
-							{
-								if(!Main.settings.FullRespecStoryCompanion)
+
+                            foreach (BlueprintFeature featuretoadd in Main.featurestoadd)
+                            {
+                                ///Main.logger.Log(featuretoadd.ToString());
+                                if (!unit.HasFact(featuretoadd))
+                                {
+                                    unit.Descriptor.AddFact(featuretoadd);
+                                }
+                            }
+                   
+
+                            if (unit.Progression.Race == Stuf.HumanRace || unit.Progression.Race == Stuf.HalfElfRace || unit.Progression.Race == Stuf.HalfOrcRace)
+                            {
+                                if (!Main.settings.FullRespecStoryCompanion && !unit.IsMC())
                                 {
 									__instance.CanSelectRaceStat = true;
 								}
@@ -205,47 +255,99 @@ namespace RespecModBarley
 								 __instance.CanSelectAlignment = false;
 									///Main.logger.Log("noselect");
 								}*/
-                                if(unit.Blueprint.CharacterName != "Camellia")
+                                if (unit.Blueprint.CharacterName != "Camellia")
                                 {
-									__instance.CanSelectAlignment = true;
-								}
-                                else if (Main.settings.KeepMCAlignment && unit.IsMainCharacter)
-                                {
-                                    __instance.CanSelectAlignment = false;
+                                    __instance.CanSelectAlignment = true;
                                 }
-								else
+                                else
                                 {
                                     __instance.CanSelectAlignment = false;
                                 }
                                 __instance.CanSelectPortrait = true;
-								__instance.CanSelectRace = true;
-								__instance.CanSelectGender = true;
-								__instance.CanSelectName = true;
+                                __instance.CanSelectRace = true;
+                                __instance.CanSelectGender = true;
+                                __instance.CanSelectName = true;
                                 __instance.CanSelectVoice = true;
-							}
-							if (unit.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion|| unit.Blueprint.ToString().Contains("_Companion") && unit.IsPet == false && !Main.settings.FullRespecStoryCompanion)
-							{
-								Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.LevelUp);
-								Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(true);
-								Traverse.Create(__instance).Property("CanSelectName", null).SetValue(false);
-								Traverse.Create(__instance).Property("CanSelectVoice", null).SetValue(false);
-								__instance.CanSelectAlignment = false;
-								__instance.CanSelectRace = false;
-								__instance.CanSelectPortrait = false;
-								__instance.CanSelectGender = false;
-								__instance.CanSelectName = false;
-								__instance.CanSelectVoice = false;
-							}
-						}
-					}
-				}
-				catch (Exception ex)
-				{
-					Main.logger.Log(ex.ToString());
-				}
-			}
+                                
+
+                            }
+                            else if (unit.IsMC() && unit.IsPet == false && Main.settings.PreserveMCBiographicalInformation)
+                            {
+                                
+                                Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.CharGen);
+                                Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(true);
+
+                                //Does not prevent name from appearing, does cause corrent value to load into input field and disregarding changes with current input timing
+                                Traverse.Create(__instance).Property("CanSelectName", null).SetValue(false);
+                                __instance.CanSelectName = false;
+
+
+                                Traverse.Create(__instance).Property("CanSelectVoice", null).SetValue(false);
+                                __instance.CanSelectVoice = false;
+
+
+                                Traverse.Create(__instance).Property("CanSelectAlignment", null).SetValue(false);
+                                __instance.CanSelectAlignment = false;
+
+
+                                __instance.CanSelectRace = true;
+
+                                
+                                Traverse.Create(__instance).Property("CanSelectPortrait", null).SetValue(false);
+                                __instance.CanSelectPortrait = false;
+
+
+
+                                __instance.CanSelectGender = true;
+                               
+
+                               
+
+
+
+
+
+                            }
+                            else if (unit.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion || unit.Blueprint.ToString().Contains("_Companion") && unit.IsPet == false && !Main.settings.FullRespecStoryCompanion)
+                            {
+                                
+
+                                Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.LevelUp);
+                                Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(true);
+                                Traverse.Create(__instance).Property("CanSelectName", null).SetValue(false);
+                                Traverse.Create(__instance).Property("CanSelectVoice", null).SetValue(false);
+                                __instance.CanSelectAlignment = false;
+                                __instance.CanSelectRace = false;
+                                __instance.CanSelectPortrait = false;
+                                __instance.CanSelectGender = false;
+                                __instance.CanSelectName = false;
+                                __instance.CanSelectVoice = false;
+                               
+                                
+                            }
+                            else
+                            {
+                             
+                            }
+                        }
+                    }
+                }
+                catch (NullReferenceException nullref)
+                {
+                    Main.logger.Log(nullref.ToString());
+
+                    Main.logger.Log($"Null ref object :{nullref.Source}");
+
+                }
+
+                catch (Exception ex)
+                {
+                    Main.logger.Log(ex.ToString());
+                }
+            }
+            
         }
-	}
+    }
 }
 
 

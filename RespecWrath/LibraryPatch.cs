@@ -18,7 +18,7 @@ using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.Utility;
 using Kingmaker.Visual.CharacterSystem;
-using RespecModBarley;
+using RespecWrathFork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -135,7 +135,7 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 		}*/
 	}
 }
-namespace RespecModBarley
+namespace RespecWrathFork
 {
 	static public class Stuf
 	{
