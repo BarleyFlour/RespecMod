@@ -12,13 +12,13 @@ namespace RespecModBarley
 	[HarmonyPatch(typeof(CharGenVM), "NeedNamePhase")]
 	internal static class NeedName_Patch
 	{
-		private static void Postfix(ref bool __result)
+		private static void Postfix(CharGenVM __instance,ref bool __result)
 		{
 			try
 			{
 				if (Main.IsRespec == true)
 				{
-					if (Main.EntityUnit.IsMC() && Main.settings.PreserveMCName)
+					if (__instance.m_LevelUpController.Unit.IsMC() && Main.settings.PreserveMCName)
 					{
 						__result = false;
 						return;
@@ -52,13 +52,13 @@ namespace RespecModBarley
 	[HarmonyPatch(typeof(CharGenVM), "NeedAlignmentPhase")]
 	internal static class NeedAlignment_Patch
 	{
-		private static void Postfix(ref bool __result)
+		private static void Postfix(CharGenVM __instance,ref bool __result)
 		{
 			try
 			{
 				if (Main.IsRespec == true)
 				{
-					if (Main.EntityUnit.IsMC() && Main.settings.PreserveMCAlignment)
+					if (__instance.m_LevelUpController.Unit.IsMC() && Main.settings.PreserveMCAlignment)
 					{
 						__result = false;
 						return;

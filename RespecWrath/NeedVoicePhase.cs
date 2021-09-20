@@ -19,13 +19,13 @@ namespace RespecModBarley
 	[HarmonyPatch(typeof(CharGenVM), "NeedVoicePhase")]
 	internal static class NeedVoice_Patch
 	{
-		private static void Postfix(ref bool __result)
+		private static void Postfix(CharGenVM __instance ,ref bool __result)
 		{
 			try
 			{
 				if (Main.IsRespec == true)
 				{
-					if (Main.EntityUnit.IsCustomCompanion() || Main.EntityUnit.IsStoryCompanion() && Main.settings.FullRespecStoryCompanion)
+					if (__instance.m_LevelUpController.Unit.IsCustomCompanion() || __instance.m_LevelUpController.Unit.IsStoryCompanion() && Main.settings.FullRespecStoryCompanion && !Main.settings.PreserveVoice)
 					{
 						__result = true;
 						return;
@@ -49,7 +49,8 @@ namespace RespecModBarley
 		{
 			try
 			{
-				if(Main.IsRespec && !Main.settings.BackgroundDeity && (Main.EntityUnit.IsStoryCompanion()) )
+				
+				if(Main.IsRespec && !Main.settings.BackgroundDeity && (__instance.m_LevelUpController.Unit.IsStoryCompanion()) )
                 {
                     __result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.DeitySelect);
 					__result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.BackgroundsBaseSelection);

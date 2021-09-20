@@ -36,6 +36,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Kingmaker.UI;
+using Kingmaker.UI.MVVM._PCView.InGame;
 using UniRx;
 using UnityEngine;
 using UnityModManagerNet;
@@ -101,7 +103,7 @@ namespace RespecModBarley
 
         public static bool isrecruit = false;
 		//public static SimpleBlueprint[] blueprints;
-		public static UnitEntityData EntityUnit;
+		//public static UnitEntityData EntityUnit;
 		public static int MythicXP;
 		public static bool IsRespec = false;
 		public static List<BlueprintFeature> featurestoadd = new List<BlueprintFeature> { };
@@ -248,7 +250,7 @@ namespace RespecModBarley
 						///	unitgroupparty = unitEntityData.m_Group;
 					}*/
 					///if (!unitEntityData.IsPet && unitEntityData.IsPlayerFaction && (!flag2 || unitEntityData.Descriptor.Progression.CharacterLevel <= 0))
-					if (unitEntityData.IsPlayerFaction && (!flag2 || unitEntityData.Descriptor.Progression.CharacterLevel <= 0))
+					if (unitEntityData.IsPlayerFaction)/* && (!flag2 || unitEntityData.Descriptor.Progression.CharacterLevel <= 0))*/
 					{
 						if (GUILayout.Toggle(Main.selectedCharacter == num, " " + unitEntityData.CharacterName, new GUILayoutOption[]
 						{
@@ -327,12 +329,12 @@ namespace RespecModBarley
 				GUILayout.EndHorizontal();
 				GUILayout.Space(10f);
 				GUILayout.BeginHorizontal();
-				if (selected.Descriptor.Progression.CharacterLevel != 0 && GUILayout.Button(string.Format("Submit ({0}g)", Main.respecCost), UnityModManager.UI.button, new GUILayoutOption[]
+                if (/*selected.Descriptor.Progression.CharacterLevel != 0 && */GUILayout.Button(string.Format("Submit ({0}g)", Main.respecCost), UnityModManager.UI.button, new GUILayoutOption[]
 				{
 							GUILayout.ExpandWidth(false)
 				}))
 				{
-					string nameandtype = "";
+					/*string nameandtype = "";
 					if (selected.IsPet)
                     {
 						nameandtype = $"pet {selected.CharacterName}";
@@ -349,7 +351,7 @@ namespace RespecModBarley
                     {
 						nameandtype = $"merc {selected.CharacterName}";
 					}
-					modEntry.Logger.Log($"Initiating respec of {nameandtype}");
+					modEntry.Logger.Log($"Initiating respec of {nameandtype}");*/
 					bool flag5 = false;
 					if (!selected.IsCustomCompanion())
 					{
@@ -440,12 +442,12 @@ namespace RespecModBarley
                         {
                             settings.BackgroundDeity = true;
                         }
-                        settings.PreserveVoice = false;
+                        //settings.PreserveVoice = false;
                         settings.PreserveMCAlignment = false;
                         settings.PreserveMCBirthday = false;
                         settings.PreserveMCName = false;
                         //settings.PreserveMCRace = false;
-                        settings.PreservePortrait = false;
+                       // settings.PreservePortrait = false;
 					}
                 }
 				else
@@ -557,9 +559,9 @@ namespace RespecModBarley
 				{
 					Main.logger.Log("Library patching initiated");
 					var tempbp = ExtensionMethods.GetBlueprints();
-					var unitbp = tempbp.OfType<BlueprintUnit>();
-					var abilitybps = tempbp.OfType<BlueprintFeature>().ToList().FindAll(list => list.name.Contains("_FeatureList"));
-					var unitbps = tempbp.OfType<BlueprintUnit>().ToList().FindAll(BPUnits => BPUnits.ToString().Contains("_Companion") && BPUnits.LocalizedName != null && BPUnits.GetComponent<ClassLevelLimit>());
+					//var unitbp = tempbp.OfType<BlueprintUnit>();
+					//var abilitybps = tempbp.OfType<BlueprintFeature>().ToList().FindAll(list => list.name.Contains("_FeatureList"));
+					//var unitbps = tempbp.OfType<BlueprintUnit>().ToList().FindAll(BPUnits => BPUnits.ToString().Contains("_Companion") && BPUnits.LocalizedName != null && BPUnits.GetComponent<ClassLevelLimit>());
 					///var noSelectionIfAlreadyHasFeatureBackgroundSelect = new NoSelectionIfAlreadyHasFeature();
 					///noSelectionIfAlreadyHasFeatureBackgroundSelect.AnyFeatureFromSelection = false;
 					///var FeatureListsT = abilitybps.ToArray().Select(lis => lis.ToReference<BlueprintFeatureReference>()).ToArray();
@@ -622,7 +624,7 @@ namespace RespecModBarley
 				{
 					Main.GetUnitForMemory(entityData.Blueprint);
 				}*/
-				Main.EntityUnit = entityData;
+				//Main.EntityUnit = entityData;
 				foreach (EntityPart entityPart in entityData.Parts.m_Parts)
 				{
 					if (Main.partslist.Contains(entityPart.ToString()))

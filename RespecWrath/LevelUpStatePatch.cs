@@ -328,7 +328,7 @@ namespace RespecModBarley
 
                                 if (Main.settings.PreservePortrait)
                                 {
-                                    Traverse.Create(__instance).Property("CanSelectPortrait", null).SetValue(false);
+                                   // Traverse.Create(__instance).Property("CanSelectPortrait", null).SetValue(false);
                                     __instance.CanSelectPortrait = false;
                                 }
                                 __instance.CanSelectGender = true;

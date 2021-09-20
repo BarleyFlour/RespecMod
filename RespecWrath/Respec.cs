@@ -723,7 +723,7 @@ namespace RespecModBarley
                         }*/
                         Main.partstoadd.Clear();
                         
-                        Main.EntityUnit = null;
+                        //Main.EntityUnit = null;
                         foreach (EntityPart entityPart in targetUnit.Parts.m_Parts)
                         {
                             Main.logger.Log(entityPart.ToString());
