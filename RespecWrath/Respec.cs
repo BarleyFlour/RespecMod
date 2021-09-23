@@ -72,8 +72,8 @@ namespace RespecModBarley
             ReplaceUnitBlueprintForRespec replaceUnitBlueprintForRespec = unit.Blueprint.GetComponent<ReplaceUnitBlueprintForRespec>().Or(null);
             BlueprintUnit unit2 = ((replaceUnitBlueprintForRespec != null) ? replaceUnitBlueprintForRespec.Blueprint.Or(null) : null) ?? unit.Blueprint;
             UnitEntityData newUnit;
-           
 
+            var classestoadd = unit.Progression.Classes.Where(a => a.CharacterClass.IsMythic);
 
             try
             {
@@ -186,6 +186,10 @@ namespace RespecModBarley
             newUnit.PreviewOf = unit;
             newUnit.Progression.AdvanceExperienceTo(unit.Descriptor.Progression.Experience, false, false);
             newUnit.Progression.AdvanceMythicExperience(unit.Descriptor.Progression.MythicExperience, false);
+            IEnumerable<BlueprintCharacterClass> obligatoryMythicClasses = from i in unit.Progression.ClassesOrder
+                where i.IsMythic
+            select i;
+            newUnit.Progression.SetObligatoryMythicClasses(obligatoryMythicClasses);
             if (unit.IsMainCharacter || unit.IsCloneOfMainCharacter)
             {
                 newUnit.MarkAsCloneOfMainCharacter();
@@ -233,7 +237,8 @@ namespace RespecModBarley
             
             if (newUnit.Progression.CharacterLevel < 1)
             {
-                newUnit.Progression.DropLevelPlansAll();
+                newUnit.Progression.DropLevelPlans(false);
+                newUnit.Progression.DropLevelPlans(true);
             }
             
 
@@ -505,6 +510,10 @@ namespace RespecModBarley
                 targetUnit.Stats.BaseAttackBonus.m_BaseValue = bab;
                 targetUnit.Stats.BaseAttackBonus.OnPermanentValueUpdated();
                 
+
+
+
+
                 Vector3 position = targetUnit.Position;
                 float orientation = targetUnit.Orientation;
                 Transform parent = targetUnit.View.transform.parent;
@@ -519,8 +528,19 @@ namespace RespecModBarley
                 }
                 foreach (UnitEntityData unitEntityData in petsToRemove)
                 {
+                    foreach (Kingmaker.Items.Slots.ItemSlot itemSlot in unitEntityData.Body.EquipmentSlots)
+                    {
+                        if (itemSlot.MaybeItem != null && itemSlot.CanRemoveItem())
+                        {
+                            itemSlot.RemoveItem(true);
+                        }
+                    }
                     unitEntityData.RemoveMaster();
                     unitEntityData.MarkForDestroy();
+                }
+                if (targetUnit.IsMainCharacter)
+                {
+                    tempUnit.Descriptor.AddEssentialMark();
                 }
                 List<ItemEntity> list2 = new List<ItemEntity>();
                 using (ContextData<Kingmaker.Items.Slots.ItemSlot.IgnoreLock>.Request())
@@ -576,26 +596,28 @@ namespace RespecModBarley
                 PortraitData customPortraitRaw = tempUnit.UISettings.CustomPortraitRaw;
                 BlueprintPortrait portraitBlueprintRaw = tempUnit.UISettings.PortraitBlueprintRaw;
                 tempUnit.PrepareRespec();
-                JObject jobject = JObject.FromObject(tempUnit);
-                jobject.Remove("UniqueId");
-                jobject.Remove("m_AutoUseAbility");
-                JObject jobject2 = (JObject)jobject["Descriptor"];
-                jobject2.Remove("m_Inventory");
-                jobject2.Remove("Body");
-                jobject2.Remove("UISettings");
-                string value = jobject.ToString().Replace(tempUnit.UniqueId, targetUnit.UniqueId);
+                IContractResolver contractResolver = DefaultJsonSettings.DefaultSettings.ContractResolver;
                 try
                 {
-                    IContractResolver contractResolver = DefaultJsonSettings.DefaultSettings.ContractResolver;
-                    DefaultJsonSettings.DefaultSettings.ContractResolver = new CollectionClearingContractResolver();
-                    JsonConvert.PopulateObject(value, targetUnit);
-                    DefaultJsonSettings.DefaultSettings.ContractResolver = contractResolver;
+                    DefaultJsonSettings.DefaultSettings.ContractResolver = new RespecContractResolver();
+                    JObject jobject = JObject.FromObject(tempUnit);
+                    jobject.Remove("UniqueId");
+                    jobject.Remove("m_AutoUseAbility");
+                    JObject jobject2 = (JObject)jobject["Descriptor"];
+                    jobject2.Remove("m_Inventory");
+                    jobject2.Remove("Body");
+                    jobject2.Remove("UISettings");
+                    JsonConvert.PopulateObject(jobject.ToString().Replace(tempUnit.UniqueId, targetUnit.UniqueId), targetUnit);
                     targetUnit.Resources.PersistantResources = tempUnit.Resources.PersistantResources;
                 }
                 catch (Exception ex)
                 {
                     UnitHelper.Channel.Exception(ex, null, Array.Empty<object>());
                     throw;
+                }
+                finally
+                {
+                    DefaultJsonSettings.DefaultSettings.ContractResolver = contractResolver;
                 }
                 targetUnit.Parts.ClearCache();
                 foreach (IUnitPartSurviveRespec unitPartSurviveRespec in list)

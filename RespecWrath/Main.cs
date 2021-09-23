@@ -45,6 +45,7 @@ using static UnityModManagerNet.UnityModManager;
 
 namespace RespecModBarley
 {
+    [EnableReloading]
 	/*public class UnitInfo : ScriptableObject
     {
 		public int OrgLvl
@@ -71,8 +72,8 @@ namespace RespecModBarley
 		public static bool NenioEtudeBool = false;
 		public static BlueprintFeatureSelection featureSelection;
 		public static UnityModManager.ModEntry ModEntry;
-		
-		//public static UnitEntityView entityView;
+
+        //public static UnitEntityView entityView;
 		static bool Load(UnityModManager.ModEntry modEntry)
 		{
 			try
@@ -84,6 +85,8 @@ namespace RespecModBarley
 				harmony.PatchAll();
 				modEntry.OnGUI = OnGUI;
 				modEntry.OnSaveGUI = OnSaveGUI;
+                modEntry.OnUnload = Unload;
+                modEntry.OnToggle = OnToggle;
 				IsEnabled = ModEntry.Enabled;
 				if (!Main.haspatched)
 				{
@@ -96,12 +99,21 @@ namespace RespecModBarley
 			}
 			return true;
 		}
+        static bool OnToggle(UnityModManager.ModEntry modEntry, bool value /* active or inactive */)
+        {
+            IsEnabled = value;
+            return true; // Permit or not.
+        }
 		static void OnSaveGUI(UnityModManager.ModEntry modEntry)
 		{
 			settings.Save(modEntry);
 		}
-
-        public static bool isrecruit = false;
+        static bool Unload(UnityModManager.ModEntry modEntry)
+        {
+            new Harmony(modEntry.Info.Id).UnpatchAll(modEntry.Info.Id);
+            return true;
+        }
+		public static bool isrecruit = false;
 		//public static SimpleBlueprint[] blueprints;
 		//public static UnitEntityData EntityUnit;
 		public static int MythicXP;
@@ -647,8 +659,8 @@ namespace RespecModBarley
 				{
 					foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
 					{
-						var nosource = blueprintf.SourceClass == null && blueprintf.SourceProgression == null && blueprintf.SourceRace == null;
-                        if (backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && nosource && !blueprintf.NameForAcronym.Contains("Cantrip") || entityData.Progression.Race.m_Features.Any(A => A.Cached == blueprintf.Blueprint))
+						var nosource = blueprintf.SourceClass == null && blueprintf.SourceProgression == null && blueprintf.SourceRace == null && blueprintf.SourceItem == null && blueprintf.SourceRace;
+                        if (backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && nosource && !blueprintf.NameForAcronym.Contains("Cantrip")) //|| entityData.Progression.Race.m_Features.Any(A => A.Cached == blueprintf.Blueprint))
 						{
 							//Main.logger.Log(blueprintf.ToString());
 							Main.featurestoadd.Add(blueprintf.Blueprint);
