@@ -105,11 +105,11 @@ namespace RespecModBarley
                                     : null;
                                 bool flag = unit.Progression.Features.RawFacts.HasItem((Feature it) =>
                                     it.Blueprint.Groups.Contains(FeatureGroup.Deities));
-                                if (blueprintFeature != null && !flag && !unit.HasFact(blueprintFeature))
+                                if (!Main.settings.BackgroundDeity && blueprintFeature != null && !flag && !unit.HasFact(blueprintFeature))
                                 {
                                     ((Feature)unit.AddFact(blueprintFeature, null, null)).SetSource(BlueprintRoot.Instance.Progression.FeatsProgression, 1);
                                     unit.Progression.AddSelection(BlueprintRoot.Instance.Progression.DeitySelection,
-                                        BlueprintRoot.Instance.Progression.FeatsProgression, 1, blueprintFeature);
+                                   BlueprintRoot.Instance.Progression.FeatsProgression, 1, blueprintFeature);
                                 }
                             }
                         }

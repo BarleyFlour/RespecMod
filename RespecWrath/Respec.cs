@@ -215,30 +215,39 @@ namespace RespecModBarley
                                 select i).ToArray<Feature>();
             foreach (BlueprintFeature blueprintFeature in array)
             {
+                Main.logger.Log("FeatureAdd:" + blueprintFeature.name);
                 if (!newUnit.HasFact(blueprintFeature))
                 {
                     newUnit.AddFact(blueprintFeature, null, null);
                     UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: restore feature {0}", blueprintFeature), Array.Empty<object>());
+                    //Main.logger.Log(string.Format("UnitHelper.Respec: restore feature {0}",blueprintFeature));
                 }
             }
             foreach (Feature feature in array2)
             {
                 newUnit.RemoveFact(feature);
                 UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: remove feature {0}", feature), Array.Empty<object>());
+               // Main.logger.Log(string.Format("UnitHelper.Respec: remove feature {0}", feature));
             }
+            if (Main.settings.BackgroundDeity)
+            {
+                newUnit.Facts.RemoveAll((EntityFact a) =>
+                    a.NameForAcronym.Contains("Background") || a.NameForAcronym.Contains("background"));
+            }
+
             //
             if (!Main.settings.FullRespecStoryCompanion && unit.IsStoryCompanion() && !unit.IsMC())
             {
-                foreach (var VARIABLE in unit.Progression.Race.Features.m_Array)
+                foreach (var raceFeature in unit.Progression.Race.Features.m_Array)
                 {
-                    newUnit.AddFact(VARIABLE);
+                    newUnit.AddFact(raceFeature);
                 }
             }
             
             if (newUnit.Progression.CharacterLevel < 1)
             {
                 newUnit.Progression.DropLevelPlans(false);
-                newUnit.Progression.DropLevelPlans(true);
+                //newUnit.Progression.DropLevelPlans(true);
             }
             
 
@@ -665,7 +674,7 @@ namespace RespecModBarley
                             if (c != null)
                             {
                         // c.TryUpdatePet();
-                    }
+                            }
                         });
                     }
                 }
@@ -717,7 +726,7 @@ namespace RespecModBarley
                         {
                             if (!targetUnit.Parts.Parts.Contains(part))
                             {
-                                Main.logger.Log(part.ToString());
+                                //Main.logger.Log(part.ToString());
                                 part.AttachToEntity(targetUnit);
                                 part.TurnOn();
                                 targetUnit.Parts.m_Parts.Add(part);
