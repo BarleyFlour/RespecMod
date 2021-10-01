@@ -142,6 +142,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="Repository.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="StatsDistribution_Patch.cs" />

@@ -449,7 +449,7 @@ namespace RespecModBarley
 				{
                     {
                         settings.FullRespecStoryCompanion = GUILayout.Toggle(settings.FullRespecStoryCompanion,
-                            "Full Story Companion Respec", GUILayout.ExpandWidth(false));
+                            "Respec as Mercenary", GUILayout.ExpandWidth(false));
                         if (settings.FullRespecStoryCompanion)
                         {
                             settings.BackgroundDeity = true;
@@ -499,6 +499,11 @@ namespace RespecModBarley
                 {
 					settings.BackgroundDeity = false;
                 }
+				if(selected.IsCustomCompanion())
+                {
+					settings.PreserveVoice = false;
+					settings.PreservePortrait = false;
+                }					
 				GUILayout.EndHorizontal();
 				GUILayout.Space(10f);
 				GUILayout.BeginHorizontal();
@@ -655,7 +660,7 @@ namespace RespecModBarley
 					entityData.GetFact(AmuletFact).Detach();
 					Main.logger.Log("asd");
 				}*/
-				if (entityData.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion || entityData.Blueprint.ToString().Contains("_Companion"))
+				if (entityData.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion || entityData.Blueprint.ToString().Contains("_Companion") && !Main.settings.FullRespecStoryCompanion)
 				{
 					foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
 					{

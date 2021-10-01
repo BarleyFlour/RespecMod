@@ -102,7 +102,7 @@ namespace RespecModBarley
 								}
 							}*/
 
-                            if (unit.IsStoryCompanion() && !unit.IsMC() && !Main.settings.FullRespecStoryCompanion || unit.Blueprint.ToString().Contains("_Companion"))
+                            if (unit.IsStoryCompanion() && !unit.IsMC() && !Main.settings.FullRespecStoryCompanion || unit.Blueprint.ToString().Contains("_Companion") && !unit.IsMC() && !Main.settings.FullRespecStoryCompanion)
                             {
                                
                                     

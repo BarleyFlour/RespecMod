@@ -126,6 +126,8 @@ namespace RespecModBarley
             if (Main.settings.PreservePortrait && unit.IsMC())
             {
                 newUnit.UISettings.SetPortrait(unit.Portrait);
+                
+               // newUnit.Portrait = unit.Portrait;
             }
 
             if (Main.settings.PreserveMCName && unit.IsMC())
@@ -213,14 +215,17 @@ namespace RespecModBarley
             Feature[] array2 = (from i in newUnit.Progression.Features.Enumerable
                                 where !i.Blueprint.IsClassFeature && !unit.HasFact(i.Blueprint)
                                 select i).ToArray<Feature>();
-            foreach (BlueprintFeature blueprintFeature in array)
+            if (Main.settings.FullRespecStoryCompanion)
             {
-                Main.logger.Log("FeatureAdd:" + blueprintFeature.name);
-                if (!newUnit.HasFact(blueprintFeature))
+                foreach (BlueprintFeature blueprintFeature in array)
                 {
-                    newUnit.AddFact(blueprintFeature, null, null);
-                    UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: restore feature {0}", blueprintFeature), Array.Empty<object>());
-                    //Main.logger.Log(string.Format("UnitHelper.Respec: restore feature {0}",blueprintFeature));
+                    Main.logger.Log("FeatureAdd:" + blueprintFeature.name);
+                    if (!newUnit.HasFact(blueprintFeature))
+                    {
+                        newUnit.AddFact(blueprintFeature, null, null);
+                        UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: restore feature {0}", blueprintFeature), Array.Empty<object>());
+                        //Main.logger.Log(string.Format("UnitHelper.Respec: restore feature {0}",blueprintFeature));
+                    }
                 }
             }
             foreach (Feature feature in array2)
@@ -256,7 +261,8 @@ namespace RespecModBarley
             //EventBus.RaiseEvent<ILevelUpInitiateUIHandler>(delegate (ILevelUpInitiateUIHandler h)
             {
                 //LevelUpConfig()
-                LevelUpConfig.Create(newUnit, LevelUpState.CharBuildMode.Respec).SetOnCommit(delegate
+                var Lvlupconfig = LevelUpConfig.Create(newUnit, LevelUpState.CharBuildMode.Respec);
+                Lvlupconfig.SetOnCommit(delegate
                 {
                     RespecOnCommit2(unit, newUnit, petsToRemove, successCallback);
                 }).SetOnStop(delegate
@@ -708,10 +714,10 @@ namespace RespecModBarley
                 {
                     UnitHelper.Channel.Exception(ex2, null, Array.Empty<object>());
                 }
-                EventBus.RaiseEvent<IUnitChangedAfterRespecHandler>(delegate (IUnitChangedAfterRespecHandler h)
+               /* EventBus.RaiseEvent<IUnitChangedAfterRespecHandler>(delegate (IUnitChangedAfterRespecHandler h)
                 {
                     h.HandleUnitChangedAfterRespec(targetUnit);
-                }, true);
+                }, true);*/
                 //if (Main.IsRespec == true)
                 {
                     try
