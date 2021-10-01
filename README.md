@@ -12,6 +12,8 @@ FEATURES
 
 • Choose whether to retain background/religion.
 
+• Fully edit companions (Respec as merc) i.e change Race, Portrait, Voice, etc.
+
 CREDITS
 ♦ Pathfinder Wrath of The Righteous Discord channel members
 
