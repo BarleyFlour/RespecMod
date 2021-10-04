@@ -19,15 +19,81 @@ using System.Text.RegularExpressions;
 using Kingmaker.View.Equipment;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Kingmaker.PubSubSystem;
+using Kingmaker.EntitySystem.Stats;
 
 namespace RespecModBarley
 {
+    [HarmonyPatch(typeof(SpendSkillPoint), "Check")]
+    internal static class s
+    {
+        public static void Postfix(SpendSkillPoint __instance,LevelUpState state, UnitDescriptor unit, ref bool __result)
+        {
+            //Main.logger.Log(__instance.Skill.ToString());
+           // Main.logger.Log(unit.Stats.GetStat(__instance.Skill).BaseValue.ToString());
+           // Main.logger.Log(state.NextCharacterLevel.ToString());
+          //  Main.logger.Log(state.SkillPointsRemaining.ToString());
+            __result = StatTypeHelper.Skills.Contains(__instance.Skill) && unit.Stats.GetStat(__instance.Skill).BaseValue < state.NextCharacterLevel && state.SkillPointsRemaining >= 0;
+            
+           // return false;
+        }
+    }
+    [HarmonyPatch(typeof(CharGenContextVM), "CompleteLevelUp")]
+    internal static class OwO
+    {
+        private static bool Prefix(CharGenContextVM __instance)
+        {
+            Game.Instance.UI.Common.DollRoom.Show(false);
+            bool flag = __instance.m_LevelUpController.State.Mode == LevelUpState.CharBuildMode.Mythic;
+            __instance.m_LevelUpController.Commit();
+            EventBus.RaiseEvent<ILevelUpCompleteUIHandler>(delegate (ILevelUpCompleteUIHandler h)
+            {
+                h.HandleLevelUpComplete(__instance.m_LevelUpController.Unit, true);
+            }, true);
+            LevelUpController levelUpController = __instance.m_LevelUpController;
+            if (levelUpController != null)
+            {
+                levelUpController.Stop();
+            }
+            if (__instance.RespecWindowVM.Value != null)
+            {
+                __instance.RespecWindowVM.Value.UpdateRespecState(__instance.m_LevelUpController);
+                __instance.m_LevelUpController = null;
+                __instance.CloseCharGen();
+                return false;
+            }
+            UnitDescriptor descriptor = __instance.m_LevelUpController.Unit.Descriptor;
+            __instance.m_LevelUpController = null;
+           // Main.logger.Log(levelUpController.State.NextCharacterLevel.ToString());
+            if (!flag && LevelUpController.CanLevelUp(descriptor) && levelUpController.State.NextCharacterLevel != 1)
+            {
+                
+                LevelUpConfig.Create(descriptor, LevelUpState.CharBuildMode.LevelUp).OpenUI();
+                //__instance.CloseCharGen();
+                return false;
+            }
+            __instance.CloseCharGen();
+            return false;
+        }
+    }
     // Token: 0x02000003 RID: 3
     [HarmonyPatch(typeof(LevelUpState), MethodType.Constructor)]
     [HarmonyPatch(new Type[] { typeof(UnitEntityData), typeof(LevelUpState.CharBuildMode), typeof(bool) })]
     [HarmonyPriority(9999)]
     internal static class LevelUpState_ctor_Patch
     {
+        /*private static bool Prefix(UnitEntityData unit)
+        {
+            if(unit == null)
+            {
+                Main.logger.Log("NullUnitState");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }*/
         /*	private static void Prefix(LevelUpState __instance, UnitEntityData unit, LevelUpState.CharBuildMode mode, bool isPregen)
 			{
 			}*/
@@ -49,9 +115,9 @@ namespace RespecModBarley
 				mode = LevelUpState.CharBuildMode.CharGen;
 			}*/
             ///unit.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = 0;
-            if (Main.IsRespec == true)
+            if (Main.IsRespec == true && unit != null)
             {
-           
+               // __instance.NextCharacterLevel = 1;
                 ///var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
                 try
                 {

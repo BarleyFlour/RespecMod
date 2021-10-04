@@ -143,8 +143,8 @@ namespace RespecModBarley
             }
 
 
-            LevelUpHelper.GetTotalIntelligenceSkillPoints(descriptor, 0);
-            LevelUpHelper.GetTotalSkillPoints(descriptor, 0);
+            //LevelUpHelper.GetTotalIntelligenceSkillPoints(descriptor, 0);
+            //LevelUpHelper.GetTotalSkillPoints(descriptor, 0);
             Traverse.Create(descriptor.Progression).Field("m_Selections").GetValue<Dictionary<BlueprintFeatureSelection, FeatureSelectionData>>().Clear();
             entityData.PrepareRespec();
             entityData.Descriptor.Buffs.RawFacts.Clear();
@@ -258,20 +258,28 @@ namespace RespecModBarley
 
             UnitEntityData[] petsToRemove = (from i in unit.Pets
                                              select i.Entity).NotNull<UnitEntityData>().ToArray<UnitEntityData>();
-            //EventBus.RaiseEvent<ILevelUpInitiateUIHandler>(delegate (ILevelUpInitiateUIHandler h)
+            EventBus.RaiseEvent<ILevelUpInitiateUIHandler>(delegate (ILevelUpInitiateUIHandler h)
             {
                 //LevelUpConfig()
-                var Lvlupconfig = LevelUpConfig.Create(newUnit, LevelUpState.CharBuildMode.Respec);
+                var Lvlupconfig = LevelUpConfig.Create(newUnit, LevelUpState.CharBuildMode.LevelUp);
+                Lvlupconfig.SetLevelupAfterRespec(false);
+                Lvlupconfig = 
                 Lvlupconfig.SetOnCommit(delegate
                 {
+
                     RespecOnCommit2(unit, newUnit, petsToRemove, successCallback);
                 }).SetOnStop(delegate
                 {
+                    Main.IsRespec = false;
+                    Main.featureSelection = null;
+                    Main.featurestoadd.Clear();
+                    Main.IsRespec = false;
+                    Main.partstoadd.Clear();
                     RespecOnStop(newUnit);
-                }).OpenUI();
-                //h.HandleLevelUpStart(lvlupcfg);
-                ///h.HandleLevelUpStart(newUnit.Descriptor, delegate
-                /*{
+                });
+                h.HandleLevelUpStart(Lvlupconfig);
+                /*h.HandleLevelUpStart(newUnit.Descriptor, delegate
+                {
                     RespecOnCommit(unit, newUnit, petsToRemove, successCallback);
                 }, delegate
                 {
@@ -282,7 +290,7 @@ namespace RespecModBarley
                     Main.IsRespec = false;
                     Main.partstoadd.Clear();
                 }, LevelUpState.CharBuildMode.Respec);*/
-            }//);
+            });
         }
         /*private static void RespecOnCommit(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, Action successCallback)
 		{
@@ -714,10 +722,10 @@ namespace RespecModBarley
                 {
                     UnitHelper.Channel.Exception(ex2, null, Array.Empty<object>());
                 }
-               /* EventBus.RaiseEvent<IUnitChangedAfterRespecHandler>(delegate (IUnitChangedAfterRespecHandler h)
+                EventBus.RaiseEvent<IUnitChangedAfterRespecHandler>(delegate (IUnitChangedAfterRespecHandler h)
                 {
                     h.HandleUnitChangedAfterRespec(targetUnit);
-                }, true);*/
+                }, true);
                 //if (Main.IsRespec == true)
                 {
                     try
@@ -763,7 +771,7 @@ namespace RespecModBarley
                         //Main.EntityUnit = null;
                         foreach (EntityPart entityPart in targetUnit.Parts.m_Parts)
                         {
-                            Main.logger.Log(entityPart.ToString());
+                            //Main.logger.Log(entityPart.ToString());
                             targetUnit.OnPartAddedOrPostLoad(entityPart);
                         }
                         if (Main.NenioEtudeBool == true)
