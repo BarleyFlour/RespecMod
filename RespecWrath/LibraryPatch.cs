@@ -268,7 +268,7 @@ namespace RespecModBarley
 		public static BlueprintRace HalfOrcRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("1dc20e195581a804890ddc74218bfd8e");
 
 		
-		public static BlueprintFeature LightOfAngel => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("947f677511e3e224e8e61909611a6108");
+		public static BlueprintFeature LightOfAngel => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("99e0edd8acbb5454f821460592dc768b");
 
 
 		/*public static BlueprintFeature ArueshalaeFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("7993c81bd04ffda4bac123eb7f6752c4");
