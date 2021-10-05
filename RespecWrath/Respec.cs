@@ -11,7 +11,9 @@ using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items.Armors;
+using Kingmaker.Blueprints.Items.Components;
 using Kingmaker.Blueprints.Items.Ecnchantments;
+using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Root;
 using Kingmaker.Cheats;
 using Kingmaker.Controllers.Rest;
@@ -53,7 +55,6 @@ using Newtonsoft.Json.Serialization;
 using Owlcat.Runtime.Core.Logging;
 using Owlcat.Runtime.Core.Utils;
 using UnityEngine;
-
 namespace RespecModBarley
 {
     static class RespecClass
@@ -72,6 +73,35 @@ namespace RespecModBarley
             ReplaceUnitBlueprintForRespec replaceUnitBlueprintForRespec = unit.Blueprint.GetComponent<ReplaceUnitBlueprintForRespec>().Or(null);
             BlueprintUnit unit2 = ((replaceUnitBlueprintForRespec != null) ? replaceUnitBlueprintForRespec.Blueprint.Or(null) : null) ?? unit.Blueprint;
             UnitEntityData newUnit;
+            //Scroll refund
+            var scrollstoadd = new List<BlueprintItemEquipmentUsable>();
+            {
+                var loadedscrolls = Game.Instance.BlueprintRoot.CraftRoot.m_ScrollsItems.Select(a => ResourcesLibrary.TryGetBlueprint<BlueprintItemEquipmentUsable>(a.Guid));
+                foreach (var spellbook in unit.Spellbooks)
+                {
+                    foreach(var scrollspell in spellbook.GetAllKnownSpells())
+                    {
+                        if(scrollspell.CopiedFromScroll)
+                        {
+                            //Main.logger.Log("NameMatch : "  + scrollspell.Blueprint.NameForAcronym);
+                          /*  foreach (var asd in loadedscrolls)
+                            {
+                                Main.logger.Log(asd.Ability.NameForAcronym);
+                            }*/
+                           // if (scrollspell.m_Fact != null)
+                            {
+                                if (loadedscrolls.TryFind(a => a.Ability.NameForAcronym == scrollspell.Blueprint.NameForAcronym, out BlueprintItemEquipmentUsable item))
+                                {
+                                   // Main.logger.Log("ItemMatch : " + scrollspell.NameForAcronym);
+                                    scrollstoadd.Add(item);
+                                }
+                            }
+                            //
+                        }
+                    }
+                }
+            }
+
 
             var classestoadd = unit.Progression.Classes.Where(a => a.CharacterClass.IsMythic);
 
@@ -267,7 +297,7 @@ namespace RespecModBarley
                 Lvlupconfig.SetOnCommit(delegate
                 {
 
-                    RespecOnCommit2(unit, newUnit, petsToRemove, successCallback);
+                    RespecOnCommit2(unit, newUnit, petsToRemove, successCallback,scrollstoadd);
                 }).SetOnStop(delegate
                 {
                     Main.IsRespec = false;
@@ -522,7 +552,7 @@ namespace RespecModBarley
 				catch (Exception e) { Main.logger.Log(e.ToString()); }
 			}
 		}*/
-        private static void RespecOnCommit2(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, Action successCallback)
+        private static void RespecOnCommit2(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, Action successCallback,List<BlueprintItemEquipmentUsable> scrollstoadd)
         {
             try
             {
@@ -533,7 +563,11 @@ namespace RespecModBarley
                 targetUnit.Stats.BaseAttackBonus.m_BaseValue = bab;
                 targetUnit.Stats.BaseAttackBonus.OnPermanentValueUpdated();
                 
-
+                //add scrolls
+                foreach(var scroll in scrollstoadd)
+                {
+                    Game.Instance.Player.Inventory.Add(new ItemEntityUsable(scroll));
+                }
 
 
 

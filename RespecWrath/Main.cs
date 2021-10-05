@@ -42,6 +42,8 @@ using UniRx;
 using UnityEngine;
 using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
+using Kingmaker.UnitLogic.ActivatableAbilities;
+using Kingmaker.UnitLogic.Abilities;
 
 namespace RespecModBarley
 {
@@ -665,7 +667,7 @@ namespace RespecModBarley
 				{
 					foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
 					{
-						var nosource = blueprintf.SourceClass == null && blueprintf.SourceProgression == null && blueprintf.SourceRace == null && blueprintf.SourceItem == null && blueprintf.SourceRace;
+						var nosource = blueprintf.SourceClass == null && blueprintf.SourceProgression == null && blueprintf.SourceRace == null && blueprintf.SourceItem == null && blueprintf.SourceRace == null;
                         if (backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && nosource && !blueprintf.NameForAcronym.Contains("Cantrip")) //|| entityData.Progression.Race.m_Features.Any(A => A.Cached == blueprintf.Blueprint))
 						{
 							//Main.logger.Log(blueprintf.ToString());
@@ -676,6 +678,22 @@ namespace RespecModBarley
 							Main.logger.Log("== null " + blueprintf.ToString());
 						}*/
 
+					}
+				}
+				else if(entityData.IsMC())
+                {
+					foreach (var blueprintf in entityData.Facts.m_Facts)
+					{
+						if (blueprintf.GetType() == typeof(Feature))
+                        {
+							var blueprintfeature = (Feature)blueprintf;
+							var nosource = (/*blueprintfeature.SourceClass == null && blueprintfeature.SourceProgression == null && blueprintfeature.SourceRace == null && blueprintfeature.SourceItem == null && blueprintfeature.SourceRace == null && blueprintfeature.SourceAbility == null && blueprintfeature.SourceFact == null && blueprintfeature.SourceProgression == null && blueprintfeature.SourceAbility == null && blueprintfeature.MythicSource == null  && */!blueprintfeature.Blueprint.IsClassFeature && blueprintfeature.SourceItem == null);
+							if(nosource)
+							{
+								Main.featurestoadd.Add(blueprintf.Blueprint as BlueprintFeature);
+								//Main.logger.Log(blueprintf.NameForAcronym);
+							}
+						}
 					}
 				}
 				//if (entityData.Blueprint.GetComponent<ClassLevelLimit>())
