@@ -597,6 +597,7 @@ namespace RespecModBarley
 					DeityNoSelection.m_Features = FeatureListsT;
 					Main.blueprints = abilitybps.Concat<SimpleBlueprint>(unitbps).Concat(religionsbp).ToArray();*/
 					Stuf.deityfeatures = religionsbp.ToArray();
+				
 					/*foreach (BlueprintFeatureReference f in FeatureListsT)
 					{
 						Main.logger.Log(f.ToString());
@@ -677,6 +678,13 @@ namespace RespecModBarley
 						}*/
 
 					}
+				}
+				foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
+                {
+					if (blueprintf.Description.Contains("This book grants"))
+						Main.featurestoadd.Add(blueprintf.Blueprint);
+					else if (Stuf.plotFeatures.Contains(blueprintf.Blueprint))
+						Main.featurestoadd.Add(blueprintf.Blueprint);
 				}
 				//if (entityData.Blueprint.GetComponent<ClassLevelLimit>())
 				{

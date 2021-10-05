@@ -146,6 +146,13 @@ namespace RespecModBarley
 			return result;
 		}*/
 		public static BlueprintFeature[] deityfeatures;
+		public static List<BlueprintFeature> plotFeatures = new List<BlueprintFeature>();
+
+		static Stuf()
+        {
+			plotFeatures.Add(LightOfAngel);//TODO ADD MORE PLOT FEATURES
+			//TODO ADD CSV OR JSON READER TO GET NAMES FROM LIST
+        }
 		/*public static T Get<T>(this LibraryScriptableObject library, String assetId) where T : BlueprintScriptableObject
 		{
 			return (T)ResourcesLibrary.TryGetBlueprint(assetId);
@@ -259,6 +266,10 @@ namespace RespecModBarley
 		public static BlueprintRace HumanRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("0a5d473ead98b0646b94495af250fdc4");
 		public static BlueprintRace HalfElfRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("b3646842ffbd01643ab4dac7479b20b0");
 		public static BlueprintRace HalfOrcRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("1dc20e195581a804890ddc74218bfd8e");
+
+		
+		public static BlueprintFeature LightOfAngel => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("947f677511e3e224e8e61909611a6108");
+
 
 		/*public static BlueprintFeature ArueshalaeFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("7993c81bd04ffda4bac123eb7f6752c4");
 		public static BlueprintFeature NenioFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("751afafb3b7017544ac6373901747f60");
