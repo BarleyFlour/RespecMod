@@ -42,6 +42,7 @@ using UniRx;
 using UnityEngine;
 using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
+using Kingmaker.Blueprints.Classes.Prerequisites;
 
 namespace RespecModBarley
 {
@@ -666,6 +667,11 @@ namespace RespecModBarley
 					foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
 					{
 						var nosource = blueprintf.SourceClass == null && blueprintf.SourceProgression == null && blueprintf.SourceRace == null && blueprintf.SourceItem == null && blueprintf.SourceRace;
+						if (blueprintf.Blueprint.name == "OracleCurseSelection")
+                        {
+							nosource = false;
+
+                        }
                         if (backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && nosource && !blueprintf.NameForAcronym.Contains("Cantrip")) //|| entityData.Progression.Race.m_Features.Any(A => A.Cached == blueprintf.Blueprint))
 						{
 							//Main.logger.Log(blueprintf.ToString());
