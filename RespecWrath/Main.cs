@@ -667,7 +667,7 @@ namespace RespecModBarley
 				{
 					foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
 					{
-						var nosource = blueprintf.SourceClass == null && blueprintf.SourceProgression == null && blueprintf.SourceRace == null && blueprintf.SourceItem == null && blueprintf.SourceRace == null;
+						var nosource = blueprintf.SourceClass == null && blueprintf.SourceProgression == null && blueprintf.SourceRace == null && blueprintf.SourceItem == null && blueprintf.SourceRace == null && !blueprintf.Blueprint.IsClassFeature;
                         if (backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && nosource && !blueprintf.NameForAcronym.Contains("Cantrip")) //|| entityData.Progression.Race.m_Features.Any(A => A.Cached == blueprintf.Blueprint))
 						{
 							//Main.logger.Log(blueprintf.ToString());
@@ -687,7 +687,7 @@ namespace RespecModBarley
 						if (blueprintf.GetType() == typeof(Feature))
                         {
 							var blueprintfeature = (Feature)blueprintf;
-							var nosource = (/*blueprintfeature.SourceClass == null && blueprintfeature.SourceProgression == null && blueprintfeature.SourceRace == null && blueprintfeature.SourceItem == null && blueprintfeature.SourceRace == null && blueprintfeature.SourceAbility == null && blueprintfeature.SourceFact == null && blueprintfeature.SourceProgression == null && blueprintfeature.SourceAbility == null && blueprintfeature.MythicSource == null  && */!blueprintfeature.Blueprint.IsClassFeature && blueprintfeature.SourceItem == null);
+							var nosource = (blueprintfeature.SourceClass == null && blueprintfeature.SourceProgression == null && blueprintfeature.SourceRace == null && blueprintfeature.SourceItem == null && blueprintfeature.SourceRace == null && blueprintfeature.SourceAbility == null && blueprintfeature.SourceFact == null && blueprintfeature.SourceProgression == null && blueprintfeature.SourceAbility == null && blueprintfeature.MythicSource == null  && !blueprintfeature.Blueprint.IsClassFeature && blueprintfeature.SourceItem == null);
 							if(nosource)
 							{
 								Main.featurestoadd.Add(blueprintf.Blueprint as BlueprintFeature);
