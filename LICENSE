@@ -625,10 +625,13 @@ copy of the Program in return for a fee.
     Allows respecialization (retraining) of companions in the game "Pathfinder Wrath of the Righteous"
     Copyright (C) 2021  Noah Schlaucher
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
+    This program is free software: you can modify it under the terms
+     of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
+    Distribution of the software in any form is only allowed with
+    explicit, prior permission from the owner (Noah Schlaucher).
+
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
