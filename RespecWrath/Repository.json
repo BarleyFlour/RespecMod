@@ -28,7 +28,12 @@
         {
             "Id": "v1.06.7",
             "Version": "1.06.7",
-            "DownloadUrl": "https://github.com/BarleyFlour/RespecMod/releases/download/v1.07.6/RespecWrath.zip"
+            "DownloadUrl": "https://github.com/BarleyFlour/RespecMod/releases/download/v1.06.7/RespecWrath.zip"
+        },
+        {
+            "Id": "v1.06.8",
+            "Version": "1.06.8",
+            "DownloadUrl": "https://github.com/BarleyFlour/RespecMod/releases/download/v1.06.8/RespecWrath.zip"
         }
 
     ]
