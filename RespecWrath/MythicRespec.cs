@@ -89,7 +89,8 @@ namespace RespecModBarley
                             {
                                 using (ContextData<IgnorePrerequisites>.Request())
                                 {
-                                    if(!Main.IsRespec && (Main.isrecruit || !Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName) || (!unit.Unit.IsStoryCompanion() && !Main.isrecruit) || unit.Unit.IsPet))
+                                    //Add something to not break hilor respec
+                                    if(!Main.IsRespec && (Main.isrecruit || !Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName || Main.IsHilorRespec) || (!unit.Unit.IsStoryCompanion() && !Main.isrecruit) || unit.Unit.IsPet))
                                     {
                                         AddClassLevels.AddLevel(c, unit, selectionsHistory, fact, true);
                                     }

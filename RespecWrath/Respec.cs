@@ -74,6 +74,7 @@ namespace RespecModBarley
             BlueprintUnit unit2 = ((replaceUnitBlueprintForRespec != null) ? replaceUnitBlueprintForRespec.Blueprint.Or(null) : null) ?? unit.Blueprint;
             UnitEntityData newUnit;
             //Scroll refund
+
             var scrollstoadd = new List<BlueprintItemEquipmentUsable>();
             {
                 var loadedscrolls = Game.Instance.BlueprintRoot.CraftRoot.m_ScrollsItems.Select(a => ResourcesLibrary.TryGetBlueprint<BlueprintItemEquipmentUsable>(a.Guid));
@@ -102,7 +103,21 @@ namespace RespecModBarley
                 }
             }
 
-
+            // Statbook refund
+            {
+                foreach (var blueprintf in unit.Facts.m_Facts)
+                {
+                    if (blueprintf.GetType() == typeof(Feature))
+                    {
+                        var blueprintfeature = (Feature)blueprintf;
+                        if(Main.statbooks.ContainsKey(blueprintfeature.NameForAcronym))
+                        {
+                            scrollstoadd.Add(ResourcesLibrary.TryGetBlueprint<BlueprintItemEquipmentUsable>(Main.statbooks[blueprintfeature.NameForAcronym]));
+                          //  Main.logger.Log("Statbook:"+blueprintfeature.NameForAcronym+"for adding");
+                        }
+                    }
+                }
+            }
             var classestoadd = unit.Progression.Classes.Where(a => a.CharacterClass.IsMythic);
 
             try

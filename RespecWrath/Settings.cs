@@ -24,6 +24,7 @@ namespace RespecModBarley
         public bool PreserveVoice = true;
         public bool FreeRespec = false;
         public bool FullRespecStoryCompanion = false;
+        public bool OriginalLevel = false;
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             var filepath = Path.Combine(modEntry.Path, "Settings.json");

@@ -44,6 +44,8 @@ using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
 using Kingmaker.UnitLogic.ActivatableAbilities;
 using Kingmaker.UnitLogic.Abilities;
+using Kingmaker.Blueprints.Items.Equipment;
+using Kingmaker.Items;
 
 namespace RespecModBarley
 {
@@ -68,6 +70,25 @@ namespace RespecModBarley
     }*/
 	public class Main
 	{
+		public static Dictionary<string,string> statbooks
+        {
+			get
+            {
+				if (m_statbooks == null)
+				{
+					m_statbooks = new Dictionary<string, string>();
+					m_statbooks["TomeOfClearThoughtPlus2_Feature"] = "3584c2a2f8b5b1b43ae11128f0ff1583";
+					m_statbooks["TomeOfLeadershipAndInfluencePlus2_Feature"] = "37e2f09923a96234ca486bc9db0b6ad6";
+					m_statbooks["TomeOfUnderstandingPlus2_Feature"] = "419a486154514594c99193da785d4302";
+					m_statbooks["ManualOfBodilyHealthPlus2_Feature"] = "2d4d510a69da09c48893f945ec197210";
+					m_statbooks["ManualOfGainfulExercisePlus2_Feature"] = "7a7b1dfa67aa4544aa468d0558b1f667";
+					m_statbooks["ManualOfQuicknessOfActionPlus2_Feature"] = "b8ea6d2f787c7004c9cab9f519f687f8";
+					m_statbooks["ElixirMasterpieceFeature"] = "5219d5846529ae949b88c87858c1bb9e";
+				}
+				return m_statbooks;
+            }
+        }
+		public static Dictionary<string, string> m_statbooks;
 		public static Settings settings;
 		public static bool OldCost;
 		public static bool haspatched = false;
@@ -120,11 +141,12 @@ namespace RespecModBarley
 		//public static UnitEntityData EntityUnit;
 		public static int MythicXP;
 		public static bool IsRespec = false;
+		public static bool IsHilorRespec = false;
 		public static List<BlueprintFeature> featurestoadd = new List<BlueprintFeature> { };
 		public static List<EntityPart> partstoadd = new List<EntityPart> { };
 		//public static List<UnitInfo> UnitMemory = new List<UnitInfo> { };
 		//public static UnitGroup unitgroupparty;
-		public static string[] partslist = new String[] { "Kingmaker.UnitLogic.Parts.UnitPartPartyWeatherBuff", "Kingmaker.UnitLogic.Parts.UnitPartWeariness", "Kingmaker.UnitLogic.Parts.UnitPartInteractions", "Kingmaker.UnitLogic.Parts.UnitPartVendor","Kingmaker.UnitLogic.Parts.UnitPartAbilityModifiers","Kingmaker.UnitLogic.Parts.UnitPartDamageGrace","Kingmaker.UnitLogic.Parts.UnitPartInspectedBuffs","Kingmaker.AreaLogic.SummonPool.SummonPool+PooledPart", "Kingmaker.UnitLogic.Parts.UnitPartHiddenFacts" };
+		public static string[] partslist = new String[] { "Kingmaker.UnitLogic.Parts.UnitPartPartyWeatherBuff", "Kingmaker.UnitLogic.Parts.UnitPartWeariness", "Kingmaker.UnitLogic.Parts.UnitPartInteractions", "Kingmaker.UnitLogic.Parts.UnitPartVendor","Kingmaker.UnitLogic.Parts.UnitPartAbilityModifiers","Kingmaker.UnitLogic.Parts.UnitPartDamageGrace","Kingmaker.UnitLogic.Parts.UnitPartInspectedBuffs","Kingmaker.AreaLogic.SummonPool.SummonPool+PooledPart", "Kingmaker.UnitLogic.Parts.UnitPartHiddenFacts", "Kingmaker.UnitLogic.Parts.UnitPartLocustSwarm", "VisualAdjustments.UnitPartVAFX", "VisualAdjustments.UnitPartVAEELs" };
 
 		/*public static int[] GetUnitInfo(UnitEntityData unit)
         {
@@ -345,7 +367,7 @@ namespace RespecModBarley
 				GUILayout.BeginHorizontal();
                 if (/*selected.Descriptor.Progression.CharacterLevel != 0 && */GUILayout.Button(string.Format("Submit ({0}g)", Main.respecCost), UnityModManager.UI.button, new GUILayoutOption[]
 				{
-							GUILayout.ExpandWidth(false)
+							GUILayout.Width(250f)
 				}))
 				{
 					/*string nameandtype = "";
@@ -406,7 +428,7 @@ namespace RespecModBarley
                 //GUILayout.BeginHorizontal();
                 if (selected.Descriptor.Progression.CharacterLevel != 0 && GUILayout.Button(string.Format("Mythic Only ({0}g)", Main.respecCost * 0.25), UnityModManager.UI.button, new GUILayoutOption[]
                 {
-                    GUILayout.ExpandWidth(false)
+                    GUILayout.Width(250f)
                 }))
                 {
                     bool flag5 = false;
@@ -446,10 +468,28 @@ namespace RespecModBarley
                 GUILayout.EndHorizontal();
                 GUILayout.Space(10f);
 				GUILayout.BeginHorizontal();
+				if (selected.Descriptor.Progression.CharacterLevel > 1 && GUILayout.Button(string.Format("-1 Level"), UnityModManager.UI.button, new GUILayoutOption[]
+				{
+					GUILayout.Width(250f)
+				}))
+				{
+					ArbitraryLevelRemoval.RemoveMythicLevel(selected, selected.Progression);
+				}
+				GUILayout.Space(5f);
+				if (selected.Descriptor.Progression.CharacterLevel > 1 && GUILayout.Button(string.Format("-1 Mythic Level"), UnityModManager.UI.button, new GUILayoutOption[]
+				{
+					GUILayout.Width(250f)
+				}))
+				{
+					selected.Progression.RemoveMythicLevel();
+				}
+				GUILayout.EndHorizontal();
+				GUILayout.BeginHorizontal();
                 settings.FreeRespec = GUILayout.Toggle(settings.FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
 				if(selected.IsStoryCompanion() && !selected.IsMC() )
 				{
                     {
+						GUILayout.BeginVertical();
                         settings.FullRespecStoryCompanion = GUILayout.Toggle(settings.FullRespecStoryCompanion,
                             "Respec as Mercenary", GUILayout.ExpandWidth(false));
                         if (settings.FullRespecStoryCompanion)
@@ -460,8 +500,9 @@ namespace RespecModBarley
                         settings.PreserveMCAlignment = false;
                         settings.PreserveMCBirthday = false;
                         settings.PreserveMCName = false;
-                        //settings.PreserveMCRace = false;
-                       // settings.PreservePortrait = false;
+						//settings.PreserveMCRace = false;
+						// settings.PreservePortrait = false;
+						GUILayout.EndVertical();
 					}
                 }
 				else
@@ -490,6 +531,11 @@ namespace RespecModBarley
 
 					}
 					GUILayout.EndVertical();
+					GUILayout.BeginVertical();
+                    {
+						settings.OriginalLevel = GUILayout.Toggle(settings.OriginalLevel,"Respec From Recruit Level",GUILayout.ExpandWidth(false));
+                    }
+					GUILayout.EndVertical();
                 }
 				else if (( selected.IsStoryCompanion()) && settings.FullRespecStoryCompanion)
                 {
@@ -497,6 +543,7 @@ namespace RespecModBarley
                     settings.PreserveVoice = GUILayout.Toggle(settings.PreserveVoice, "Retain Voice", GUILayout.ExpandWidth(false));
                     settings.PreservePortrait = GUILayout.Toggle(settings.PreservePortrait, "Retain Portrait", GUILayout.ExpandWidth(false));
 				}
+
                 else if (!settings.FullRespecStoryCompanion)
                 {
 					settings.BackgroundDeity = false;
@@ -505,7 +552,18 @@ namespace RespecModBarley
                 {
 					settings.PreserveVoice = false;
 					settings.PreservePortrait = false;
-                }					
+                }
+			/*	foreach (var classbp in selected?.Progression.Classes.Select(a => a.CharacterClass))
+				{
+					if (GUILayout.Button(classbp.name))
+                    {
+						selectedclass = classbp;
+                    }
+				}*/
+				/*if(GUILayout.Button("-1 level in"+ selected.Progression.m_ClassesOrder.Last(b => !b.IsMythic)?.name))
+                {
+					ArbitraryLevelRemoval.RemoveMythicLevel(selected,selected.Progression);
+                }*/
 				GUILayout.EndHorizontal();
 				GUILayout.Space(10f);
 				GUILayout.BeginHorizontal();
@@ -533,6 +591,7 @@ namespace RespecModBarley
 			}
 			catch(Exception e) { Main.logger.Log(e.Message + "   " + e.StackTrace); }
 		}
+		//public static BlueprintCharacterClass selectedclass;
 		/*internal sealed class PrivateImplementationDetails
 		{
 			internal static uint ComputeStringHash(string s)
@@ -665,19 +724,22 @@ namespace RespecModBarley
 				}*/
 				if (entityData.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion || entityData.Blueprint.ToString().Contains("_Companion") && !Main.settings.FullRespecStoryCompanion)
 				{
-					foreach (Feature blueprintf in entityData.Descriptor.Progression.Features.Enumerable)
+					foreach (var blueprintf in entityData.Facts.m_Facts)
 					{
-						var nosource = blueprintf.SourceClass == null && blueprintf.SourceProgression == null && blueprintf.SourceRace == null && blueprintf.SourceItem == null && blueprintf.SourceRace == null && !blueprintf.Blueprint.IsClassFeature;
-                        if (backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && nosource && !blueprintf.NameForAcronym.Contains("Cantrip")) //|| entityData.Progression.Race.m_Features.Any(A => A.Cached == blueprintf.Blueprint))
+						if (blueprintf.GetType() == typeof(Feature))
 						{
-							//Main.logger.Log(blueprintf.ToString());
-							Main.featurestoadd.Add(blueprintf.Blueprint);
+							var blueprintfeature = (Feature)blueprintf;
+							var nosource = (blueprintfeature.SourceClass == null && blueprintfeature.SourceProgression == null && blueprintfeature.SourceRace == null && blueprintfeature.SourceItem == null && blueprintfeature.SourceRace == null && blueprintfeature.SourceAbility == null && blueprintfeature.SourceFact == null && blueprintfeature.SourceProgression == null && blueprintfeature.SourceAbility == null && blueprintfeature.MythicSource == null && !blueprintfeature.Blueprint.IsClassFeature && blueprintfeature.SourceItem == null);
+							if (backgroundsarray.Contains(blueprintfeature.Blueprint) && !Main.settings.BackgroundDeity || blueprintfeature.Hidden && nosource && !blueprintfeature.NameForAcronym.Contains("Cantrip")) //|| entityData.Progression.Race.m_Features.Any(A => A.Cached == blueprintf.Blueprint))
+							{
+									//Main.logger.Log(blueprintf.ToString());
+									Main.featurestoadd.Add(blueprintfeature.Blueprint);
+							}
+							/*else if(backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && blueprintf.m_Source == null)
+							{
+								Main.logger.Log("== null " + blueprintf.ToString());
+							}*/
 						}
-						/*else if(backgroundsarray.Contains(blueprintf.Blueprint) && !Main.settings.BackgroundDeity || blueprintf.Hidden && blueprintf.m_Source == null)
-                        {
-							Main.logger.Log("== null " + blueprintf.ToString());
-						}*/
-
 					}
 				}
 				else if(entityData.IsMC())
@@ -688,9 +750,9 @@ namespace RespecModBarley
                         {
 							var blueprintfeature = (Feature)blueprintf;
 							var nosource = (blueprintfeature.SourceClass == null && blueprintfeature.SourceProgression == null && blueprintfeature.SourceRace == null && blueprintfeature.SourceItem == null && blueprintfeature.SourceRace == null && blueprintfeature.SourceAbility == null && blueprintfeature.SourceFact == null && blueprintfeature.SourceProgression == null && blueprintfeature.SourceAbility == null && blueprintfeature.MythicSource == null  && !blueprintfeature.Blueprint.IsClassFeature && blueprintfeature.SourceItem == null);
-							if(nosource)
+							if(nosource && !statbooks.Keys.Contains(blueprintfeature.NameForAcronym))
 							{
-								Main.featurestoadd.Add(blueprintf.Blueprint as BlueprintFeature);
+								Main.featurestoadd.Add(blueprintfeature.Blueprint);
 								//Main.logger.Log(blueprintf.NameForAcronym);
 							}
 						}
