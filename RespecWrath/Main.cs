@@ -485,11 +485,13 @@ namespace RespecModBarley
 				}
 				GUILayout.EndHorizontal();
 				GUILayout.BeginHorizontal();
+				GUILayout.BeginVertical();
                 settings.FreeRespec = GUILayout.Toggle(settings.FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
-				if(selected.IsStoryCompanion() && !selected.IsMC() )
+				settings.KeepSkillPoints = GUILayout.Toggle(settings.KeepSkillPoints, "Retain Skillpoint Distribution when leveling down", GUILayout.ExpandWidth(false));
+				if (selected.IsStoryCompanion() && !selected.IsMC() )
 				{
                     {
-						GUILayout.BeginVertical();
+						//GUILayout.BeginVertical();
                         settings.FullRespecStoryCompanion = GUILayout.Toggle(settings.FullRespecStoryCompanion,
                             "Respec as Mercenary", GUILayout.ExpandWidth(false));
                         if (settings.FullRespecStoryCompanion)
@@ -502,7 +504,7 @@ namespace RespecModBarley
                         settings.PreserveMCName = false;
 						//settings.PreserveMCRace = false;
 						// settings.PreservePortrait = false;
-						GUILayout.EndVertical();
+						//GUILayout.EndVertical();
 					}
                 }
 				else
@@ -511,31 +513,31 @@ namespace RespecModBarley
                 }
 				if (selected.IsMC())
                 {
-					GUILayout.BeginVertical();
+					//GUILayout.BeginVertical();
 					settings.PreserveVoice = GUILayout.Toggle(settings.PreserveVoice, "Retain Voice", GUILayout.ExpandWidth(false));
                     settings.PreserveMCAlignment = GUILayout.Toggle(settings.PreserveMCAlignment, "Retain Alignment", GUILayout.ExpandWidth(false));
                     settings.PreserveMCBirthday = GUILayout.Toggle(settings.PreserveMCBirthday, "Retain Birthday", GUILayout.ExpandWidth(false));
                     settings.PreserveMCName = GUILayout.Toggle(settings.PreserveMCName, "Retain Name", GUILayout.ExpandWidth(false));
                     //settings.PreserveMCRace = settings.PreserveMCAlignment;
                     settings.PreservePortrait= GUILayout.Toggle(settings.PreservePortrait, "Retain Portrait", GUILayout.ExpandWidth(false));
-					GUILayout.EndVertical();
+					//GUILayout.EndVertical();
 
 
                 }
                 if(selected.IsStoryCompanion() && !settings.FullRespecStoryCompanion)
                 {
-					GUILayout.BeginVertical();
+					//GUILayout.BeginVertical();
                     {
 
                         settings.BackgroundDeity = GUILayout.Toggle(settings.BackgroundDeity, "Choose Background/Deity", GUILayout.ExpandWidth(false));
 
 					}
-					GUILayout.EndVertical();
-					GUILayout.BeginVertical();
+					//GUILayout.EndVertical();
+					//GUILayout.BeginVertical();
                     {
 						settings.OriginalLevel = GUILayout.Toggle(settings.OriginalLevel,"Respec From Recruit Level",GUILayout.ExpandWidth(false));
                     }
-					GUILayout.EndVertical();
+					//GUILayout.EndVertical();
                 }
 				else if (( selected.IsStoryCompanion()) && settings.FullRespecStoryCompanion)
                 {
@@ -553,17 +555,18 @@ namespace RespecModBarley
 					settings.PreserveVoice = false;
 					settings.PreservePortrait = false;
                 }
-			/*	foreach (var classbp in selected?.Progression.Classes.Select(a => a.CharacterClass))
-				{
-					if (GUILayout.Button(classbp.name))
-                    {
-						selectedclass = classbp;
-                    }
-				}*/
+				/*	foreach (var classbp in selected?.Progression.Classes.Select(a => a.CharacterClass))
+					{
+						if (GUILayout.Button(classbp.name))
+						{
+							selectedclass = classbp;
+						}
+					}*/
 				/*if(GUILayout.Button("-1 level in"+ selected.Progression.m_ClassesOrder.Last(b => !b.IsMythic)?.name))
                 {
 					ArbitraryLevelRemoval.RemoveMythicLevel(selected,selected.Progression);
                 }*/
+				GUILayout.EndVertical();
 				GUILayout.EndHorizontal();
 				GUILayout.Space(10f);
 				GUILayout.BeginHorizontal();

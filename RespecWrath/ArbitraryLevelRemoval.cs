@@ -6,6 +6,7 @@ using Kingmaker.Blueprints.Root;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem;
 using Kingmaker.EntitySystem.Entities;
+using Kingmaker.EntitySystem.Stats;
 using Kingmaker.QA;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Abilities;
@@ -63,7 +64,7 @@ namespace RespecModBarley
 				}
 			}
 		}
-		public static BlueprintCharacterClass GetClassSource(BlueprintScriptableObject blueprint)
+		public static BlueprintCharacterClass GetClassSource(BlueprintScriptableObject blueprint,BlueprintCharacterClass tomatch)
 		{
 			BlueprintCharacterClass blueprintCharacterClass;
 			if ((blueprintCharacterClass = (blueprint as BlueprintCharacterClass)) != null)
@@ -80,7 +81,7 @@ namespace RespecModBarley
 				if ((blueprintProgression = (blueprint as BlueprintProgression)) != null)
 				{
 				//	Main.logger.Log("ReturnedClass: "+blueprintProgression.FirstClass.ToString());
-						return blueprintProgression.FirstClass;
+						return blueprintProgression.Classes.FirstOrDefault(a => a == tomatch);
 				}
 				return null;
 			}
@@ -136,13 +137,13 @@ namespace RespecModBarley
 					ProgressionData progressionData2 = progressionData;
 				//	Main.logger.Log(progressionData2.Blueprint.FirstClass?.NameForAcronym + " ProgressionData, Current Class:" + classData.CharacterClass.NameForAcronym);
 					
-					if (progressionData2.Blueprint.FirstClass != null && progressionData2.Blueprint.FirstClass == classData.CharacterClass)
+					if (progressionData2.Blueprint.Classes != null && progressionData2.Blueprint.Classes.Any(a => a == classData.CharacterClass))
 					{
 						progressionData2.Level = blueprintProgression2.CalcLevel(unitdata.Descriptor);
 						//Main.logger.Log(progressionData2.Blueprint.NameForAcronym+"  "+progressionData2.Level);
 						if (progressionData2.Level < 1)
 						{
-							Main.logger.Log(progressionData.Level.ToString());
+							Main.logger.Log(progressionData.Blueprint.NameForAcronym+" :removed");
 							var levelentry = progressionData.GetLevelEntry(progressionData.Level);
 							//var levelentriesnew = progressionData.LevelEntries.ToList();
 							//levelentriesnew.Remove(levelentry);
@@ -189,7 +190,8 @@ namespace RespecModBarley
 					if (featureSelectionData2.Source.Blueprint.GetType() == typeof(BlueprintProgression))
 					{
 						var progressionbp = ((BlueprintProgression)featureSelectionData2.Source.Blueprint);
-						if (progressionbp.FirstClass != null && progressionbp.FirstClass == classData.CharacterClass)
+						if (progressionbp.Classes != null && progressionbp.Classes.Any(a => a == classData.CharacterClass))
+							// probably this too
 						{
 							
 							//if (featureSelectionData2.SelectionsByLevel.All((KeyValuePair<int, List<BlueprintFeature>> s) => s.Value.Empty<BlueprintFeature>()))
@@ -199,6 +201,7 @@ namespace RespecModBarley
 							//	Main.logger.Log(thing.Key.ToString() + thing.Value.ToString());
                             }
 							if(featureSelectionData2.SelectionsByLevel.All(a => a.Key == level))
+							// ^^ this ( i think)
 							{
 								//Main.logger.Log("Removed Selection: "+key.NameForAcronym);
 								foreach(var featurelist in featureSelectionData2.SelectionsByLevel)
@@ -228,12 +231,12 @@ namespace RespecModBarley
 							//Feature current = enumerator.Current;
 							//while (true)
 							{
-								if (((current.IsAttached && !current.IsMythic) && ((current.Blueprint.GetType() != typeof(BlueprintProgression) || data.m_Progressions.Keys.Any(a => a == (BlueprintProgression)current.Blueprint) )) && /*((current.SourceClass != null && current.SourceClass == classData.CharacterClass) &&*/ (current.SourceLevel == level || current.SourceLevel == data.CharacterLevel))) /*|| current.RankToSource.HasItem<Feature.SourceAndLevel>((Func<Feature.SourceAndLevel, bool>)(i => GetClassSource(i.Blueprint) == classData.CharacterClass && i.Level == level)))//)*/
+								if (((current.IsAttached && !current.IsMythic) && ((current.Blueprint.GetType() != typeof(BlueprintProgression) || !data.m_Progressions.Keys.Any(a => a == (BlueprintProgression)current.Blueprint) )) && /*((current.SourceClass != null && current.SourceClass == classData.CharacterClass) &&*/ (current.SourceLevel == level || current.SourceLevel == data.CharacterLevel))) /*|| current.RankToSource.HasItem<Feature.SourceAndLevel>((Func<Feature.SourceAndLevel, bool>)(i => GetClassSource(i.Blueprint) == classData.CharacterClass && i.Level == level)))//)*/
 								{
 									if (current.Rank > 1)
 									{
 										//Main.logger.Log("RemovedRank: " + current.Name);
-										current.RankToSource.Remove<Feature.SourceAndLevel>((Predicate<Feature.SourceAndLevel>)(i => GetClassSource(i.Blueprint) == classData.CharacterClass && i.Level == level));
+										current.RankToSource.Remove<Feature.SourceAndLevel>((Predicate<Feature.SourceAndLevel>)(i => (GetClassSource(i.Blueprint,classData.CharacterClass) == classData.CharacterClass || current.SourceClass == null) && i.Level == level ));
 
 										current.SetSourceSameAsLastRankToSourceValue();
 										current.RemoveRank();
@@ -283,22 +286,70 @@ namespace RespecModBarley
 					
 
 				}
-                //Remove Excess skill points (doesnt work with skills not at max rank) (Try Refunding all maybe?)
+				var charentry = GlobalLevelInfo.Instance.ForCharacter(unitdata);
+				//Remove Excess skill points with the memory, if no memory reset.
+				{
+					if (!Main.settings.KeepSkillPoints)
+					{
+						
+						if (!charentry.SkillsByLevel.ContainsKey(data.CharacterLevel-1))
+						{
+							var stats = unitdata.Stats;
+							stats.SkillAthletics.BaseValue = 0;
+							stats.SkillKnowledgeArcana.BaseValue = 0;
+							stats.SkillKnowledgeWorld.BaseValue = 0;
+							stats.SkillLoreNature.BaseValue = 0;
+							stats.SkillLoreReligion.BaseValue = 0;
+							stats.SkillMobility.BaseValue = 0;
+							stats.SkillPerception.BaseValue = 0;
+							stats.SkillPersuasion.BaseValue = 0;
+							stats.SkillStealth.BaseValue = 0;
+							stats.SkillThievery.BaseValue = 0;
+							stats.SkillUseMagicDevice.BaseValue = 0;
+						}
+						else
+                        {
+							foreach(var skill in charentry.SkillsByLevel[data.CharacterLevel-1])
+                            {
+								//Main.logger.Log("Decreased " + skill.Key + "By : " +skill.Value);
+								unitdata.Stats.GetStat(skill.Key).BaseValue -= skill.Value; 
+                            }
+							charentry.SkillsByLevel.Remove(data.CharacterLevel-1);
+
+						}
+					}
+				}
+                //Ability Scores
                 {
-					var stats = unitdata.Stats;
-					stats.SkillAthletics.BaseValue = 0;
-					stats.SkillKnowledgeArcana.BaseValue = 0;
-					stats.SkillKnowledgeWorld.BaseValue = 0;
-					stats.SkillLoreNature.BaseValue = 0;
-					stats.SkillLoreReligion.BaseValue = 0;
-					stats.SkillMobility.BaseValue = 0;
-					stats.SkillPerception.BaseValue = 0;
-					stats.SkillPersuasion.BaseValue = 0;
-					stats.SkillStealth.BaseValue = 0;
-					stats.SkillThievery.BaseValue = 0;
-					stats.SkillUseMagicDevice.BaseValue = 0;
+					if (charentry.AbilityScoresByLevel.TryGetValue(data.CharacterLevel-1,out StatType attribute))
+					{
+						//Main.logger.Log("Decreased :" + attribute.ToString());
+						unitdata.Stats.GetAttribute(attribute).BaseValue -= 1;
+					}
 				}
 				data.CharacterLevel--;
+				//Animal Companion
+				if(unitdata.GetPet(Kingmaker.Enums.PetType.AnimalCompanion) != null)
+                {
+					//Main.logger.Log(AddPet.RankToLevelAnimalCompanion[data.CharacterLevel].ToString());
+					var addpet = data.Features.Manager.List.FirstOrDefault(a => a.GetComponent<AddPet>() != null);
+					if (addpet != null)
+                    {
+						
+						var addpetcomponent = addpet.GetComponent<AddPet>();
+						var effectivelevelforpet = unitdata.GetFact(addpetcomponent.LevelRank);
+						var petlevel = AddPet.RankToLevelAnimalCompanion[effectivelevelforpet.GetRank()];
+						//Main.logger.Log(petlevel.ToString());
+						var pet = unitdata.GetPet(Kingmaker.Enums.PetType.AnimalCompanion);
+						for (int i = pet.Progression.CharacterLevel; i > petlevel; i--)
+                        {
+							//Main.logger.Log("DecreasePet" );
+							ArbitraryLevelRemoval.RemoveMythicLevel(pet,pet.Progression);
+							pet.Progression.Experience = pet.Progression.ExperienceTable.Bonuses[petlevel];
+                        }
+                    }
+					//if(unitdata.GetPet(Kingmaker.Enums.PetType.AnimalCompanion)?.Progression.CharacterLevel > AddPet.RankToLevelAnimalCompanion[data.CharacterLevel])
+                }
 				data.m_ClassesOrder.RemoveAt(index);
 				data.Classes.Sort();
 				unitdata.Stats.CleanupModifiers();

@@ -14,6 +14,7 @@ namespace RespecModBarley
     public class Settings : UnityModManager.ModSettings
     {
         public int PointsCount;
+        public bool KeepSkillPoints = false;
         public bool OriginalStats;
         public bool BackgroundDeity;
         public bool PreserveMCName = true;
