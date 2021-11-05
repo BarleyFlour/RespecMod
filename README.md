@@ -14,6 +14,8 @@ FEATURES
 
 • Fully edit companions (Respec as merc) i.e change Race, Portrait, Voice, etc.
 
+• Selectivley Level Down both class levels and mythic levels.
+
 CREDITS
 ♦ Pathfinder Wrath of The Righteous Discord channel members
 
