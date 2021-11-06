@@ -91,6 +91,10 @@
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>F:\Games\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>F:\Games\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
       <HintPath>F:\Games\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
     </Reference>
@@ -100,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArbitraryLevelRemoval.cs" />
+    <Compile Include="BubblesChupaChupsView.cs" />
     <Compile Include="BubblesSaveHooker.cs" />
     <Compile Include="CharBPortraitSelectorPatch.cs" />
     <Compile Include="ExtensionMethods.cs" />

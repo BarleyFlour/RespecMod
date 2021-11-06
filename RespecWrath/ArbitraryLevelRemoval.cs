@@ -287,6 +287,7 @@ namespace RespecModBarley
 
 				}
 				var charentry = GlobalLevelInfo.Instance.ForCharacter(unitdata);
+				data.CharacterLevel--;
 				//Remove Excess skill points with the memory, if no memory reset.
 				{
 					if (!Main.settings.KeepSkillPoints)
@@ -327,7 +328,7 @@ namespace RespecModBarley
 						unitdata.Stats.GetAttribute(attribute).BaseValue -= 1;
 					}
 				}
-				data.CharacterLevel--;
+				
 				//Animal Companion
 				if(unitdata.GetPet(Kingmaker.Enums.PetType.AnimalCompanion) != null)
                 {
