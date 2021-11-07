@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
+using Kingmaker.UnitLogic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RespecWrath
 {
-	[HarmonyPatch(typeof(RespecCompanion), "InitiateRespec")]
+	[HarmonyPatch(typeof(RespecCompanion), "RunAction")]
 	internal static class GetPetLevel
 	{
 		private static void Postfix()

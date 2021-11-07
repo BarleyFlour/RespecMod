@@ -37,6 +37,14 @@ namespace RespecModBarley
 
             unit.Progression.AdvanceMythicExperience(Main.MythicXP);
         }
+        public static void BubblesRespec(UnitEntityData data)
+        {
+            Main.settings.FreeRespec = false;
+            if (Game.Instance.Player.SpendMoney(Main.respecCost))
+            {
+                Main.PreRespec(data);
+            }
+        }
     }
 
     [HarmonyPatch(typeof(AddClassLevels), "LevelUp")]
@@ -90,7 +98,7 @@ namespace RespecModBarley
                                 using (ContextData<IgnorePrerequisites>.Request())
                                 {
                                     //Add something to not break hilor respec
-                                    if(!Main.IsRespec && (Main.isrecruit || !Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName || Main.IsHilorRespec) || (!unit.Unit.IsStoryCompanion() && !Main.isrecruit) || unit.Unit.IsPet))
+                                    if(Main.IsHilorRespec || Main.settings.OriginalLevel || !Main.IsRespec && (Main.isrecruit || !Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName) || (!unit.Unit.IsStoryCompanion() && !Main.isrecruit) || unit.Unit.IsPet))
                                     {
                                         AddClassLevels.AddLevel(c, unit, selectionsHistory, fact, true);
                                     }

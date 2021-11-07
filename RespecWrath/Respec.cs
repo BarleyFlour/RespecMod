@@ -293,6 +293,27 @@ namespace RespecModBarley
                     newUnit.AddFact(raceFeature);
                 }
             }
+            if(Main.settings.FullRespecStoryCompanion && unit.IsStoryCompanion())
+            {
+                //Main.logger.Log("isstorycompanion and full respec");
+                foreach (var raceFeature in unit.Progression.Race.Features)
+                {
+                    // Main.logger.Log("Removed:"+raceFeature.ToString());
+                    
+                    Main.logger.Log(raceFeature.NameForAcronym);
+
+
+                    if(raceFeature.GetType() == typeof(BlueprintFeatureSelection))
+                    {
+                        foreach (var subfeature in ((BlueprintFeatureSelection)(raceFeature)).Features)
+                        {
+                          //  Main.logger.Log("Removed SubFeature:" + subfeature.ToString());
+                            newUnit.RemoveFact(subfeature);
+                        }
+                    }
+                    newUnit.RemoveFact(raceFeature);
+                }
+            }
             
             if (newUnit.Progression.CharacterLevel < 1)
             {
@@ -728,7 +749,7 @@ namespace RespecModBarley
                         }
                     }
                 }
-                using (List<EntityFact>.Enumerator enumerator5 = targetUnit.Facts.List.GetEnumerator())
+             /*   using (List<EntityFact>.Enumerator enumerator5 = targetUnit.Facts.List.GetEnumerator())
                 {
                     while (enumerator5.MoveNext())
                     {
@@ -740,7 +761,7 @@ namespace RespecModBarley
                             }
                         });
                     }
-                }
+                }*/
                 using (ContextData<Kingmaker.Items.Slots.ItemSlot.IgnoreLock>.Request())
                 {
                     for (int j = 0; j < list2.Count; j++)

@@ -305,7 +305,7 @@ namespace RespecModBarley
                             }
                    
 
-                            if (unit.Progression.Race == Stuf.HumanRace || unit.Progression.Race == Stuf.HalfElfRace || unit.Progression.Race == Stuf.HalfOrcRace)
+                            if (unit.Progression.Race.RaceId == Race.Human || unit.Progression.Race.RaceId == Race.HalfElf || unit.Progression.Race.RaceId == Race.HalfOrc)
                             {
                                 if (!Main.settings.FullRespecStoryCompanion && !unit.IsMC())
                                 {

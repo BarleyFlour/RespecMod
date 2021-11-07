@@ -91,6 +91,7 @@ namespace RespecModBarley
 		public static Dictionary<string, string> m_statbooks;
 		public static Settings settings;
 		public static bool OldCost;
+		public static bool forcecost = false;
 		public static bool haspatched = false;
 		public static bool NenioEtudeBool = false;
 		public static BlueprintFeatureSelection featureSelection;
@@ -572,11 +573,11 @@ namespace RespecModBarley
 				GUILayout.BeginHorizontal();
 				OldCost = GUILayout.Toggle(OldCost, "Fixed/Scaling Cost", GUILayout.ExpandWidth(false));
 				GUILayout.EndHorizontal();
-				if (settings.FreeRespec == true)
+				if (settings.FreeRespec == true && !forcecost)
 				{
 					respecCost = 0L;
 				}
-				if (settings.FreeRespec == false)
+				if (settings.FreeRespec == false || forcecost)
 				{
 					if (Main.OldCost)
 					{
@@ -587,8 +588,6 @@ namespace RespecModBarley
 						var lvl = selected.Progression.CharacterLevel;
 						float cost = lvl * lvl / 4 * 1000;
 						respecCost = (long)Math.Max(250, Math.Round(cost));
-						///Main.logger.Log(respecCost.ToString());
-						///respecCost = 1000L;
 					}
 				}
 			}
@@ -661,6 +660,27 @@ namespace RespecModBarley
 					DeityNoSelection.m_Features = FeatureListsT;
 					Main.blueprints = abilitybps.Concat<SimpleBlueprint>(unitbps).Concat(religionsbp).ToArray();*/
 					Stuf.deityfeatures = religionsbp.ToArray();
+					var tempbackgroundlist = new List<BlueprintFeature>();
+					tempbackgroundlist.Add(Stuf.BackgroundSelect);
+					foreach(var background in Stuf.BackgroundSelect.AllFeatures)
+                    {
+						tempbackgroundlist.Add(background);
+						if(background.GetType() == typeof(BlueprintFeatureSelection))
+                        {
+							foreach(var selection in ((BlueprintFeatureSelection)background).AllFeatures)
+                            {
+								tempbackgroundlist.Add(selection);
+								if (selection.GetType() == typeof(BlueprintFeatureSelection))
+								{
+									foreach (var selection2 in ((BlueprintFeatureSelection)selection).AllFeatures)
+									{
+										tempbackgroundlist.Add(selection2);
+									}
+								}
+							}
+                        }
+                    }
+					Stuf.backgroundfeatures = tempbackgroundlist.ToArray();
 					/*foreach (BlueprintFeatureReference f in FeatureListsT)
 					{
 						Main.logger.Log(f.ToString());
@@ -697,8 +717,8 @@ namespace RespecModBarley
 			try
 			{
                 Main.IsRespec = true;
-				var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
-				backgroundsarray = backgroundsarray.Concat<BlueprintFeature>(Stuf.deityfeatures).ToArray();
+				//var backgroundsarray = new BlueprintFeature[] { Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
+				var backgroundsarray = Stuf.backgroundfeatures.Concat<BlueprintFeature>(Stuf.deityfeatures).ToArray();
 				Main.IsRespec = true;
 				//Main.IsRespec = false;
 				

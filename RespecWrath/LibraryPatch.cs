@@ -146,6 +146,7 @@ namespace RespecModBarley
 			return result;
 		}*/
 		public static BlueprintFeature[] deityfeatures;
+		public static BlueprintFeature[] backgroundfeatures;
 		/*public static T Get<T>(this LibraryScriptableObject library, String assetId) where T : BlueprintScriptableObject
 		{
 			return (T)ResourcesLibrary.TryGetBlueprint(assetId);
@@ -187,9 +188,9 @@ namespace RespecModBarley
 		public static BlueprintUnit CompanionVelociraptor => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("28d1986d57a7081439fbb581aa6f960c");
 		public static BlueprintUnit CompanionWolf => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("eab864d9ca3415644a792792fd81bf87");*/
 		public static BlueprintFeatureSelection DeitySelect => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("59e7a76987fe3b547b9cce045f4db3e4");
-		public static BlueprintScriptableObject TieflingHeritageSelect => ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>("c862fd0e4046d2d4d9702dd60474a181");
-		public static BlueprintScriptableObject BackgroundSelect => ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>("f926dabeee7f8a54db8f2010b323383c");
-		public static BlueprintFeatureSelection BackgroundSelectSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("f926dabeee7f8a54db8f2010b323383c");
+		//public static BlueprintScriptableObject TieflingHeritageSelect => ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>("c862fd0e4046d2d4d9702dd60474a181");
+		public static BlueprintFeatureSelection BackgroundSelect => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("f926dabeee7f8a54db8f2010b323383c");
+		/*public static BlueprintFeatureSelection BackgroundSelectSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("f926dabeee7f8a54db8f2010b323383c");
 		public static BlueprintFeatureSelection BackgroundsWandererSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("0cdd576724fce2240b372455889fac87");
 		public static BlueprintFeatureSelection BackgroundsWizardSpellLikeSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("1139a014bb6cdcf4db0e11649ddfa60c");
 		public static BlueprintFeatureSelection BackgroundsScholarSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("273fab44409035f42a7e2af0858a463d");
@@ -254,11 +255,11 @@ namespace RespecModBarley
 		public static BlueprintFeature BackgroundUstalavPeasant => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("e633b595bfb776d48858c0c51a6414ff");
 		public static BlueprintFeature BackgroundWarriorOfTheLinnormKings => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("494c972a8e7626749aeda25582e2e88f");
 		public static BlueprintFeature BackgroundMendevianOrphan => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("1d27bef027bdecc42a80c950cdc11380");
-
-		public static BlueprintFeature Airborne => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("70cffb448c132fa409e49156d013b175");
-		public static BlueprintRace HumanRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("0a5d473ead98b0646b94495af250fdc4");
-		public static BlueprintRace HalfElfRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("b3646842ffbd01643ab4dac7479b20b0");
-		public static BlueprintRace HalfOrcRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("1dc20e195581a804890ddc74218bfd8e");
+		*/
+		//public static BlueprintFeature Airborne => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("70cffb448c132fa409e49156d013b175");
+	//	public static BlueprintRace HumanRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("0a5d473ead98b0646b94495af250fdc4");
+		//public static BlueprintRace HalfElfRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("b3646842ffbd01643ab4dac7479b20b0");
+	//	public static BlueprintRace HalfOrcRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("1dc20e195581a804890ddc74218bfd8e");
 
 		/*public static BlueprintFeature ArueshalaeFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("7993c81bd04ffda4bac123eb7f6752c4");
 		public static BlueprintFeature NenioFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("751afafb3b7017544ac6373901747f60");
