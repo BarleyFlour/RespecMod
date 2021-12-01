@@ -56,27 +56,19 @@ Explanation of features
 
  Level Down
  
-  Allows you to decrease your level (mythic or last taken normal class level)
-  
+  Allows you to decrease your level (mythic or last taken normal class level
   This also removes Feats and Ability Score/Skillpoints
-  
   albeit with a catch related to Ability Scores and Skillpoints
-  
   due to the game not storing data related to what skillpoint and ability score
-  
   selections you made it will only be able to do so if the mod has the data via
-  
   being installed when you leveled up, if it doesnt have the data it will refund
-  
   all skill points and not decrease ability score.
   
-  Selections on the class sheet will not be removed until you level up the
-  
-  relevant class and change the selection.
+  Selections on the class sheet will not be removed until you level up the relevant class and change the selection.
   
  Respec
  
-  Allows you to level your character from level 0 instead of the normal level that   they start at.
+  Allows you to level your character from level 0 instead of the normal level that they start at.
   
   Options breakdown
   
