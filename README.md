@@ -2,6 +2,7 @@
 Respec Mod: Wrath of the Righteous
 
 FEATURES 
+
 • Completely respec companions (no more 1+ useless levels)
 
 • Preserve original ability scores.
