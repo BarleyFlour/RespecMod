@@ -73,7 +73,6 @@ Explanation of features
   Options breakdown
   
    Original Stats - Lets you keep the original stat array of the given companion
-   
    this will account for ability score upgrades.
    
    Point Count - Determines the ammount of points you get for your point-buy
@@ -81,7 +80,6 @@ Explanation of features
    Free Respec - Removes the cost (Normally (Level * Level / 4 * 1000))
    
    Respec as Merc - Lets you change Race, Portrait, Voice, etc... 
-   
    of Non-merc companions.
    
    Preserve Options
@@ -97,11 +95,9 @@ Explanation of features
     Preserve Voice - Preserves Voice-pack.
     
    Choose Background/Deity - Lets you choose the Deity/Background of the story 
-   
    companion (By default they retain their starting ones).
    
    Respec from Recruit Level - Lets you respec the story companion from the level
-   
    they were recruited from (Functions similarly to Hilor's Respec).
    
   Misc
