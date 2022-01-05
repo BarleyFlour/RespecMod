@@ -1,11 +1,11 @@
 ﻿{
-	"Id": "RespecModBarley",
-	"DisplayName": "Respec Mod",
-	"Author": "Barley",
-	"Version": "1.06.6",
-	"ManagerVersion": "0.21.3",
-	"GameVersion": "0",
-	"EntryMethod": "RespecModBarley.Main.Load",
-	"HomePage": "https://github.com/BarleyFlour/RespecMod",
-	"Repository": "https://github.com/BarleyFlour/RespecMod"
+    "Id": "RespecModBarley",
+    "DisplayName": "Respec Mod",
+    "Author": "Barley",
+    "Version": "1.06.6",
+    "ManagerVersion": "0.21.3",
+    "GameVersion": "0",
+    "EntryMethod": "RespecModBarley.Main.Load",
+    "HomePage": "https://github.com/BarleyFlour/RespecMod",
+    "Repository": "https://github.com/BarleyFlour/RespecMod"
 }

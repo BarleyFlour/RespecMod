@@ -1,18 +1,6 @@
 ﻿using HarmonyLib;
-using Kingmaker.Blueprints;
-using Kingmaker.Blueprints.Classes;
-using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
-using Kingmaker.Designers.EventConditionActionSystem.Events;
-using Kingmaker.EntitySystem.Entities;
-using Kingmaker.UnitLogic;
-using Kingmaker.UnitLogic.Class.LevelUp;
-using Kingmaker.UnitLogic.Class.LevelUp.Actions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Kingmaker.Designers.EventConditionActionSystem.Actions.Recruit;
 
 namespace RespecModBarley
@@ -25,8 +13,8 @@ namespace RespecModBarley
         {
             try
             {
-               //Main.logger.Log("recruited" + data.CompanionBlueprint.CharacterName);
-               // Main.logger.Log(Main.GetUnitInfoBP(data.CompanionBlueprint)[0].ToString());
+                //Main.logger.Log("recruited" + data.CompanionBlueprint.CharacterName);
+                // Main.logger.Log(Main.GetUnitInfoBP(data.CompanionBlueprint)[0].ToString());
                 Main.isrecruit = true;
                 //testy
                 /*data.CompanionBlueprint.GetComponent<ClassLevelLimit>().LevelLimit =
@@ -64,7 +52,6 @@ namespace RespecModBarley
             }
             data.RecruitedCompanion.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit = Main.GetUnitInfo(data.RecruitedCompanion);
             data.RecruitedCompanion.Blueprint.GetComponent<ClassLevelLimit>().LevelLimit = Main.GetUnitInfo(data.RecruitedCompanion);*/
-
         }
 
         private static void Postfix(Recruit __instance, RecruitData data)
@@ -74,18 +61,17 @@ namespace RespecModBarley
                 Main.isrecruit = false;
                 //Main.logger.Log(Main.isrecruit.ToString());
 
-               // Main.GetUnitsForMemory();
+                // Main.GetUnitsForMemory();
             }
             catch (Exception e)
             {
                 Main.logger.Error(e.ToString());
             }
         }
-
     }
 
     [HarmonyPatch(typeof(Recruit), "RunAction")]
-    [HarmonyPatch(new Type[] {})]
+    [HarmonyPatch(new Type[] { })]
     internal static class HandleRecruitRun_Patch
     {
         private static void Prefix(Recruit __instance)

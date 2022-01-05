@@ -3,38 +3,33 @@ using Kingmaker;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.EntitySystem.Persistence;
 using Kingmaker.EntitySystem.Stats;
-using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Class.LevelUp;
 using Kingmaker.UnitLogic.Class.LevelUp.Actions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RespecModBarley
 {
     [HarmonyPatch]
-    static class SaveHooker
+    internal static class SaveHooker
     {
-
         [HarmonyPatch(typeof(ZipSaver))]
         [HarmonyPatch("SaveJson"), HarmonyPostfix]
-        static void Zip_Saver(string name, ZipSaver __instance)
+        private static void Zip_Saver(string name, ZipSaver __instance)
         {
             DoSave(name, __instance);
         }
 
         [HarmonyPatch(typeof(FolderSaver))]
         [HarmonyPatch("SaveJson"), HarmonyPostfix]
-        static void Folder_Saver(string name, FolderSaver __instance)
+        private static void Folder_Saver(string name, FolderSaver __instance)
         {
             DoSave(name, __instance);
         }
 
-        static void DoSave(string name, ISaver saver)
+        private static void DoSave(string name, ISaver saver)
         {
             if (name != "header")
                 return;
@@ -48,7 +43,7 @@ namespace RespecModBarley
                 writer.Flush();
                 saver.SaveJson(LoadHooker.FileName, writer.ToString());
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 RespecModBarley.Main.logger.Log(e.ToString());
             }
@@ -56,18 +51,19 @@ namespace RespecModBarley
     }
 
     [HarmonyPatch(typeof(Game))]
-    static class LoadHooker
+    internal static class LoadHooker
     {
         public const string FileName = "header.json.barley_levelrecords";
 
         [HarmonyPatch("LoadGame"), HarmonyPostfix]
-        static void LoadGame(SaveInfo saveInfo)
+        private static void LoadGame(SaveInfo saveInfo)
         {
             using (saveInfo)
             {
                 using (saveInfo.GetReadScope())
                 {
-                    ThreadedGameLoader.RunSafelyInEditor((Action)(() => {
+                    ThreadedGameLoader.RunSafelyInEditor((Action)(() =>
+                    {
                         string raw;
                         using (ISaver saver = saveInfo.Saver.Clone())
                         {
@@ -89,6 +85,7 @@ namespace RespecModBarley
             }
         }
     }
+
     public class GlobalLevelInfo
     {
         public LevelInfo ForCharacter(UnitEntityData unit)
@@ -102,24 +99,27 @@ namespace RespecModBarley
             }
             return record;
         }
+
         public Dictionary<string, LevelInfo> PerCharacter = new Dictionary<string, LevelInfo>();
         public static GlobalLevelInfo Instance = new GlobalLevelInfo();
+
         public class LevelInfo
         {
             public Dictionary<int, StatType> AbilityScoresByLevel = new Dictionary<int, StatType>();
-            public Dictionary<int,Dictionary<StatType,int>> SkillsByLevel = new Dictionary<int, Dictionary<StatType, int>>();
+            public Dictionary<int, Dictionary<StatType, int>> SkillsByLevel = new Dictionary<int, Dictionary<StatType, int>>();
         }
     }
+
     [HarmonyPatch(typeof(LevelUpController), "ApplyLevelUpActions")]
-    static class ApplyLevelUpActions_Patch
+    internal static class ApplyLevelUpActions_Patch
     {
-        public static void Prefix(LevelUpController __instance, UnitEntityData unit,List<ILevelUpAction> __result)
+        public static void Prefix(LevelUpController __instance, UnitEntityData unit, List<ILevelUpAction> __result)
         {
             if (!unit.IsPlayerFaction || !Game.Instance.Player.AllCharacters.Contains(unit)) return;
             try
             {
-               // __result = __instance.LevelUpActions;
-                foreach(var ilevelupaction in __instance.LevelUpActions)
+                // __result = __instance.LevelUpActions;
+                foreach (var ilevelupaction in __instance.LevelUpActions)
                 {
                     if (ilevelupaction.GetType() == typeof(SpendAttributePoint))
                     {
@@ -128,13 +128,13 @@ namespace RespecModBarley
                         {
                             var entry = GlobalLevelInfo.Instance.ForCharacter(unit);
                             //Main.logger.Log(leveleupaction.Attribute.ToString());
-                            if (entry.AbilityScoresByLevel.TryGetValue(unit.Progression.CharacterLevel+1, out StatType stat))
+                            if (entry.AbilityScoresByLevel.TryGetValue(unit.Progression.CharacterLevel + 1, out StatType stat))
                             {
-                                entry.AbilityScoresByLevel[unit.Progression.CharacterLevel+1] = leveleupaction.Attribute;
+                                entry.AbilityScoresByLevel[unit.Progression.CharacterLevel + 1] = leveleupaction.Attribute;
                             }
                             else
                             {
-                                entry.AbilityScoresByLevel.Add(unit.Progression.CharacterLevel+1, leveleupaction.Attribute);
+                                entry.AbilityScoresByLevel.Add(unit.Progression.CharacterLevel + 1, leveleupaction.Attribute);
                             }
                         }
                     }
@@ -143,22 +143,21 @@ namespace RespecModBarley
                         var leveleupaction = (SpendSkillPoint)ilevelupaction;
                         if (leveleupaction != null)
                         {
-                          //  Main.logger.Log(leveleupaction.Skill.ToString());
+                            //  Main.logger.Log(leveleupaction.Skill.ToString());
                             var entry = GlobalLevelInfo.Instance.ForCharacter(unit);
-                          //  Main.logger.Log("a");
-                            if (entry.SkillsByLevel.TryGetValue(unit.Progression.CharacterLevel+1, out Dictionary<StatType, int> statentry))
+                            //  Main.logger.Log("a");
+                            if (entry.SkillsByLevel.TryGetValue(unit.Progression.CharacterLevel + 1, out Dictionary<StatType, int> statentry))
                             {
-
-                               // Main.logger.Log("b");
+                                // Main.logger.Log("b");
                                 if (statentry.ContainsKey(leveleupaction.Skill))
                                 {
-                                     statentry[leveleupaction.Skill] = statentry[leveleupaction.Skill]+1;
-                                  //  Main.logger.Log("c");
+                                    statentry[leveleupaction.Skill] = statentry[leveleupaction.Skill] + 1;
+                                    //  Main.logger.Log("c");
                                 }
                                 else
                                 {
-                                     statentry.Add(leveleupaction.Skill, 1);
-                                  //  Main.logger.Log("d");
+                                    statentry.Add(leveleupaction.Skill, 1);
+                                    //  Main.logger.Log("d");
                                 }
                             }
                             else
@@ -166,26 +165,24 @@ namespace RespecModBarley
                                 //Main.logger.Log("e");
                                 var statentrynew = new Dictionary<StatType, int>();
                                 statentrynew.Add(leveleupaction.Skill, 1);
-                                entry.SkillsByLevel.Add(unit.Progression.CharacterLevel+1, statentrynew);
+                                entry.SkillsByLevel.Add(unit.Progression.CharacterLevel + 1, statentrynew);
                                 //Main.logger.Log("f");
                             }
                         }
                     }
-
-
                 }
-              /*  // if (!unit.IsPlayerFaction) return;
-                var entry = GlobalLevelInfo.Instance.ForCharacter(unit);
-                if (entry.AbilityScoresByLevel.TryGetValue(unit.Progression.CharacterLevel + 1, out StatType stat))
-                {
-                    Main.logger.Log(__instance.Attribute.ToString());
-                    entry.AbilityScoresByLevel[unit.Progression.CharacterLevel + 1] = __instance.Attribute;
-                }
-                else
-                {
-                    Main.logger.Log(__instance.Attribute.ToString());
-                    entry.AbilityScoresByLevel.Add(unit.Progression.CharacterLevel, __instance.Attribute);
-                }*/
+                /*  // if (!unit.IsPlayerFaction) return;
+                  var entry = GlobalLevelInfo.Instance.ForCharacter(unit);
+                  if (entry.AbilityScoresByLevel.TryGetValue(unit.Progression.CharacterLevel + 1, out StatType stat))
+                  {
+                      Main.logger.Log(__instance.Attribute.ToString());
+                      entry.AbilityScoresByLevel[unit.Progression.CharacterLevel + 1] = __instance.Attribute;
+                  }
+                  else
+                  {
+                      Main.logger.Log(__instance.Attribute.ToString());
+                      entry.AbilityScoresByLevel.Add(unit.Progression.CharacterLevel, __instance.Attribute);
+                  }*/
                 //entry.SkillsByLevel[unit.Unit.Progression.CharacterLevel + 1] = new Dictionary<StatType, int>();
             }
             catch (Exception e)

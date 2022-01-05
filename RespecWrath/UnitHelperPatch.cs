@@ -1,24 +1,4 @@
-﻿using HarmonyLib;
-using Kingmaker;
-using Kingmaker.AreaLogic.Etudes;
-using Kingmaker.Blueprints;
-using Kingmaker.Blueprints.Classes;
-using Kingmaker.Blueprints.Facts;
-using Kingmaker.EntitySystem;
-using Kingmaker.EntitySystem.Entities;
-using Kingmaker.PubSubSystem;
-using Kingmaker.UnitLogic;
-using Kingmaker.UnitLogic.Class.LevelUp;
-using Kingmaker.UnitLogic.FactLogic;
-using Kingmaker.UnitLogic.Parts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-
-/*namespace RespecModBarley
+﻿/*namespace RespecModBarley
 {
 	[HarmonyPatch(typeof(UnitHelper), "RespecOnCommit")]
 	internal static class Unithelper_RespecOnCommit_Patch

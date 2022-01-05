@@ -1,30 +1,24 @@
-﻿///credit to Vek17 for this
+﻿using HarmonyLib;
+
+///credit to Vek17 for this
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
-using Kingmaker.Blueprints.Facts;
+using Kingmaker.Blueprints.JsonSystem;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.ElementsSystem;
-using Kingmaker.Localization;
-using Kingmaker.UnitLogic;
+using Kingmaker.EntitySystem.Entities;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
-using Kingmaker.UnitLogic.Buffs.Blueprints;
-using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
-using UnityEngine;
-using Kingmaker.Blueprints.JsonSystem;
-using HarmonyLib;
-using Kingmaker.EntitySystem.Entities;
 
 namespace RespecModBarley
 {
-    static class ExtensionMethods
+    internal static class ExtensionMethods
     {
         public static IEnumerable<GameAction> FlattenAllActions(this BlueprintAbility Ability)
         {
@@ -35,14 +29,17 @@ namespace RespecModBarley
                 Ability.GetComponents<AbilityEffectRunAction>()
                     .SelectMany(a => a.FlattenAllActions()));
         }
+
         public static IEnumerable<GameAction> FlattenAllActions(this AbilityExecuteActionOnCast Action)
         {
             return FlattenAllActions(Action.Actions.Actions);
         }
+
         public static IEnumerable<GameAction> FlattenAllActions(this AbilityEffectRunAction Action)
         {
             return FlattenAllActions(Action.Actions.Actions);
         }
+
         public static IEnumerable<GameAction> FlattenAllActions(this IEnumerable<GameAction> Actions)
         {
             List<GameAction> NewActions = new List<GameAction>();
@@ -57,6 +54,7 @@ namespace RespecModBarley
             }
             return Actions;
         }
+
         public static V PutIfAbsent<K, V>(this IDictionary<K, V> self, K key, V value) where V : class
         {
             V oldValue;
@@ -156,7 +154,6 @@ namespace RespecModBarley
                 {
                     result[x++] = array[i];
                 }
-
             }
             return result;
         }
@@ -215,7 +212,6 @@ namespace RespecModBarley
               library.GetAllBlueprints().Add(blueprint);
               library.BlueprintsByAssetId[guid] = blueprint;
               Helpers.GuidStorage.addEntry(blueprint.name, guid);
-
           }*/
 
         public static void SetFeatures(this BlueprintFeatureSelection selection, IEnumerable<BlueprintFeature> features)
@@ -223,10 +219,10 @@ namespace RespecModBarley
             SetFeatures(selection, features.ToArray());
         }
 
-          public static void SetFeatures(this BlueprintFeatureSelection selection, params BlueprintFeature[] features)
-          {
-              selection.m_AllFeatures = selection.m_Features = features.Select(bp => bp.ToReference<BlueprintFeatureReference>()).ToArray();
-          }
+        public static void SetFeatures(this BlueprintFeatureSelection selection, params BlueprintFeature[] features)
+        {
+            selection.m_AllFeatures = selection.m_Features = features.Select(bp => bp.ToReference<BlueprintFeatureReference>()).ToArray();
+        }
 
         public static void InsertComponent(this BlueprintScriptableObject obj, int index, BlueprintComponent component)
         {
@@ -307,20 +303,20 @@ namespace RespecModBarley
               library.AddAsset(blueprint, Helpers.MergeIds(guid1, guid2));
           }*/
 
-       /* public static T Get<T>(this LibraryScriptableObject library, String assetId) where T : BlueprintScriptableObject
-        {
-            return (T)library.BlueprintsByAssetId[assetId];
-        }
+        /* public static T Get<T>(this LibraryScriptableObject library, String assetId) where T : BlueprintScriptableObject
+         {
+             return (T)library.BlueprintsByAssetId[assetId];
+         }
 
-        public static T TryGet<T>(this LibraryScriptableObject library, String assetId) where T : BlueprintScriptableObject
-        {
-            BlueprintScriptableObject result;
-            if (library.BlueprintsByAssetId.TryGetValue(assetId, out result))
-            {
-                return (T)result;
-            }
-            return null;
-        }*/
+         public static T TryGet<T>(this LibraryScriptableObject library, String assetId) where T : BlueprintScriptableObject
+         {
+             BlueprintScriptableObject result;
+             if (library.BlueprintsByAssetId.TryGetValue(assetId, out result))
+             {
+                 return (T)result;
+             }
+             return null;
+         }*/
 
         /*  public static T CopyAndAdd<T>(this LibraryScriptableObject library, String assetId, String newName, String newAssetId, String newAssetId2 = null) where T : BlueprintScriptableObject
           {
@@ -335,7 +331,6 @@ namespace RespecModBarley
               AddAsset(library, clone, id);
               return clone;
           }*/
-
 
         public static T CreateCopy<T>(this T original, Action<T> action = null) where T : UnityEngine.Object
         {
@@ -405,9 +400,8 @@ namespace RespecModBarley
              blueprintUnitFact_set_Description(feature) = description;
          }
 
-         public static bool HasFeatureWithId(this 
-        
-        
+         public static bool HasFeatureWithId(this
+
         Entry level, String id)
          {
              return level.Features.Any(f => HasFeatureWithId(f, id));
@@ -426,6 +420,7 @@ namespace RespecModBarley
 
          static readonly FastRef<BlueprintArchetype, Sprite> blueprintArchetype_set_Icon = Helpers.CreateFieldSetter<BlueprintArchetype, Sprite>("m_Icon");
          */
+
         public static void FixDomainSpell(this BlueprintAbility spell, int level, string spellListId)
         {
             var spellList = ResourcesLibrary.TryGetBlueprint<BlueprintSpellList>(spellListId);
@@ -433,7 +428,6 @@ namespace RespecModBarley
             spells.Clear();
             spells.Add(spell);
         }
-
 
         public static bool HasAreaEffect(this BlueprintAbility spell)
         {
@@ -485,18 +479,19 @@ namespace RespecModBarley
             s.Descriptor = spell;
             return s;
         }*/
+
         public static ActionList CreateActionList(params GameAction[] actions)
         {
             if (actions == null || actions.Length == 1 && actions[0] == null) actions = Array.Empty<GameAction>();
             return new ActionList() { Actions = actions };
         }
+
         public static T Create<T>(Action<T> init = null) where T : new()
         {
             var result = new T();
             init?.Invoke(result);
             return result;
         }
-
 
         public static void addAction(this Kingmaker.UnitLogic.Abilities.Components.AbilityEffectRunAction action, Kingmaker.ElementsSystem.GameAction game_action)
         {
@@ -527,10 +522,12 @@ namespace RespecModBarley
                 blueprint.AddComponent(newComponent);
             }
         }
+
         public static void ReplaceComponents<T>(this BlueprintScriptableObject blueprint, BlueprintComponent newComponent) where T : BlueprintComponent
         {
             blueprint.ReplaceComponents<T>(c => true, newComponent);
         }
+
         public static void ReplaceComponents<T>(this BlueprintScriptableObject blueprint, Predicate<T> predicate, BlueprintComponent newComponent) where T : BlueprintComponent
         {
             var compnents_to_remove = blueprint.GetComponents<T>().ToArray();
@@ -548,9 +545,9 @@ namespace RespecModBarley
                 blueprint.AddComponent(newComponent);
             }
         }
+
         public static SimpleBlueprint[] GetBlueprints()
         {
-
             var blueprints = (Dictionary<BlueprintGuid, BlueprintsCache.BlueprintCacheEntry>)AccessTools
             .Field(typeof(BlueprintsCache), "m_LoadedBlueprints")
             .GetValue(ResourcesLibrary.BlueprintsCache);

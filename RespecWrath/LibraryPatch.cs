@@ -1,41 +1,24 @@
 ﻿///credit to spacehamster for (most) of this
 using HarmonyLib;
-using Kingmaker;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
-using Kingmaker.Blueprints.Classes.Experience;
 using Kingmaker.Blueprints.Classes.Selection;
-using Kingmaker.Blueprints.Classes.Spells;
-using Kingmaker.Blueprints.Facts;
-using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.JsonSystem;
-using Kingmaker.Cheats;
-using Kingmaker.Designers.Mechanics.Facts;
-using Kingmaker.EntitySystem.Entities;
-using Kingmaker.UnitLogic;
-using Kingmaker.UnitLogic.Abilities.Blueprints;
-using Kingmaker.UnitLogic.Abilities.Components;
-using Kingmaker.UnitLogic.Mechanics.Actions;
-using Kingmaker.Utility;
-using Kingmaker.Visual.CharacterSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using RespecModBarley;
-using UnityEngine;
+using System;
 
 [HarmonyPatch(typeof(BlueprintsCache), "Init")]
-static class ResourcesLibrary_InitializeLibrary_Patch
+internal static class ResourcesLibrary_InitializeLibrary_Patch
 {
-	static bool Initialized;
-	/*static bool Prefix()
+    private static bool Initialized;
+    /*static bool Prefix()
 	{
 		if (Initialized)
 		{
 			// When wrath first loads into the main menu InitializeLibrary is called by Kingmaker.GameStarter.
 			// When loading into maps, Kingmaker.Runner.Start will call InitializeLibrary which will
 			// clear the ResourcesLibrary.s_LoadedBlueprints cache which causes loaded blueprints to be garbage collected.
-			// Return false here to prevent ResourcesLibrary.InitializeLibrary from being called twice 
+			// Return false here to prevent ResourcesLibrary.InitializeLibrary from being called twice
 			// to prevent blueprints from being garbage collected.
 			return false;
 		}
@@ -44,26 +27,27 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 			return true;
 		}
 	}*/
-	static void Postfix()
-	{
-		//ResourcesLibrary.TryGetBlueprint<BlueprintItemEquipmentHead>("9b422adf4bdb9994a9690ac20ca74370").m_EquipmentEntity = ResourcesLibrary.TryGetBlueprint<KingmakerEquipmentEntity>("fea832fe875ad1748a97cf50166ce394").ToReference<KingmakerEquipmentEntityReference>();
-		//Traverse.Create(ResourcesLibrary.TryGetBlueprint<BlueprintItemEquipmentHead>("9b422adf4bdb9994a9690ac20ca74370")).Field("EquipmentEntity").SetValue(ResourcesLibrary.TryGetBlueprint<KingmakerEquipmentEntity>("fea832fe875ad1748a97cf50166ce394"));
-		if (!Main.haspatched)
-		{
-			try
-			{
-				///var asd = new AddAbilityScorePoint();
-				///ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("16612cc8d88ef83458d05fd063709af7").AddComponent(asd);
-				Main.PatchLibrary();
-			}
-			catch (Exception ex)
-			{
-				Main.logger.Log("Error while patching library");
-				Main.logger.Log(ex.ToString());
-			}
-		}
+
+    private static void Postfix()
+    {
+        //ResourcesLibrary.TryGetBlueprint<BlueprintItemEquipmentHead>("9b422adf4bdb9994a9690ac20ca74370").m_EquipmentEntity = ResourcesLibrary.TryGetBlueprint<KingmakerEquipmentEntity>("fea832fe875ad1748a97cf50166ce394").ToReference<KingmakerEquipmentEntityReference>();
+        //Traverse.Create(ResourcesLibrary.TryGetBlueprint<BlueprintItemEquipmentHead>("9b422adf4bdb9994a9690ac20ca74370")).Field("EquipmentEntity").SetValue(ResourcesLibrary.TryGetBlueprint<KingmakerEquipmentEntity>("fea832fe875ad1748a97cf50166ce394"));
+        if (!Main.haspatched)
+        {
+            try
+            {
+                ///var asd = new AddAbilityScorePoint();
+                ///ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("16612cc8d88ef83458d05fd063709af7").AddComponent(asd);
+                Main.PatchLibrary();
+            }
+            catch (Exception ex)
+            {
+                Main.logger.Log("Error while patching library");
+                Main.logger.Log(ex.ToString());
+            }
+        }
         /// if (Main.haspatched) {return;}
-		/*try
+        /*try
 		{
 			Main.logger.Log("Library patching initiated");
 
@@ -110,34 +94,34 @@ static class ResourcesLibrary_InitializeLibrary_Patch
 				Traverse.Create(F).Field("NameSafe").SetValue("IsCompanion");
 				Traverse.Create(F).Field("Name").SetValue("IsCompanion");*/
 
-				///data.AddFacts.AddItem(F);
-				///Main.logger.Log(data.name);
-			/*}
-			/*foreach (UnitEntityData data in Game.Instance.Player.PartyCharacters)
+        ///data.AddFacts.AddItem(F);
+        ///Main.logger.Log(data.name);
+        /*}
+        /*foreach (UnitEntityData data in Game.Instance.Player.PartyCharacters)
+        {
+            if(data.IsStoryCompanion() == true)
             {
-			    if(data.IsStoryCompanion() == true)
-                {
-					var add = data.CharacterName.ToString() + "" + data.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit.ToString();
-					Main.UnitMemory.Add(add);
-					Main.logger.Log(add.ToString());
-					Main.logger.Log("stuff");
-					Main.logger.Log(Main.UnitMemory.ToString());
-                }
-            }*/
+                var add = data.CharacterName.ToString() + "" + data.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit.ToString();
+                Main.UnitMemory.Add(add);
+                Main.logger.Log(add.ToString());
+                Main.logger.Log("stuff");
+                Main.logger.Log(Main.UnitMemory.ToString());
+            }
+        }*/
 
-
-			///var BackgroundArray = new BlueprintFeature[] {Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
-	  /*}
-		catch (Exception ex)
-		{
-			Main.logger.Log("Error while patching library");
-			Main.logger.Log(ex.ToString());
-		}*/
-	}
+        ///var BackgroundArray = new BlueprintFeature[] {Stuf.BackgroundAcolyte, Stuf.BackgroundAcrobat, Stuf.BackgroundAldoriSwordsman, Stuf.BackgroundAlkenstarAlchemist, Stuf.BackgroundAndoranDiplomat, Stuf.BackgroundBountyHunter, Stuf.BackgroundCheliaxianDiabolist, Stuf.BackgroundCourtIntriguer, Stuf.BackgroundEmissary, Stuf.BackgroundFarmhand, Stuf.BackgroundGebianNecromancer, Stuf.BackgroundGladiator, Stuf.BackgroundGuard, Stuf.BackgroundHealer, Stuf.BackgroundHermit, Stuf.BackgroundHunter, Stuf.BackgroundLeader, Stuf.BackgroundLumberjack, Stuf.BackgroundMartialDisciple, Stuf.BackgroundMendevianOrphan, Stuf.BackgroundMercenary, Stuf.BackgroundMiner, Stuf.BackgroundMugger, Stuf.BackgroundMwangianHunter, Stuf.BackgroundNexianScholar, Stuf.BackgroundNomad, Stuf.BackgroundOsirionHistorian, Stuf.BackgroundPickpocket, Stuf.BackgroundQadiranWanderer, Stuf.BackgroundRahadoumFaithless, Stuf.BackgroundRiverKingdomsDaredevil, Stuf.BackgroundsBaseSelection, Stuf.BackgroundsClericSpellLikeSelection, Stuf.BackgroundsCraftsmanSelection, Stuf.BackgroundsDruidSpellLikeSelection, Stuf.BackgroundShacklesCorsair, Stuf.BackgroundSmith, Stuf.BackgroundsNobleSelection, Stuf.BackgroundsOblateSelection, Stuf.BackgroundsRegionalSelection, Stuf.BackgroundsScholarSelection, Stuf.BackgroundsStreetUrchinSelection, Stuf.BackgroundsWandererSelection, Stuf.BackgroundsWarriorSelection, Stuf.BackgroundsWizardSpellLikeSelection, Stuf.BackgroundUstalavPeasant, Stuf.BackgroundVarisianExplorer, Stuf.BackgroundWarriorOfTheLinnormKings };
+        /*}
+          catch (Exception ex)
+          {
+              Main.logger.Log("Error while patching library");
+              Main.logger.Log(ex.ToString());
+          }*/
+    }
 }
+
 namespace RespecModBarley
 {
-	static public class Stuf
+	public static class Stuf
 	{
 		/*public static T Create<T>(Action<T> init = null) where T : ScriptableObject
 		{
@@ -145,13 +129,38 @@ namespace RespecModBarley
 			if (init != null) init(result);
 			return result;
 		}*/
-		public static BlueprintFeature[] deityfeatures;
-		public static BlueprintFeature[] backgroundfeatures;
-		/*public static T Get<T>(this LibraryScriptableObject library, String assetId) where T : BlueprintScriptableObject
+		public static BlueprintFeature[] deityfeatures
+		{
+			get
+			{
+				if (!Main.haspatched) Main.PatchLibrary();
+				return m_deityfeatures;
+			}
+			set
+			{
+				m_deityfeatures = value;
+			}
+		}
+		public static BlueprintFeature[] m_deityfeatures;
+
+		public static BlueprintFeature[] m_BackgroundFeatures;
+		public static BlueprintFeature[] backgroundfeatures
+		{
+			get
+            {
+				if (!Main.haspatched) Main.PatchLibrary();
+				return m_BackgroundFeatures;
+            }
+			set
+            {
+				m_BackgroundFeatures = value;
+            }
+		}
+        /*public static T Get<T>(this LibraryScriptableObject library, String assetId) where T : BlueprintScriptableObject
 		{
 			return (T)ResourcesLibrary.TryGetBlueprint(assetId);
 		}*/
-		/*public static BlueprintUnit Arueshalae => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("a352873d37ec6c54c9fa8f6da3a6b3e1");
+        /*public static BlueprintUnit Arueshalae => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("a352873d37ec6c54c9fa8f6da3a6b3e1");
 		public static BlueprintUnit Nenio => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("1b893f7cf2b150e4f8bc2b3c389ba71d");
 		public static BlueprintUnit Camelia => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("397b090721c41044ea3220445300e1b8");
 		public static BlueprintUnit Seelah => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("54be53f0b35bf3c4592a97ae335fe765");
@@ -174,7 +183,7 @@ namespace RespecModBarley
 		public static BlueprintUnit Trever => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("0bb1c03b9f7bbcf42bb74478af2c6258");
 		public static BlueprintUnit Player => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("4391e8b9afbb0cf43aeba700c089f56d");*/
 
-		/*public static BlueprintUnit CompanionBear => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("a207eff7953731b44acf1a3fa4354c2d");
+        /*public static BlueprintUnit CompanionBear => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("a207eff7953731b44acf1a3fa4354c2d");
 		public static BlueprintUnit CompanionBoar => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("3eb6ad60c8b9fe34fafa32e1f429ff5b");
 		public static BlueprintUnit CompanionCentipede => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("f9df16ffd0c8cec4d99a0ae6f025a3f8");
 		public static BlueprintUnit CompanionDog => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("918939943bf32ba4a95470ea696c2ba5");
@@ -187,10 +196,12 @@ namespace RespecModBarley
 		public static BlueprintUnit CompanionTriceratops => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("51744ec49565c0340b11a1a6dac7920b");
 		public static BlueprintUnit CompanionVelociraptor => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("28d1986d57a7081439fbb581aa6f960c");
 		public static BlueprintUnit CompanionWolf => ResourcesLibrary.TryGetBlueprint<BlueprintUnit>("eab864d9ca3415644a792792fd81bf87");*/
-		public static BlueprintFeatureSelection DeitySelect => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("59e7a76987fe3b547b9cce045f4db3e4");
-		//public static BlueprintScriptableObject TieflingHeritageSelect => ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>("c862fd0e4046d2d4d9702dd60474a181");
-		public static BlueprintFeatureSelection BackgroundSelect => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("f926dabeee7f8a54db8f2010b323383c");
-		/*public static BlueprintFeatureSelection BackgroundSelectSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("f926dabeee7f8a54db8f2010b323383c");
+        public static BlueprintFeatureSelection DeitySelect => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("59e7a76987fe3b547b9cce045f4db3e4");
+
+        //public static BlueprintScriptableObject TieflingHeritageSelect => ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>("c862fd0e4046d2d4d9702dd60474a181");
+        public static BlueprintFeatureSelection BackgroundSelect => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("f926dabeee7f8a54db8f2010b323383c");
+
+        /*public static BlueprintFeatureSelection BackgroundSelectSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("f926dabeee7f8a54db8f2010b323383c");
 		public static BlueprintFeatureSelection BackgroundsWandererSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("0cdd576724fce2240b372455889fac87");
 		public static BlueprintFeatureSelection BackgroundsWizardSpellLikeSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("1139a014bb6cdcf4db0e11649ddfa60c");
 		public static BlueprintFeatureSelection BackgroundsScholarSelection => ResourcesLibrary.TryGetBlueprint<BlueprintFeatureSelection>("273fab44409035f42a7e2af0858a463d");
@@ -256,12 +267,12 @@ namespace RespecModBarley
 		public static BlueprintFeature BackgroundWarriorOfTheLinnormKings => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("494c972a8e7626749aeda25582e2e88f");
 		public static BlueprintFeature BackgroundMendevianOrphan => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("1d27bef027bdecc42a80c950cdc11380");
 		*/
-		//public static BlueprintFeature Airborne => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("70cffb448c132fa409e49156d013b175");
-	//	public static BlueprintRace HumanRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("0a5d473ead98b0646b94495af250fdc4");
-		//public static BlueprintRace HalfElfRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("b3646842ffbd01643ab4dac7479b20b0");
-	//	public static BlueprintRace HalfOrcRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("1dc20e195581a804890ddc74218bfd8e");
+        //public static BlueprintFeature Airborne => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("70cffb448c132fa409e49156d013b175");
+        //	public static BlueprintRace HumanRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("0a5d473ead98b0646b94495af250fdc4");
+        //public static BlueprintRace HalfElfRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("b3646842ffbd01643ab4dac7479b20b0");
+        //	public static BlueprintRace HalfOrcRace => ResourcesLibrary.TryGetBlueprint<BlueprintRace>("1dc20e195581a804890ddc74218bfd8e");
 
-		/*public static BlueprintFeature ArueshalaeFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("7993c81bd04ffda4bac123eb7f6752c4");
+        /*public static BlueprintFeature ArueshalaeFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("7993c81bd04ffda4bac123eb7f6752c4");
 		public static BlueprintFeature NenioFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("751afafb3b7017544ac6373901747f60");
 		public static BlueprintFeature CameliaFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("c84c2f0728cc18f46a9e2796fcc08ac4");
 		public static BlueprintFeature SeelahFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("777ae11136378a64883059457966a325");
@@ -279,5 +290,5 @@ namespace RespecModBarley
 		public static BlueprintFeature GalfreyFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("d35df3cb678f6a74b91b143362ec0451");
 		public static BlueprintFeature GreyborFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("0c487d8576cc68046a8b02bf7e94d5c2");
 		public static BlueprintFeature TreverFeatureList => ResourcesLibrary.TryGetBlueprint<BlueprintFeature>("3552b16bcfb64944c8b5825661fa7b90");*/
-	}
+    }
 }

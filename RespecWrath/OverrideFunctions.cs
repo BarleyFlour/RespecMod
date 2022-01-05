@@ -1,14 +1,8 @@
 ﻿using HarmonyLib;
-using Kingmaker.Blueprints.Classes.Selection;
-using Kingmaker.Blueprints.Root;
 using Kingmaker.EntitySystem.Entities;
+using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Class.LevelUp;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Kingmaker.UnitLogic;
 
 namespace RespecModBarley
 {
@@ -24,7 +18,7 @@ namespace RespecModBarley
                 if (Main.IsRespec == true)
                 {
                     if (unit.IsMC())
-					{
+                    {
                         /*if (Main.settings.PreserveMCRace)
                         {
                             __instance.SelectRace(unit.Progression.Race);
@@ -51,7 +45,7 @@ namespace RespecModBarley
                             __instance.SelectVoice(unit.Descriptor.Asks);
                         }
                     }
-                    else if(unit.IsStoryCompanion() && Main.settings.PreserveVoice)
+                    else if (unit.IsStoryCompanion() && Main.settings.PreserveVoice)
                     {
                         __instance.SelectGender(unit.Gender);
                         __instance.SelectVoice(unit.Descriptor.Asks);

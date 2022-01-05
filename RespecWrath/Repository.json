@@ -1,7 +1,10 @@
 {
     "Releases": [
 
-        {"Id": "RespecWrath","Version": "v1.09.1"}
+        {
+            "Id": "RespecWrath",
+            "Version": "v1.09.1"
+        }
 
     ]
 }

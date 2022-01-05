@@ -1,17 +1,20 @@
-﻿using Kingmaker.Blueprints.Classes;
-using Kingmaker.EntitySystem.Entities;
-using Kingmaker.Enums;
+﻿using Kingmaker.Modding;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
+#if UMM
 using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
-
+#endif
 namespace RespecModBarley
 {
+#if UMM
     public class Settings : UnityModManager.ModSettings
+#endif
+#if WrathMod
+    [Serializable]
+    public class Settings
+#endif
     {
         public int PointsCount;
         public bool KeepSkillPoints = false;
@@ -21,17 +24,19 @@ namespace RespecModBarley
         public bool PreserveMCBirthday = true;
         public bool PreserveMCAlignment = true;
         public bool PreservePortrait = true;
+
         //public bool PreserveMCRace = true;
         public bool PreserveVoice = true;
+
         public bool FreeRespec = false;
         public bool FullRespecStoryCompanion = false;
         public bool OriginalLevel = false;
+#if UMM
         public override void Save(UnityModManager.ModEntry modEntry)
         {
             var filepath = Path.Combine(modEntry.Path, "Settings.json");
             try
             {
-
                 JsonSerializer serializer = new JsonSerializer();
 #if (DEBUG)
                 serializer.Formatting = Formatting.Indented;
@@ -48,6 +53,7 @@ namespace RespecModBarley
                 modEntry.Logger.Error(ex.ToString());
             }
         }
+
         public static Settings Load(ModEntry modEntry)
         {
             var filepath = Path.Combine(modEntry.Path, "Settings.json");
@@ -71,5 +77,6 @@ namespace RespecModBarley
             }
             return new Settings();
         }
+#endif
     }
 }

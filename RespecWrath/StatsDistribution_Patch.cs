@@ -1,44 +1,35 @@
 ﻿using HarmonyLib;
-using Kingmaker.Blueprints.Classes.Selection;
-using Kingmaker.EntitySystem.Stats;
-using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Class.LevelUp;
-using Kingmaker.UnitLogic.Class.LevelUp.Actions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RespecModBarley
 {
-
-	///[HarmonyPatch(typeof(StatsDistribution), MethodType.Constructor)]
-	[HarmonyPatch(typeof(StatsDistribution),"Start")]
-
-	internal static class StatsDistributionPatch
-	{
-		private static void Prefix(ref int pointCount)
+    ///[HarmonyPatch(typeof(StatsDistribution), MethodType.Constructor)]
+    [HarmonyPatch(typeof(StatsDistribution), "Start")]
+    internal static class StatsDistributionPatch
+    {
+        private static void Prefix(ref int pointCount)
         {
-			if(Main.IsRespec == true)
-			{
-				pointCount = Main.settings.PointsCount;
-			}
-        }
-		private static void Postfix(StatsDistribution __instance, int pointCount)
-        {
-			if (Main.IsRespec == true)
+            if (Main.IsRespec == true)
             {
-				if (pointCount != Main.settings.PointsCount)
-				{
-					pointCount = Main.settings.PointsCount;
-					__instance.Points = pointCount;
-					__instance.TotalPoints = pointCount;
-				}
-		    }
-     	}
-	}
-	/*[HarmonyPatch(typeof(StatsDistribution), "IsComplete")]
+                pointCount = Main.settings.PointsCount;
+            }
+        }
+
+        private static void Postfix(StatsDistribution __instance, int pointCount)
+        {
+            if (Main.IsRespec == true)
+            {
+                if (pointCount != Main.settings.PointsCount)
+                {
+                    pointCount = Main.settings.PointsCount;
+                    __instance.Points = pointCount;
+                    __instance.TotalPoints = pointCount;
+                }
+            }
+        }
+    }
+
+    /*[HarmonyPatch(typeof(StatsDistribution), "IsComplete")]
 
 	internal static class StatsDistributionPatch_IsComplete
 	{
@@ -51,4 +42,3 @@ namespace RespecModBarley
 		}
 	}*/
 }
-

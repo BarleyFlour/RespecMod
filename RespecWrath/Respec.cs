@@ -1,49 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using HarmonyLib;
-using JetBrains.Annotations;
+﻿using HarmonyLib;
 using Kingmaker;
 using Kingmaker.AreaLogic.Etudes;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
-using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
-using Kingmaker.Blueprints.Items.Armors;
-using Kingmaker.Blueprints.Items.Components;
-using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Equipment;
-using Kingmaker.Blueprints.Root;
-using Kingmaker.Cheats;
 using Kingmaker.Controllers.Rest;
-using Kingmaker.Designers;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.EntitySystem.Persistence.JsonUtility;
-using Kingmaker.EntitySystem.Persistence.JsonUtility.CollectionConverters;
 using Kingmaker.EntitySystem.Stats;
-using Kingmaker.Enums;
 using Kingmaker.Items;
-using Kingmaker.Items.Slots;
 using Kingmaker.PubSubSystem;
-using Kingmaker.QA;
 using Kingmaker.RuleSystem;
-using Kingmaker.RuleSystem.Rules;
-using Kingmaker.RuleSystem.Rules.Damage;
 using Kingmaker.UI;
 using Kingmaker.UI.ServiceWindow;
 using Kingmaker.UnitLogic;
-using Kingmaker.UnitLogic.Abilities;
 using Kingmaker.UnitLogic.ActivatableAbilities;
-using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Class.LevelUp;
-using Kingmaker.UnitLogic.Class.LevelUp.Actions;
-using Kingmaker.UnitLogic.Components;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Parts;
@@ -52,22 +31,26 @@ using Kingmaker.View;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using Owlcat.Runtime.Core.Logging;
 using Owlcat.Runtime.Core.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+
 namespace RespecModBarley
 {
-    static class RespecClass
+    internal static class RespecClass
     {
         public static List<BlueprintUnitFact> Neniofacts
         {
             get;
             set;
         }
+
         public static void Respecialize(this UnitEntityData unit, Action successCallback = null)
         {
             UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: requested for {0}", unit), Array.Empty<object>());
-            
+
             Main.MythicXP = unit.Progression.MythicExperience;
             int experience = unit.Descriptor.Progression.Experience;
             ReplaceUnitBlueprintForRespec replaceUnitBlueprintForRespec = unit.Blueprint.GetComponent<ReplaceUnitBlueprintForRespec>().Or(null);
@@ -80,20 +63,20 @@ namespace RespecModBarley
                 var loadedscrolls = Game.Instance.BlueprintRoot.CraftRoot.m_ScrollsItems.Select(a => ResourcesLibrary.TryGetBlueprint<BlueprintItemEquipmentUsable>(a.Guid));
                 foreach (var spellbook in unit.Spellbooks)
                 {
-                    foreach(var scrollspell in spellbook.GetAllKnownSpells())
+                    foreach (var scrollspell in spellbook.GetAllKnownSpells())
                     {
-                        if(scrollspell.CopiedFromScroll)
+                        if (scrollspell.CopiedFromScroll)
                         {
                             //Main.logger.Log("NameMatch : "  + scrollspell.Blueprint.NameForAcronym);
-                          /*  foreach (var asd in loadedscrolls)
-                            {
-                                Main.logger.Log(asd.Ability.NameForAcronym);
-                            }*/
-                           // if (scrollspell.m_Fact != null)
+                            /*  foreach (var asd in loadedscrolls)
+                              {
+                                  Main.logger.Log(asd.Ability.NameForAcronym);
+                              }*/
+                            // if (scrollspell.m_Fact != null)
                             {
                                 if (loadedscrolls.TryFind(a => a.Ability.NameForAcronym == scrollspell.Blueprint.NameForAcronym, out BlueprintItemEquipmentUsable item))
                                 {
-                                   // Main.logger.Log("ItemMatch : " + scrollspell.NameForAcronym);
+                                    // Main.logger.Log("ItemMatch : " + scrollspell.NameForAcronym);
                                     scrollstoadd.Add(item);
                                 }
                             }
@@ -102,18 +85,21 @@ namespace RespecModBarley
                     }
                 }
             }
-
             // Statbook refund
+            BlueprintFeature toaddifcanceled = null;
             {
-                foreach (var blueprintf in unit.Facts.m_Facts)
+                foreach (var blueprintf in unit.Facts.m_Facts.ToTempList())
                 {
                     if (blueprintf.GetType() == typeof(Feature))
                     {
                         var blueprintfeature = (Feature)blueprintf;
-                        if(Main.statbooks.ContainsKey(blueprintfeature.NameForAcronym))
+                        if (Main.statbooks.ContainsKey(blueprintfeature.NameForAcronym))
                         {
                             scrollstoadd.Add(ResourcesLibrary.TryGetBlueprint<BlueprintItemEquipmentUsable>(Main.statbooks[blueprintfeature.NameForAcronym]));
-                          //  Main.logger.Log("Statbook:"+blueprintfeature.NameForAcronym+"for adding");
+                            //unit.Facts.Remove(blueprintfeature);
+                            unit.RemoveFact(blueprintfeature.Blueprint);
+                            toaddifcanceled = blueprintfeature.Blueprint;
+                            //  Main.logger.Log("Statbook:"+blueprintfeature.NameForAcronym+"for adding");
                         }
                     }
                 }
@@ -149,6 +135,8 @@ namespace RespecModBarley
             {
                 newUnit = Game.Instance.CreateUnitVacuum(unit2);
             }
+
+            
             /*var asd = newUnit.Facts.m_Facts.Where(a => a.Blueprint.name.Contains("Atheism"));
             if (asd.Any())
             {
@@ -164,15 +152,12 @@ namespace RespecModBarley
             UnitDescriptor descriptor = newUnit.Descriptor;
             var entityData = newUnit;
             UnitProgressionData unitProgressionData = newUnit.Progression;
-            
-
-
 
             if (Main.settings.PreservePortrait && unit.IsMC())
             {
                 newUnit.UISettings.SetPortrait(unit.Portrait);
-                
-               // newUnit.Portrait = unit.Portrait;
+
+                // newUnit.Portrait = unit.Portrait;
             }
 
             if (Main.settings.PreserveMCName && unit.IsMC())
@@ -186,7 +171,6 @@ namespace RespecModBarley
             {
                 newUnit.Alignment.CopyFrom(unit.Alignment);
             }
-
 
             //LevelUpHelper.GetTotalIntelligenceSkillPoints(descriptor, 0);
             //LevelUpHelper.GetTotalSkillPoints(descriptor, 0);
@@ -234,8 +218,8 @@ namespace RespecModBarley
             newUnit.Progression.AdvanceExperienceTo(unit.Descriptor.Progression.Experience, false, false);
             newUnit.Progression.AdvanceMythicExperience(unit.Descriptor.Progression.MythicExperience, false);
             IEnumerable<BlueprintCharacterClass> obligatoryMythicClasses = from i in unit.Progression.ClassesOrder
-                where i.IsMythic
-            select i;
+                                                                           where i.IsMythic
+                                                                           select i;
             newUnit.Progression.SetObligatoryMythicClasses(obligatoryMythicClasses);
             if (unit.IsMainCharacter || unit.IsCloneOfMainCharacter)
             {
@@ -260,7 +244,7 @@ namespace RespecModBarley
             Feature[] array2 = (from i in newUnit.Progression.Features.Enumerable
                                 where !i.Blueprint.IsClassFeature && !unit.HasFact(i.Blueprint)
                                 select i).ToArray<Feature>();
-            if (Main.settings.FullRespecStoryCompanion)
+            if (!Main.settings.FullRespecStoryCompanion)
             {
                 foreach (BlueprintFeature blueprintFeature in array)
                 {
@@ -277,7 +261,7 @@ namespace RespecModBarley
             {
                 newUnit.RemoveFact(feature);
                 UnitHelper.Channel.Log(string.Format("UnitHelper.Respec: remove feature {0}", feature), Array.Empty<object>());
-               // Main.logger.Log(string.Format("UnitHelper.Respec: remove feature {0}", feature));
+                // Main.logger.Log(string.Format("UnitHelper.Respec: remove feature {0}", feature));
             }
             if (Main.settings.BackgroundDeity)
             {
@@ -293,34 +277,37 @@ namespace RespecModBarley
                     newUnit.AddFact(raceFeature);
                 }
             }
-            if(Main.settings.FullRespecStoryCompanion && unit.IsStoryCompanion())
+            if (Main.settings.FullRespecStoryCompanion && unit.IsStoryCompanion())
             {
-                //Main.logger.Log("isstorycompanion and full respec");
+                //  Main.logger.Log("isstorycompanion and full respec");
+                var component = unit.Progression.Race.ComponentsArray.FirstOrDefault(a => a.GetType() == typeof(AddFeatureOnApply));
+                if (component != null && ((AddFeatureOnApply)component).Feature != null)
+                {
+                    newUnit.RemoveFact(((AddFeatureOnApply)component).Feature);
+                }
                 foreach (var raceFeature in unit.Progression.Race.Features)
                 {
                     // Main.logger.Log("Removed:"+raceFeature.ToString());
-                    
-                    Main.logger.Log(raceFeature.NameForAcronym);
 
+                    //  Main.logger.Log(raceFeature.NameForAcronym);
 
-                    if(raceFeature.GetType() == typeof(BlueprintFeatureSelection))
+                    if (raceFeature.GetType() == typeof(BlueprintFeatureSelection))
                     {
                         foreach (var subfeature in ((BlueprintFeatureSelection)(raceFeature)).Features)
                         {
-                          //  Main.logger.Log("Removed SubFeature:" + subfeature.ToString());
+                            //  Main.logger.Log("Removed SubFeature:" + subfeature.ToString());
                             newUnit.RemoveFact(subfeature);
                         }
                     }
                     newUnit.RemoveFact(raceFeature);
                 }
             }
-            
+
             if (newUnit.Progression.CharacterLevel < 1)
             {
                 newUnit.Progression.DropLevelPlans(false);
                 //newUnit.Progression.DropLevelPlans(true);
             }
-            
 
             UnitEntityData[] petsToRemove = (from i in unit.Pets
                                              select i.Entity).NotNull<UnitEntityData>().ToArray<UnitEntityData>();
@@ -329,11 +316,10 @@ namespace RespecModBarley
                 //LevelUpConfig()
                 var Lvlupconfig = LevelUpConfig.Create(newUnit, LevelUpState.CharBuildMode.LevelUp);
                 Lvlupconfig.SetLevelupAfterRespec(false);
-                Lvlupconfig = 
+                Lvlupconfig =
                 Lvlupconfig.SetOnCommit(delegate
                 {
-
-                    RespecOnCommit2(unit, newUnit, petsToRemove, successCallback,scrollstoadd);
+                    RespecOnCommit2(unit, newUnit, petsToRemove, successCallback, scrollstoadd);
                 }).SetOnStop(delegate
                 {
                     Main.IsRespec = false;
@@ -341,7 +327,7 @@ namespace RespecModBarley
                     Main.featurestoadd.Clear();
                     Main.IsRespec = false;
                     Main.partstoadd.Clear();
-                    RespecOnStop(newUnit);
+                    RespecOnStop(newUnit,toaddifcanceled);
                 });
                 h.HandleLevelUpStart(Lvlupconfig);
                 /*h.HandleLevelUpStart(newUnit.Descriptor, delegate
@@ -358,6 +344,7 @@ namespace RespecModBarley
                 }, LevelUpState.CharBuildMode.Respec);*/
             });
         }
+
         /*private static void RespecOnCommit(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, Action successCallback)
 		{
 			//Main.logger.Log("oncommit");
@@ -588,7 +575,8 @@ namespace RespecModBarley
 				catch (Exception e) { Main.logger.Log(e.ToString()); }
 			}
 		}*/
-        private static void RespecOnCommit2(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, Action successCallback,List<BlueprintItemEquipmentUsable> scrollstoadd)
+
+        private static void RespecOnCommit2(UnitEntityData targetUnit, UnitEntityData tempUnit, UnitEntityData[] petsToRemove, Action successCallback, List<BlueprintItemEquipmentUsable> scrollstoadd)
         {
             try
             {
@@ -598,22 +586,20 @@ namespace RespecModBarley
                 targetUnit.Stats.BaseAttackBonus.BaseValue = bab;
                 targetUnit.Stats.BaseAttackBonus.m_BaseValue = bab;
                 targetUnit.Stats.BaseAttackBonus.OnPermanentValueUpdated();
-                
+
                 //add scrolls
-                foreach(var scroll in scrollstoadd)
+                foreach (var scroll in scrollstoadd)
                 {
                     Game.Instance.Player.Inventory.Add(new ItemEntityUsable(scroll));
                 }
-
-
 
                 Vector3 position = targetUnit.Position;
                 float orientation = targetUnit.Orientation;
                 Transform parent = targetUnit.View.transform.parent;
                 List<IUnitPartSurviveRespec> list = targetUnit.Parts.GetAll<IUnitPartSurviveRespec>((IUnitPartSurviveRespec p) => p.ShouldSurviveRespec).ToTempList<IUnitPartSurviveRespec>();
                 ClassData[] collection = (from _class in targetUnit.Progression.Classes
-                    where _class.CharacterClass.IsMythic
-                    select new ClassData(_class.CharacterClass)).ToArray<ClassData>();
+                                          where _class.CharacterClass.IsMythic
+                                          select new ClassData(_class.CharacterClass)).ToArray<ClassData>();
                 UnitPartRider riderPart = targetUnit.RiderPart;
                 if (riderPart != null)
                 {
@@ -749,19 +735,19 @@ namespace RespecModBarley
                         }
                     }
                 }
-             /*   using (List<EntityFact>.Enumerator enumerator5 = targetUnit.Facts.List.GetEnumerator())
-                {
-                    while (enumerator5.MoveNext())
-                    {
-                        enumerator5.Current.CallComponents<IUpdatePet>(delegate (IUpdatePet c)
-                        {
-                            if (c != null)
-                            {
-                        // c.TryUpdatePet();
-                            }
-                        });
-                    }
-                }*/
+                /*   using (List<EntityFact>.Enumerator enumerator5 = targetUnit.Facts.List.GetEnumerator())
+                   {
+                       while (enumerator5.MoveNext())
+                       {
+                           enumerator5.Current.CallComponents<IUpdatePet>(delegate (IUpdatePet c)
+                           {
+                               if (c != null)
+                               {
+                           // c.TryUpdatePet();
+                               }
+                           });
+                       }
+                   }*/
                 using (ContextData<Kingmaker.Items.Slots.ItemSlot.IgnoreLock>.Request())
                 {
                     for (int j = 0; j < list2.Count; j++)
@@ -837,7 +823,7 @@ namespace RespecModBarley
                             }
                         }*/
                         Main.partstoadd.Clear();
-                        
+
                         //Main.EntityUnit = null;
                         foreach (EntityPart entityPart in targetUnit.Parts.m_Parts)
                         {
@@ -859,6 +845,7 @@ namespace RespecModBarley
                             Main.NenioEtudeBool = false;
                         }
                         Main.IsRespec = false;
+                        
                     }
                     catch (Exception e) { Main.logger.Log(e.ToString()); }
                     var bab2 = targetUnit.Progression.Classes.First().BaseAttackBonus.GetBonus(1);
@@ -874,7 +861,8 @@ namespace RespecModBarley
                 throw;
             }
         }
-        private static void RespecOnStop(UnitEntityData targetUnit)
+
+        private static void RespecOnStop(UnitEntityData targetUnit,BlueprintFeature toadd)
         {
             //	Main.logger.Log("Stopped");
             if (Main.NenioEtudeBool == true)
@@ -889,14 +877,15 @@ namespace RespecModBarley
                         i.Facts.Add(fact);
                     }
                 }
+                
                 Main.NenioEtudeBool = false;
             }
+            if (toadd != null) targetUnit.AddFact(toadd);
             targetUnit.Dispose();
             Main.IsRespec = false;
             Main.featureSelection = null;
             Main.featurestoadd.Clear();
             Main.partstoadd.Clear();
-            
         }
     }
 }
