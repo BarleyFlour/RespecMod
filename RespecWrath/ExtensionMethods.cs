@@ -20,6 +20,10 @@ namespace RespecModBarley
 {
     internal static class ExtensionMethods
     {
+        public static bool IsStoryCompanionLocal(this UnitEntityData unit)
+        {
+            return (unit.Blueprint.GetComponent<UnitIsStoryCompanion>() != null || unit.Blueprint.GetComponent<ClassLevelLimit>() != null);
+        }
         public static IEnumerable<GameAction> FlattenAllActions(this BlueprintAbility Ability)
         {
             return

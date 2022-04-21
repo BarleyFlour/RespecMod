@@ -19,7 +19,7 @@ namespace RespecWrath
     {
         static bool ShouldSkipAddingLevels(UnitEntityData unit)
         {
-            return !(Main.IsHilorRespec || Main.settings.OriginalLevel || !Main.IsRespec && (Main.isrecruit || !Kingmaker.Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName) || (!unit.IsStoryCompanion() && !Main.isrecruit) || unit.IsPet));
+            return !(Main.IsHilorRespec || Main.settings.OriginalLevel || !Main.IsRespec && (Main.isrecruit || !Kingmaker.Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName) || (!unit.IsStoryCompanionLocal() && !Main.isrecruit) || unit.IsPet));
         }
         static bool ShouldAddFeature(UnitEntityData unit, BlueprintFeature feature)
         {
@@ -32,7 +32,7 @@ namespace RespecWrath
         }
         static bool IsInParty(UnitEntityData unit)
         {
-            return (!Main.IsRespec && (Main.isrecruit || !Kingmaker.Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName) || (!unit.IsStoryCompanion() && !Main.isrecruit)));
+            return (!Main.IsRespec && (Main.isrecruit || !Kingmaker.Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName) || (!unit.IsStoryCompanionLocal() && !Main.isrecruit)));
         }
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator il)
         {
@@ -45,11 +45,12 @@ namespace RespecWrath
                     Label SkipToHere = il.DefineLabel();
                     for (int i = 0; i < code.Count - 1; i++)
                     {
-                        if (code[i].opcode == OpCodes.Ldloc_S && code[i + 1].opcode == OpCodes.Brfalse_S && code[i + 2].opcode == OpCodes.Ldloc_S && code[i + 3].opcode == OpCodes.Callvirt)
+
+                        if (code[i].opcode == OpCodes.Ldarg_1 && code[i + 1].opcode == OpCodes.Ldfld && code[i + 2].opcode == OpCodes.Callvirt && code[i + 3].opcode == OpCodes.Ldarg_0 && code[i + 4].opcode == OpCodes.Ldarg_1 && code[i + 5].opcode == OpCodes.Call)
                         {
                             //insertionIndex = i;
                             code[i].labels.Add(SkipToHere);
-                            Main.logger.Log($"Inserted Label at index: {i}");
+                           // Main.logger.Log($"Inserted Label at index: {i}");
                             break;
                         }
                     }
@@ -58,12 +59,12 @@ namespace RespecWrath
                         if (code[i].opcode == OpCodes.Ldarg_0 && code[i + 1].opcode == OpCodes.Ldarg_1 && code[i + 2].opcode == OpCodes.Ldloc_2 && code[i + 3].opcode == OpCodes.Ldarg_3 && code[i + 4].opcode == OpCodes.Ldc_I4_1)
                         {
                             insertionIndex = i - 2;
-                            Main.logger.Log($"Set Insertion point to index: {i}");
+                          //  Main.logger.Log($"Set Insertion point to index: {i}");
                             break;
                         }
                     }
                     var instructionsToInsert = new List<CodeInstruction>();
-                    //source c# code > if (Main.IsHilorRespec || Main.settings.OriginalLevel || !Main.IsRespec && (Main.isrecruit || !Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName) || (!unit.Unit.IsStoryCompanion() && !Main.isrecruit) || unit.Unit.IsPet))
+                    //source c# code > if (Main.IsHilorRespec || Main.settings.OriginalLevel || !Main.IsRespec && (Main.isrecruit || !Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName) || (!unit.Unit.IsStoryCompanionLocal() && !Main.isrecruit) || unit.Unit.IsPet))
                     {
                         instructionsToInsert.Add(new CodeInstruction(OpCodes.Ldarg_1));
                         instructionsToInsert.Add(new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(UnitDescriptor), nameof(UnitDescriptor.Unit))));
@@ -72,11 +73,11 @@ namespace RespecWrath
                     }
                     if (insertionIndex != -1)
                     {
-                        Main.logger.Log($"Inserted IL Code at index: {insertionIndex}");
+                        //Main.logger.Log($"Inserted IL Code at index: {insertionIndex}");
 
                         code.InsertRange(insertionIndex, instructionsToInsert);
 
-                        foreach (var ilcodeinstruction in code) Main.logger.Log(ilcodeinstruction.ToString());
+                        //foreach (var ilcodeinstruction in code) Main.logger.Log(ilcodeinstruction.ToString());
                     }
                 }
                 //No.2
@@ -89,7 +90,7 @@ namespace RespecWrath
                         {
                             //insertionIndex = i;
                             code[i].labels.Add(SkipToHere);
-                            Main.logger.Log($"Inserted Label at index: {i}");
+                           // Main.logger.Log($"Inserted Label at index: {i}");
                             break;
                         }
                     }
@@ -98,12 +99,12 @@ namespace RespecWrath
                         if (code[i].opcode == OpCodes.Ldarg_1 && code[i + 1].opcode == OpCodes.Ldloc_S && code[i + 2].opcode == OpCodes.Ldnull && code[i + 3].opcode == OpCodes.Ldnull && code[i + 4].opcode == OpCodes.Call)
                         {
                             insertionIndex = i - 2;
-                            Main.logger.Log($"Set Insertion point to index: {i}");
+                           // Main.logger.Log($"Set Insertion point to index: {i}");
                             break;
                         }
                     }
                     var instructionsToInsert = new List<CodeInstruction>();
-                    //source c# code > if (Main.IsHilorRespec || Main.settings.OriginalLevel || !Main.IsRespec && (Main.isrecruit || !Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName) || (!unit.Unit.IsStoryCompanion() && !Main.isrecruit) || unit.Unit.IsPet))
+                    //source c# code > if (Main.IsHilorRespec || Main.settings.OriginalLevel || !Main.IsRespec && (Main.isrecruit || !Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName) || (!unit.Unit.IsStoryCompanionLocal() && !Main.isrecruit) || unit.Unit.IsPet))
                     {
                         instructionsToInsert.Add(new CodeInstruction(OpCodes.Ldarg_1));
                         instructionsToInsert.Add(new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(UnitDescriptor), nameof(UnitDescriptor.Unit))));
@@ -113,9 +114,9 @@ namespace RespecWrath
                     }
                     if (insertionIndex != -1)
                     {
-                        Main.logger.Log($"Inserted IL Code at index: {insertionIndex}");
+                       // Main.logger.Log($"Inserted IL Code at index: {insertionIndex}");
                         code.InsertRange(insertionIndex, instructionsToInsert);
-                        foreach (var ilcodeinstruction in code) Main.logger.Log(ilcodeinstruction.ToString());
+                        //foreach (var ilcodeinstruction in code) Main.logger.Log(ilcodeinstruction.ToString());
                     }
                 }
                 return code;

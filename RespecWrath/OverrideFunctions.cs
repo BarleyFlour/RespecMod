@@ -45,7 +45,7 @@ namespace RespecModBarley
                             __instance.SelectVoice(unit.Descriptor.Asks);
                         }
                     }
-                    else if (unit.IsStoryCompanion() && Main.settings.PreserveVoice)
+                    else if (unit.IsStoryCompanionLocal() && Main.settings.PreserveVoice)
                     {
                         __instance.SelectGender(unit.Gender);
                         __instance.SelectVoice(unit.Descriptor.Asks);

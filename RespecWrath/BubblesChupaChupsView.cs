@@ -82,7 +82,7 @@ namespace RespecModBarley
                 {
                     m_Key = key
                 };
-                LocalizationManager.CurrentPack.Strings[key] = value;
+                LocalizationManager.CurrentPack.PutString(key,value);
                 // textToLocalizedString[value] = localized;
                 return localized;
             }

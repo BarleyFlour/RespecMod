@@ -29,7 +29,6 @@ namespace RespecModBarley
                 // Main.logger.Log(i.ToString());
                 unit.Progression.RemoveMythicLevel();
             }
-
             unit.Progression.AdvanceMythicExperience(Main.MythicXP);
         }
 

@@ -279,12 +279,12 @@ namespace RespecModBarley
                     unitdata.Stats.BaseAttackBonus.BaseValue = (unitdata.Stats.BaseAttackBonus.PermanentValue - tosubtract);
                 }
                 var charentry = GlobalLevelInfo.Instance.ForCharacter(unitdata);
-                data.CharacterLevel--;
+                
                 //Remove Excess skill points with the memory, if no memory reset.
                 {
                     if (!Main.settings.KeepSkillPoints)
                     {
-                        if (!charentry.SkillsByLevel.ContainsKey(data.CharacterLevel - 1))
+                        if (!charentry.SkillsByLevel.ContainsKey(data.CharacterLevel))
                         {
                             var stats = unitdata.Stats;
                             stats.SkillAthletics.BaseValue = 0;
@@ -301,7 +301,7 @@ namespace RespecModBarley
                         }
                         else
                         {
-                            foreach (var skill in charentry.SkillsByLevel[data.CharacterLevel - 1])
+                            foreach (var skill in charentry.SkillsByLevel[data.CharacterLevel])
                             {
                                 //Main.logger.Log("Decreased " + skill.Key + "By : " +skill.Value);
                                 unitdata.Stats.GetStat(skill.Key).BaseValue -= skill.Value;
@@ -312,13 +312,13 @@ namespace RespecModBarley
                 }
                 //Ability Scores
                 {
-                    if (charentry.AbilityScoresByLevel.TryGetValue(data.CharacterLevel - 1, out StatType attribute))
+                    if (charentry.AbilityScoresByLevel.TryGetValue(data.CharacterLevel, out StatType attribute))
                     {
                         //Main.logger.Log("Decreased :" + attribute.ToString());
                         unitdata.Stats.GetAttribute(attribute).BaseValue -= 1;
                     }
                 }
-
+                data.CharacterLevel--;
                 //Animal Companion
                 if (unitdata.GetPet(Kingmaker.Enums.PetType.AnimalCompanion) != null)
                 {

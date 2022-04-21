@@ -2,6 +2,7 @@
 Respec Mod: Wrath of the Righteous
 
 FEATURES 
+
 • Completely respec companions (no more 1+ useless levels)
 
 • Preserve original ability scores.
@@ -50,3 +51,55 @@ Install & Use
 
 
 Please also submit an issue on the github if you encounter any issues. https://github.com/BarleyFlour/RespecMod/issues
+
+Explanation of features
+
+ Level Down
+ 
+  Allows you to decrease your level (mythic or last taken normal class level
+  This also removes Feats and Ability Score/Skillpoints
+  albeit with a catch related to Ability Scores and Skillpoints
+  due to the game not storing data related to what skillpoint and ability score
+  selections you made it will only be able to do so if the mod has the data via
+  being installed when you leveled up, if it doesnt have the data it will refund
+  all skill points and not decrease ability score.
+  
+  Selections on the class sheet will not be removed until you level up the relevant class and change the selection.
+  
+ Respec
+ 
+  Allows you to level your character from level 0 instead of the normal level that they start at.
+  
+  Options breakdown
+  
+   Original Stats - Lets you keep the original stat array of the given companion
+   this will account for ability score upgrades.
+   
+   Point Count - Determines the ammount of points you get for your point-buy
+   
+   Free Respec - Removes the cost (Normally (Level * Level / 4 * 1000))
+   
+   Respec as Merc - Lets you change Race, Portrait, Voice, etc... 
+   of Non-merc companions.
+   
+   Preserve Options
+   
+    Preserve Alignment - Preserves Alignment and alignment history.
+    
+    Preserve Birthday - Preserves Birthday/Month.
+    
+    Preserve Name - Preserves Name.
+    
+    Preserve Portrait - Preserves your portrait.
+    
+    Preserve Voice - Preserves Voice-pack.
+    
+   Choose Background/Deity - Lets you choose the Deity/Background of the story 
+   companion (By default they retain their starting ones).
+   
+   Respec from Recruit Level - Lets you respec the story companion from the level
+   they were recruited from (Functions similarly to Hilor's Respec).
+   
+  Misc
+  
+   Shows your ability scores selections on the class sheet should the data be present.

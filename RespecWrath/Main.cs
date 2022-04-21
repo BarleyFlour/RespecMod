@@ -156,7 +156,7 @@ namespace RespecModBarley
 					GUILayout.EndHorizontal();*/
                     GUILayout.Space(10f);
                     GUILayout.BeginHorizontal();
-                    if (selected.IsStoryCompanion() && !selected.IsMainCharacter)
+                    if (selected.IsStoryCompanionLocal() && !selected.IsMainCharacter)
                     {
                         settings.OriginalStats = GUILayout.Toggle(settings.OriginalStats, "Original Stats", GUILayout.ExpandWidth(false));
                     }
@@ -212,7 +212,7 @@ namespace RespecModBarley
                     {
 						nameandtype = $"main character {selected.CharacterName}";
                     }
-					else if (selected.IsStoryCompanion())
+					else if (selected.IsStoryCompanionLocal())
                     {
 						nameandtype = $"story character {selected.CharacterName}";
 					}
@@ -323,7 +323,7 @@ namespace RespecModBarley
                 GUILayout.BeginVertical();
                 settings.FreeRespec = GUILayout.Toggle(settings.FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
                 settings.KeepSkillPoints = GUILayout.Toggle(settings.KeepSkillPoints, "Retain Skillpoint Distribution when leveling down", GUILayout.ExpandWidth(false));
-                if (selected.IsStoryCompanion() && !selected.IsMC())
+                if (selected.IsStoryCompanionLocal() && !selected.IsMC())
                 {
                     {
                         //GUILayout.BeginVertical();
@@ -357,7 +357,7 @@ namespace RespecModBarley
                     settings.PreservePortrait = GUILayout.Toggle(settings.PreservePortrait, "Retain Portrait", GUILayout.ExpandWidth(false));
                     //GUILayout.EndVertical();
                 }
-                if (selected.IsStoryCompanion() && !settings.FullRespecStoryCompanion)
+                if (selected.IsStoryCompanionLocal() && !settings.FullRespecStoryCompanion)
                 {
                     //GUILayout.BeginVertical();
                     {
@@ -370,7 +370,7 @@ namespace RespecModBarley
                     }
                     //GUILayout.EndVertical();
                 }
-                else if ((selected.IsStoryCompanion()) && settings.FullRespecStoryCompanion)
+                else if ((selected.IsStoryCompanionLocal()) && settings.FullRespecStoryCompanion)
                 {
                     settings.BackgroundDeity = true;
                     settings.PreserveVoice = GUILayout.Toggle(settings.PreserveVoice, "Retain Voice", GUILayout.ExpandWidth(false));
@@ -678,7 +678,7 @@ namespace RespecModBarley
 					GUILayout.EndHorizontal();*/
                     GUILayout.Space(10f);
                     GUILayout.BeginHorizontal();
-                    if (selected.IsStoryCompanion() && !selected.IsMainCharacter)
+                    if (selected.IsStoryCompanionLocal() && !selected.IsMainCharacter)
                     {
                         settings.OriginalStats = GUILayout.Toggle(settings.OriginalStats, "Original Stats", GUILayout.ExpandWidth(false));
                     }
@@ -734,7 +734,7 @@ namespace RespecModBarley
                     {
 						nameandtype = $"main character {selected.CharacterName}";
                     }
-					else if (selected.IsStoryCompanion())
+					else if (selected.IsStoryCompanionLocal())
                     {
 						nameandtype = $"story character {selected.CharacterName}";
 					}
@@ -845,7 +845,7 @@ namespace RespecModBarley
                 GUILayout.BeginVertical();
                 settings.FreeRespec = GUILayout.Toggle(settings.FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
                 settings.KeepSkillPoints = GUILayout.Toggle(settings.KeepSkillPoints, "Retain Skillpoint Distribution when leveling down", GUILayout.ExpandWidth(false));
-                if (selected.IsStoryCompanion() && !selected.IsMC())
+                if (selected.IsStoryCompanionLocal() && !selected.IsMC())
                 {
                     {
                         //GUILayout.BeginVertical();
@@ -879,7 +879,7 @@ namespace RespecModBarley
                     settings.PreservePortrait = GUILayout.Toggle(settings.PreservePortrait, "Retain Portrait", GUILayout.ExpandWidth(false));
                     //GUILayout.EndVertical();
                 }
-                if (selected.IsStoryCompanion() && !settings.FullRespecStoryCompanion)
+                if (selected.IsStoryCompanionLocal() && !settings.FullRespecStoryCompanion)
                 {
                     //GUILayout.BeginVertical();
                     {
@@ -892,7 +892,7 @@ namespace RespecModBarley
                     }
                     //GUILayout.EndVertical();
                 }
-                else if ((selected.IsStoryCompanion()) && settings.FullRespecStoryCompanion)
+                else if ((selected.IsStoryCompanionLocal()) && settings.FullRespecStoryCompanion)
                 {
                     settings.BackgroundDeity = true;
                     settings.PreserveVoice = GUILayout.Toggle(settings.PreserveVoice, "Retain Voice", GUILayout.ExpandWidth(false));
@@ -968,7 +968,7 @@ namespace RespecModBarley
             int[] numArray = new int[6] { 10, 10, 10, 10, 10, 10 };
             if (settings.OriginalStats == true)
             {
-                if (unit.IsStoryCompanion() && settings.OriginalStats || unit.Blueprint.ToString().Contains("_Companion") && settings.OriginalStats)
+                if (unit.IsStoryCompanionLocal() && settings.OriginalStats || unit.Blueprint.ToString().Contains("_Companion") && settings.OriginalStats)
                 {
                     numArray = new int[6]
                     {
@@ -1013,22 +1013,25 @@ namespace RespecModBarley
 					DeityNoSelection.AnyFeatureFromSelection = false;
 					DeityNoSelection.m_Features = FeatureListsT;
 					Main.blueprints = abilitybps.Concat<SimpleBlueprint>(unitbps).Concat(religionsbp).ToArray();*/
-                    Stuf.deityfeatures = religionsbp?.ToArray();
+                    Stuf.deityfeatures = religionsbp.ToArray();
                     var tempbackgroundlist = new List<BlueprintFeature>();
                     tempbackgroundlist.Add(Stuf.BackgroundSelect);
                     foreach (var background in Stuf.BackgroundSelect?.AllFeatures)
                     {
-                        tempbackgroundlist.Add(background);
-                        if (background.GetType() == typeof(BlueprintFeatureSelection))
+                        if (background != null)
                         {
-                            foreach (var selection in ((BlueprintFeatureSelection)background)?.AllFeatures)
+                            tempbackgroundlist.Add(background);
+                            if (background.GetType() == typeof(BlueprintFeatureSelection))
                             {
-                                tempbackgroundlist.Add(selection);
-                                if (selection.GetType() == typeof(BlueprintFeatureSelection))
+                                foreach (var selection in ((BlueprintFeatureSelection)background)?.AllFeatures)
                                 {
-                                    foreach (var selection2 in ((BlueprintFeatureSelection)selection)?.AllFeatures)
+                                    tempbackgroundlist.Add(selection);
+                                    if (selection.GetType() == typeof(BlueprintFeatureSelection))
                                     {
-                                        tempbackgroundlist.Add(selection2);
+                                        foreach (var selection2 in ((BlueprintFeatureSelection)selection)?.AllFeatures)
+                                        {
+                                            tempbackgroundlist.Add(selection2);
+                                        }
                                     }
                                 }
                             }
@@ -1077,7 +1080,7 @@ namespace RespecModBarley
                 Main.IsRespec = true;
                 //Main.IsRespec = false;
 
-                /*if (entityData.IsStoryCompanion())
+                /*if (entityData.IsStoryCompanionLocal())
 				{
 					Main.GetUnitForMemory(entityData.Blueprint);
 				}*/
@@ -1098,7 +1101,7 @@ namespace RespecModBarley
 					entityData.GetFact(AmuletFact).Detach();
 					Main.logger.Log("asd");
 				}*/
-                if (entityData.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion || entityData.Blueprint.ToString().Contains("_Companion") && !Main.settings.FullRespecStoryCompanion)
+                if (entityData.IsStoryCompanionLocal() && !Main.settings.FullRespecStoryCompanion || entityData.Blueprint.ToString().Contains("_Companion") && !Main.settings.FullRespecStoryCompanion)
                 {
                     foreach (var blueprintf in entityData.Facts.m_Facts)
                     {
@@ -1213,7 +1216,7 @@ namespace RespecModBarley
             {
 				buff.Detach();
             }
-			if (unit.IsStoryCompanion())
+			if (unit.IsStoryCompanionLocal())
 			{
 				foreach (Feature blueprintf in unit.Descriptor.Progression.Features.Enumerable)
 				{

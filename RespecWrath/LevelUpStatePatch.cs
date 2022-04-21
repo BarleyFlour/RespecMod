@@ -35,38 +35,40 @@ namespace RespecModBarley
     [HarmonyPatch(typeof(CharGenContextVM), "CompleteLevelUp")]
     internal static class OwO
     {
-        private static bool Prefix(CharGenContextVM __instance)
+        private static void Postfix(CharGenContextVM __instance)
         {
-            Game.Instance.UI.Common.DollRoom.Show(false);
-            bool flag = __instance.m_LevelUpController.State.Mode == LevelUpState.CharBuildMode.Mythic;
-            __instance.m_LevelUpController.Commit();
-            EventBus.RaiseEvent<ILevelUpCompleteUIHandler>(delegate (ILevelUpCompleteUIHandler h)
-            {
-                h.HandleLevelUpComplete(__instance.m_LevelUpController.Unit, true);
-            }, true);
-            LevelUpController levelUpController = __instance.m_LevelUpController;
-            if (levelUpController != null)
-            {
-                levelUpController.Stop();
-            }
-            if (__instance.RespecWindowVM.Value != null)
-            {
-                __instance.RespecWindowVM.Value.UpdateRespecState(__instance.m_LevelUpController);
-                __instance.m_LevelUpController = null;
-                __instance.CloseCharGen();
-                return false;
-            }
-            UnitDescriptor descriptor = __instance.m_LevelUpController.Unit.Descriptor;
-            __instance.m_LevelUpController = null;
-            // Main.logger.Log(levelUpController.State.NextCharacterLevel.ToString());
-            if (!flag && LevelUpController.CanLevelUp(descriptor) && levelUpController.State.NextCharacterLevel != 1)
-            {
-                LevelUpConfig.Create(descriptor, LevelUpState.CharBuildMode.LevelUp).OpenUI();
-                //__instance.CloseCharGen();
-                return false;
-            }
+            /* Game.Instance.UI.Common.DollRoom.Show(false);
+             bool flag = __instance.m_LevelUpController.State.Mode == LevelUpState.CharBuildMode.Mythic;
+             __instance.m_LevelUpController.Commit();
+             EventBus.RaiseEvent<ILevelUpCompleteUIHandler>(delegate (ILevelUpCompleteUIHandler h)
+             {
+                 h.HandleLevelUpComplete(__instance.m_LevelUpController.Unit, true);
+             }, true);
+             LevelUpController levelUpController = __instance.m_LevelUpController;
+             if (levelUpController != null)
+             {
+                 levelUpController.Stop();
+             }
+             if (__instance.RespecWindowVM.Value != null)
+             {
+                 __instance.RespecWindowVM.Value.UpdateRespecState(__instance.m_LevelUpController);
+                 __instance.m_LevelUpController = null;
+                 __instance.CloseCharGen();
+                 return false;
+             }
+             UnitDescriptor descriptor = __instance.m_LevelUpController.Unit.Descriptor;
+             __instance.m_LevelUpController = null;
+             // Main.logger.Log(levelUpController.State.NextCharacterLevel.ToString());
+             if (!flag && LevelUpController.CanLevelUp(descriptor) && levelUpController.State.NextCharacterLevel != 1)
+             {
+                 LevelUpConfig.Create(descriptor, LevelUpState.CharBuildMode.LevelUp).OpenUI();
+                 //__instance.CloseCharGen();
+                 return false;
+             }
+             __instance.CloseCharGen();
+             return false;*/
+            if(Main.IsRespec)
             __instance.CloseCharGen();
-            return false;
         }
     }
 
@@ -118,7 +120,7 @@ namespace RespecModBarley
                         {
                             __instance.AttributePoints = Main.settings.PointsCount;
                         }*/
-                        /*if (unit.IsStoryCompanion() && !Main.FullRespecStoryCompanion)
+                        /*if (unit.IsStoryCompanionLocal() && !Main.FullRespecStoryCompanion)
                         {
                             if (unit.CharacterName.Contains("Nenio"))
                             {
@@ -157,7 +159,7 @@ namespace RespecModBarley
 								}
 							}*/
 
-                            if (!unit.IsMC() && unit.IsStoryCompanion() && !Main.settings?.FullRespecStoryCompanion == true || unit.Blueprint.ToString().Contains("_Companion") && !unit.IsMC() && !Main.settings?.FullRespecStoryCompanion == true)
+                            if (!unit.IsMC() && unit.IsStoryCompanionLocal() && !Main.settings?.FullRespecStoryCompanion == true || unit.Blueprint.ToString().Contains("_Companion") && !unit.IsMC() && !Main.settings?.FullRespecStoryCompanion == true)
                             {
                                 foreach (BlueprintFeature feat in unit?.Blueprint?.Race?.Features)
                                 {
@@ -297,7 +299,7 @@ namespace RespecModBarley
                                     __instance.CanSelectRaceStat = true;
                                 }
                             }
-                            if (unit?.IsCustomCompanion() == true && unit.IsPet == false || unit.IsMainCharacter && unit.IsPet == false || unit?.IsStoryCompanion() == true && Main.settings.FullRespecStoryCompanion)
+                            if (unit?.IsCustomCompanion() == true && unit.IsPet == false || unit.IsMainCharacter && unit.IsPet == false || unit?.IsStoryCompanionLocal() == true && Main.settings.FullRespecStoryCompanion)
                             {
                                 Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.CharGen);
                                 Traverse.Create(__instance).Property("CanSelectVoice", null).SetValue(true);
@@ -384,7 +386,7 @@ namespace RespecModBarley
                                 __instance.CanSelectGender = true;
                                // Main.logger.Log("AfterStuff");
                             }
-                            else if (unit.IsStoryCompanion() && !Main.settings.FullRespecStoryCompanion || unit.Blueprint.ToString().Contains("_Companion") && unit.IsPet == false && !Main.settings.FullRespecStoryCompanion)
+                            else if (unit.IsStoryCompanionLocal() && !Main.settings.FullRespecStoryCompanion || unit.Blueprint.ToString().Contains("_Companion") && unit.IsPet == false && !Main.settings.FullRespecStoryCompanion)
                             {
                                 Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.LevelUp);
                                 Traverse.Create(__instance.StatsDistribution).Property("Available", null).SetValue(true);

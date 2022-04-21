@@ -99,7 +99,7 @@ internal static class ResourcesLibrary_InitializeLibrary_Patch
         /*}
         /*foreach (UnitEntityData data in Game.Instance.Player.PartyCharacters)
         {
-            if(data.IsStoryCompanion() == true)
+            if(data.IsStoryCompanionLocal() == true)
             {
                 var add = data.CharacterName.ToString() + "" + data.OriginalBlueprint.GetComponent<ClassLevelLimit>().LevelLimit.ToString();
                 Main.UnitMemory.Add(add);

@@ -136,7 +136,7 @@ namespace RespecModBarley
                 newUnit = Game.Instance.CreateUnitVacuum(unit2);
             }
 
-            
+
             /*var asd = newUnit.Facts.m_Facts.Where(a => a.Blueprint.name.Contains("Atheism"));
             if (asd.Any())
             {
@@ -203,7 +203,7 @@ namespace RespecModBarley
                 buff.TurnOff();
                 buff.Dispose();
             }
-            /*if (unit.IsStoryCompanion())
+            /*if (unit.IsStoryCompanionLocal())
             {
                 foreach (Feature blueprintf in unit.Descriptor.Progression.Features.Enumerable)
                 {
@@ -270,16 +270,16 @@ namespace RespecModBarley
             }
 
             //
-            if (!Main.settings.FullRespecStoryCompanion && unit.IsStoryCompanion() && !unit.IsMC())
+            if (!Main.settings.FullRespecStoryCompanion && unit.IsStoryCompanionLocal() && !unit.IsMC())
             {
                 foreach (var raceFeature in unit.Progression.Race.Features.m_Array)
                 {
                     newUnit.AddFact(raceFeature);
                 }
             }
-            if (Main.settings.FullRespecStoryCompanion && unit.IsStoryCompanion())
+            if (Main.settings.FullRespecStoryCompanion && unit.IsStoryCompanionLocal())
             {
-                //  Main.logger.Log("isstorycompanion and full respec");
+                //  Main.logger.Log("IsStoryCompanionLocal and full respec");
                 var component = unit.Progression.Race.ComponentsArray.FirstOrDefault(a => a.GetType() == typeof(AddFeatureOnApply));
                 if (component != null && ((AddFeatureOnApply)component).Feature != null)
                 {
@@ -327,8 +327,9 @@ namespace RespecModBarley
                     Main.featurestoadd.Clear();
                     Main.IsRespec = false;
                     Main.partstoadd.Clear();
-                    RespecOnStop(newUnit,toaddifcanceled);
+                    RespecOnStop(newUnit, toaddifcanceled);
                 });
+                Main.IsRespec = true;
                 h.HandleLevelUpStart(Lvlupconfig);
                 /*h.HandleLevelUpStart(newUnit.Descriptor, delegate
                 {
@@ -581,7 +582,8 @@ namespace RespecModBarley
             try
             {
                 PFLog.History.Party.Log(string.Format("Respec unit: {0}, ", targetUnit) + string.Format("level: {0} ({1}), ", targetUnit.Progression.CharacterLevel, targetUnit.Progression.Experience) + string.Format("mythic: {0} ({1})", targetUnit.Progression.MythicLevel, targetUnit.Progression.MythicExperience), Array.Empty<object>());
-                var bab = targetUnit.Progression.Classes.First().BaseAttackBonus.GetBonus(1);
+                var bab = targetUnit.Progression.Classes.FirstOrDefault(c => !c.CharacterClass.IsMythic).BaseAttackBonus.GetBonus(tempUnit.Progression.CharacterLevel);
+                Main.logger.Log($"TmpUnit = {tempUnit.Progression.CharacterLevel} : TrgUnit = {targetUnit.Progression.CharacterLevel}");
                 targetUnit.Stats.BaseAttackBonus.PermanentValue = bab;
                 targetUnit.Stats.BaseAttackBonus.BaseValue = bab;
                 targetUnit.Stats.BaseAttackBonus.m_BaseValue = bab;
@@ -845,14 +847,14 @@ namespace RespecModBarley
                             Main.NenioEtudeBool = false;
                         }
                         Main.IsRespec = false;
-                        
+
                     }
                     catch (Exception e) { Main.logger.Log(e.ToString()); }
-                    var bab2 = targetUnit.Progression.Classes.First().BaseAttackBonus.GetBonus(1);
+                    /*var bab2 = targetUnit.Progression.Classes.First().BaseAttackBonus.GetBonus();
                     targetUnit.Stats.BaseAttackBonus.PermanentValue = bab2;
                     targetUnit.Stats.BaseAttackBonus.BaseValue = bab2;
                     targetUnit.Stats.BaseAttackBonus.m_BaseValue = bab2;
-                    targetUnit.Stats.BaseAttackBonus.OnPermanentValueUpdated();
+                    targetUnit.Stats.BaseAttackBonus.OnPermanentValueUpdated();*/
                 }
             }
             catch (Exception e)
@@ -862,7 +864,7 @@ namespace RespecModBarley
             }
         }
 
-        private static void RespecOnStop(UnitEntityData targetUnit,BlueprintFeature toadd)
+        private static void RespecOnStop(UnitEntityData targetUnit, BlueprintFeature toadd)
         {
             //	Main.logger.Log("Stopped");
             if (Main.NenioEtudeBool == true)
@@ -877,7 +879,7 @@ namespace RespecModBarley
                         i.Facts.Add(fact);
                     }
                 }
-                
+
                 Main.NenioEtudeBool = false;
             }
             if (toadd != null) targetUnit.AddFact(toadd);

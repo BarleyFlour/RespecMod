@@ -17,7 +17,7 @@ namespace RespecModBarley
             {
                 if (Main.IsRespec == true)
                 {
-                    if (__instance.m_LevelUpController.Unit.IsCustomCompanion() || __instance.m_LevelUpController.Unit.IsStoryCompanion() && Main.settings.FullRespecStoryCompanion && !Main.settings.PreserveVoice)
+                    if (__instance.m_LevelUpController.Unit.IsCustomCompanion() || __instance.m_LevelUpController.Unit.IsStoryCompanionLocal() && Main.settings.FullRespecStoryCompanion && !Main.settings.PreserveVoice)
                     {
                         __result = true;
                         return;
@@ -40,7 +40,7 @@ namespace RespecModBarley
         {
             try
             {
-                if (Main.IsRespec && !Main.settings.BackgroundDeity && (__instance.m_LevelUpController.Unit.IsStoryCompanion()))
+                if (Main.IsRespec && !Main.settings.BackgroundDeity && (__instance.m_LevelUpController.Unit.IsStoryCompanionLocal()))
                 {
                     __result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.DeitySelect);
                     __result.RemoveAll(a => a.Selection as BlueprintFeatureBase == Stuf.BackgroundSelect as BlueprintFeatureBase);

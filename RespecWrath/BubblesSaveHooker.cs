@@ -171,19 +171,6 @@ namespace RespecModBarley
                         }
                     }
                 }
-                /*  // if (!unit.IsPlayerFaction) return;
-                  var entry = GlobalLevelInfo.Instance.ForCharacter(unit);
-                  if (entry.AbilityScoresByLevel.TryGetValue(unit.Progression.CharacterLevel + 1, out StatType stat))
-                  {
-                      Main.logger.Log(__instance.Attribute.ToString());
-                      entry.AbilityScoresByLevel[unit.Progression.CharacterLevel + 1] = __instance.Attribute;
-                  }
-                  else
-                  {
-                      Main.logger.Log(__instance.Attribute.ToString());
-                      entry.AbilityScoresByLevel.Add(unit.Progression.CharacterLevel, __instance.Attribute);
-                  }*/
-                //entry.SkillsByLevel[unit.Unit.Progression.CharacterLevel + 1] = new Dictionary<StatType, int>();
             }
             catch (Exception e)
             {
