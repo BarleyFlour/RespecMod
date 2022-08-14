@@ -118,6 +118,7 @@ namespace RespecModBarley
         [HarmonyPatch(nameof(FeatProgressionVM.BuildFeats)), HarmonyPostfix]
         private static void BuildFeats(FeatProgressionVM __instance)
         {
+            if (!Main.settings.AttributeInClassPage) return;
             if (AttribSelection == null)
             {
                 for (int i = 0; i < AttribFeatures.Length; i++)

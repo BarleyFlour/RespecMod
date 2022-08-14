@@ -67,7 +67,7 @@ namespace RespecModBarley
              }
              __instance.CloseCharGen();
              return false;*/
-            if(Main.IsRespec)
+            if(__instance.CharGenVM.Value?.CharacterLevel < 2)
             __instance.CloseCharGen();
         }
     }
@@ -291,8 +291,9 @@ namespace RespecModBarley
                                     unit.Descriptor.AddFact(featuretoadd);
                                 }
                             }
-                           // Main.logger.Log("AfterFeatureAdd");
-                            if (unit?.Progression?.Race?.RaceId == Race.Human || unit?.Progression?.Race?.RaceId == Race.HalfElf || unit?.Progression?.Race?.RaceId == Race.HalfOrc)
+                            // Main.logger.Log("AfterFeatureAdd");
+                            // if (unit?.Progression?.Race?.RaceId == Race.Human || unit?.Progression?.Race?.RaceId == Race.HalfElf || unit?.Progression?.Race?.RaceId == Race.HalfOrc)
+                            if (unit?.Progression?.Race?.SelectableRaceStat == true && unit?.OriginalBlueprint?.AssetGuidThreadSafe != "ae766624c03058440a036de90a7f2009")
                             {
                                 if (!Main.settings.FullRespecStoryCompanion && !unit.IsMC())
                                 {

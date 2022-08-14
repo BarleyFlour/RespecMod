@@ -681,14 +681,15 @@ namespace RespecModBarley
                 try
                 {
                     DefaultJsonSettings.DefaultSettings.ContractResolver = new RespecContractResolver();
-                    JObject jobject = JObject.FromObject(tempUnit);
+                    JsonSerializer jsonSerializer = JsonSerializer.Create(DefaultJsonSettings.DefaultSettings);
+                    JObject jobject = JObject.FromObject(tempUnit, jsonSerializer);
                     jobject.Remove("UniqueId");
                     jobject.Remove("m_AutoUseAbility");
                     JObject jobject2 = (JObject)jobject["Descriptor"];
                     jobject2.Remove("m_Inventory");
                     jobject2.Remove("Body");
                     jobject2.Remove("UISettings");
-                    JsonConvert.PopulateObject(jobject.ToString().Replace(tempUnit.UniqueId, targetUnit.UniqueId), targetUnit);
+                    JsonConvert.PopulateObject(jobject.ToString().Replace(tempUnit.UniqueId, targetUnit.UniqueId), targetUnit, DefaultJsonSettings.DefaultSettings);
                     targetUnit.Resources.PersistantResources = tempUnit.Resources.PersistantResources;
                 }
                 catch (Exception ex)

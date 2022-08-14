@@ -24,6 +24,7 @@ namespace RespecModBarley
         public bool PreserveMCBirthday = true;
         public bool PreserveMCAlignment = true;
         public bool PreservePortrait = true;
+        public bool AttributeInClassPage = true;
 
         //public bool PreserveMCRace = true;
         public bool PreserveVoice = true;

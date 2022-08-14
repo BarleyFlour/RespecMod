@@ -27,7 +27,7 @@ using static UnityModManagerNet.UnityModManager;
 
 namespace RespecModBarley
 {
-#if UMM
+#if UMM && DEBUG
     [EnableReloading]
 #endif
     public class Main
@@ -456,7 +456,9 @@ namespace RespecModBarley
                 harmony.PatchAll();
                 modEntry.OnGUI = OnGUI;
                 modEntry.OnSaveGUI = OnSaveGUI;
+#if DEBUG
                 modEntry.OnUnload = Unload;
+#endif
                 modEntry.OnToggle = OnToggle;
                 IsEnabled = ModEntry.Enabled;
                 if (!Main.haspatched)
@@ -923,6 +925,7 @@ namespace RespecModBarley
                 GUILayout.Space(10f);
                 GUILayout.BeginHorizontal();
                 OldCost = GUILayout.Toggle(OldCost, "Fixed/Scaling Cost", GUILayout.ExpandWidth(false));
+                settings.AttributeInClassPage = GUILayout.Toggle(settings.AttributeInClassPage, "Attribute Selection icons on class page", GUILayout.ExpandWidth(false));
                 GUILayout.EndHorizontal();
                 if (settings.FreeRespec == true && !forcecost)
                 {
