@@ -1,3 +1,4 @@
+## [![Download zip](https://custom-icon-badges.herokuapp.com/badge/-Download-blue?style=for-the-badge&logo=download&logoColor=white "Download zip")](https://github.com/BarleyFlour/RespecMod/releases/latest/download/Download_This_RespecWrath.zip) Latest Release 
 
 Respec Mod: Wrath of the Righteous
 
