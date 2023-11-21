@@ -27,7 +27,7 @@ using System.Linq;
 ///
 /// </summary>
 
-namespace RespecModBarley
+namespace RespecWrath
 {
     internal static class ArbitraryLevelRemoval
     {

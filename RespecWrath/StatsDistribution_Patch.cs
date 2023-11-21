@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using Kingmaker.UnitLogic.Class.LevelUp;
 
-namespace RespecModBarley
+namespace RespecWrath
 {
     ///[HarmonyPatch(typeof(StatsDistribution), MethodType.Constructor)]
     [HarmonyPatch(typeof(StatsDistribution), "Start")]

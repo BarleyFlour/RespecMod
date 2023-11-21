@@ -15,7 +15,7 @@ using Kingmaker.UnitLogic.Class.LevelUp.Actions;
 using System;
 using System.Linq;
 
-namespace RespecModBarley
+namespace RespecWrath
 {
     [HarmonyPatch(typeof(SpendSkillPoint), "Check")]
     internal static class s
@@ -67,8 +67,12 @@ namespace RespecModBarley
              }
              __instance.CloseCharGen();
              return false;*/
-            if(__instance.CharGenVM.Value?.CharacterLevel < 2)
-            __instance.CloseCharGen();
+            if (__instance?.CharGenVM?.Value?.CharacterLevel < 2 ||
+                __instance?.CharGenVM?.Value?.CharacterLevel == null)
+            {
+                __instance?.CloseCharGen();
+            }
+
         }
     }
 

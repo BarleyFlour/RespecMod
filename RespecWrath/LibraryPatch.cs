@@ -4,14 +4,16 @@ using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.JsonSystem;
-using RespecModBarley;
+using RespecWrath;
 using System;
 
 [HarmonyPatch(typeof(BlueprintsCache), "Init")]
 internal static class ResourcesLibrary_InitializeLibrary_Patch
 {
-    private static bool Initialized;
-    /*static bool Prefix()
+#pragma warning disable CS0169
+	private static bool Initialized;
+#pragma warning restore CS0169
+	/*static bool Prefix()
 	{
 		if (Initialized)
 		{
@@ -119,7 +121,7 @@ internal static class ResourcesLibrary_InitializeLibrary_Patch
     }
 }
 
-namespace RespecModBarley
+namespace RespecWrath
 {
 	public static class Stuf
 	{

@@ -4,11 +4,11 @@ using Kingmaker.Designers.EventConditionActionSystem.Actions;
 namespace RespecWrath
 {
     [HarmonyPatch(typeof(RespecCompanion), "RunAction")]
-    internal static class GetPetLevel
+    internal static class RespecCompanion_RunAction_Patch
     {
         private static void Postfix()
         {
-            RespecModBarley.Main.IsHilorRespec = true;
+            RespecWrath.Main.IsHilorRespec = true;
         }
     }
 
@@ -17,7 +17,7 @@ namespace RespecWrath
     {
         public static void Postfix()
         {
-            RespecModBarley.Main.IsHilorRespec = false;
+            RespecWrath.Main.IsHilorRespec = false;
         }
     }
 }

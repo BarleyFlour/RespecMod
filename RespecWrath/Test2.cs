@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using Kingmaker.UnitLogic.FactLogic;
 
-namespace RespecModBarley
+namespace RespecWrath
 {
     [HarmonyPatch(typeof(AddPet), "GetPetLevel")]
     internal static class GetPetLevel

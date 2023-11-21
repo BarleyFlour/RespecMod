@@ -18,15 +18,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Kingmaker.UI.MVVM._VM.ChangeVisual;
 using UniRx;
 using UnityEngine;
 #if UMM
+using Kingmaker.UI.MVVM._PCView.ChangeVisual;
 using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
 #endif
 
-namespace RespecModBarley
+namespace RespecWrath
 {
+    
+    
+    
 #if UMM && DEBUG
     [EnableReloading]
 #endif
@@ -468,6 +473,7 @@ namespace RespecModBarley
             }
             catch (Exception e)
             {
+                Main.logger.Log(e.ToString());
                 throw e;
             }
             return true;
@@ -613,6 +619,7 @@ namespace RespecModBarley
         {
             try
             {
+                
                 // Main.GetUnitsForMemory();
                 if (IsEnabled == false) { return; }
                 GUILayout.Space(5f);
@@ -680,7 +687,7 @@ namespace RespecModBarley
 					GUILayout.EndHorizontal();*/
                     GUILayout.Space(10f);
                     GUILayout.BeginHorizontal();
-                    if (selected.IsStoryCompanionLocal() && !selected.IsMainCharacter)
+                    if (selected?.IsStoryCompanionLocal() == true && selected?.IsMainCharacter != true)
                     {
                         settings.OriginalStats = GUILayout.Toggle(settings.OriginalStats, "Original Stats", GUILayout.ExpandWidth(false));
                     }

@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace RespecModBarley
+namespace RespecWrath
 {
     [HarmonyPatch]
     internal static class SaveHooker
@@ -45,7 +45,7 @@ namespace RespecModBarley
             }
             catch (Exception e)
             {
-                RespecModBarley.Main.logger.Log(e.ToString());
+                Main.logger.Log(e.ToString());
             }
         }
     }
@@ -174,7 +174,7 @@ namespace RespecModBarley
             }
             catch (Exception e)
             {
-                RespecModBarley.Main.logger.Log(e.ToString());
+                Main.logger.Log(e.ToString());
             }
         }
     }

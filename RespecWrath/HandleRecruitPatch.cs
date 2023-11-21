@@ -3,7 +3,7 @@ using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using System;
 using static Kingmaker.Designers.EventConditionActionSystem.Actions.Recruit;
 
-namespace RespecModBarley
+namespace RespecWrath
 {
     [HarmonyPatch(typeof(Recruit), "SwitchToCompanion")]
     [HarmonyPatch(new Type[] { typeof(RecruitData) })]

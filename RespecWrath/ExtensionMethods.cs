@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RespecModBarley
+namespace RespecWrath
 {
     internal static class ExtensionMethods
     {

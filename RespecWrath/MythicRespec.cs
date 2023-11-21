@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RespecModBarley
+namespace RespecWrath
 {
     public static class MythicRespec
     {

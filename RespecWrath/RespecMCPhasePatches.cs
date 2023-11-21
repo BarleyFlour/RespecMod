@@ -2,7 +2,7 @@
 using Kingmaker.UI.MVVM._VM.CharGen;
 using System;
 
-namespace RespecModBarley
+namespace RespecWrath
 {
     [HarmonyPatch(typeof(CharGenVM), "NeedNamePhase")]
     internal static class NeedName_Patch

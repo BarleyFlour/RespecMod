@@ -14,7 +14,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-namespace RespecModBarley
+namespace RespecWrath
 {
     internal class AssetLoader
     {

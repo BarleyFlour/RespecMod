@@ -6,7 +6,7 @@ using Kingmaker.UnitLogic.Class.LevelUp;
 using System;
 using System.Collections.Generic;
 
-namespace RespecModBarley
+namespace RespecWrath
 {
     [HarmonyPatch(typeof(CharGenVM), "NeedVoicePhase")]
     internal static class NeedVoice_Patch

@@ -6,7 +6,7 @@ using System.IO;
 using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
 #endif
-namespace RespecModBarley
+namespace RespecWrath
 {
 #if UMM
     public class Settings : UnityModManager.ModSettings

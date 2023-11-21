@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using Kingmaker.Blueprints.Classes;
-using RespecModBarley;
+using RespecWrath;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace RespecWrath
     {
         static bool ShouldSkipAddingLevels(UnitEntityData unit)
         {
-            return !(Main.IsHilorRespec || Main.settings.OriginalLevel || !Main.IsRespec && (Main.isrecruit || !Kingmaker.Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName) || (!unit.IsStoryCompanionLocal() && !Main.isrecruit) || unit.IsPet));
+            return !(Main.IsHilorRespec || (Main.settings.OriginalLevel && Main.IsRespec) || !Main.IsRespec && (Main.isrecruit || !Kingmaker.Game.Instance.Player.AllCharacters.Contains(jc => jc.Blueprint.CharacterName == unit.Blueprint.CharacterName) || (!unit.IsStoryCompanionLocal() && !Main.isrecruit) || unit.IsPet));
         }
         static bool ShouldAddFeature(UnitEntityData unit, BlueprintFeature feature)
         {
