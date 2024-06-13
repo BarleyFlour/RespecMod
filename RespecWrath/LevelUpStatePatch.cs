@@ -18,7 +18,7 @@ using System.Linq;
 namespace RespecWrath
 {
     [HarmonyPatch(typeof(SpendSkillPoint), "Check")]
-    internal static class s
+    internal static class SpendSkillPoint_check_patch
     {
         public static void Postfix(SpendSkillPoint __instance, LevelUpState state, UnitDescriptor unit, ref bool __result)
         {
@@ -32,51 +32,41 @@ namespace RespecWrath
         }
     }
 
-    [HarmonyPatch(typeof(CharGenContextVM), "CompleteLevelUp")]
-    internal static class OwO
+    [HarmonyPatch(typeof(CharGenContextVM), nameof(CharGenContextVM.CompleteLevelUp))]
+    internal static class CompleteLevelUp_patch
     {
         private static void Postfix(CharGenContextVM __instance)
         {
-            /* Game.Instance.UI.Common.DollRoom.Show(false);
-             bool flag = __instance.m_LevelUpController.State.Mode == LevelUpState.CharBuildMode.Mythic;
-             __instance.m_LevelUpController.Commit();
-             EventBus.RaiseEvent<ILevelUpCompleteUIHandler>(delegate (ILevelUpCompleteUIHandler h)
-             {
-                 h.HandleLevelUpComplete(__instance.m_LevelUpController.Unit, true);
-             }, true);
-             LevelUpController levelUpController = __instance.m_LevelUpController;
-             if (levelUpController != null)
-             {
-                 levelUpController.Stop();
-             }
-             if (__instance.RespecWindowVM.Value != null)
-             {
-                 __instance.RespecWindowVM.Value.UpdateRespecState(__instance.m_LevelUpController);
-                 __instance.m_LevelUpController = null;
-                 __instance.CloseCharGen();
-                 return false;
-             }
-             UnitDescriptor descriptor = __instance.m_LevelUpController.Unit.Descriptor;
-             __instance.m_LevelUpController = null;
-             // Main.logger.Log(levelUpController.State.NextCharacterLevel.ToString());
-             if (!flag && LevelUpController.CanLevelUp(descriptor) && levelUpController.State.NextCharacterLevel != 1)
-             {
-                 LevelUpConfig.Create(descriptor, LevelUpState.CharBuildMode.LevelUp).OpenUI();
-                 //__instance.CloseCharGen();
-                 return false;
-             }
-             __instance.CloseCharGen();
-             return false;*/
             if (__instance?.CharGenVM?.Value?.CharacterLevel < 2 ||
                 __instance?.CharGenVM?.Value?.CharacterLevel == null)
             {
-                __instance?.CloseCharGen();
+                try
+                {
+                    __instance?.CloseCharGen();
+                }
+                catch (Exception e)
+                {
+                    Main.logger.Log(e.ToString());
+                    throw;
+                }
+                //__instance?.CloseCharGen();
             }
 
         }
     }
+    [HarmonyPatch(typeof(LevelUpConfig), nameof(LevelUpConfig.OpenUI))]
+    internal static class LevelUpConfig_OpenUI_patch
+    {
+        private static bool Prefix(LevelUpConfig __instance)
+        {
+            if(__instance.Unit.Progression.m_CharacterLevel < 2)
+            {
+                return false;
+            }
 
-    // Token: 0x02000003 RID: 3
+            return true;
+        }
+    }
     [HarmonyPatch(typeof(LevelUpState), MethodType.Constructor)]
     [HarmonyPatch(new Type[] { typeof(UnitEntityData), typeof(LevelUpState.CharBuildMode), typeof(bool) })]
     [HarmonyPriority(9999)]
