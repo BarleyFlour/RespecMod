@@ -54,7 +54,7 @@ namespace RespecWrath
 
         }
     }
-    [HarmonyPatch(typeof(LevelUpConfig), nameof(LevelUpConfig.OpenUI))]
+    /*[HarmonyPatch(typeof(LevelUpConfig), nameof(LevelUpConfig.OpenUI))]
     internal static class LevelUpConfig_OpenUI_patch
     {
         private static bool Prefix(LevelUpConfig __instance)
@@ -66,7 +66,7 @@ namespace RespecWrath
 
             return true;
         }
-    }
+    }*/
     [HarmonyPatch(typeof(LevelUpState), MethodType.Constructor)]
     [HarmonyPatch(new Type[] { typeof(UnitEntityData), typeof(LevelUpState.CharBuildMode), typeof(bool) })]
     [HarmonyPriority(9999)]
