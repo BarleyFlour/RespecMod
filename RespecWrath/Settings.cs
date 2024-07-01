@@ -6,6 +6,7 @@ using System.IO;
 using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
 #endif
+
 namespace RespecWrath
 {
 #if UMM
@@ -25,10 +26,7 @@ namespace RespecWrath
         public bool PreserveMCAlignment = true;
         public bool PreservePortrait = true;
         public bool AttributeInClassPage = true;
-
-        //public bool PreserveMCRace = true;
         public bool PreserveVoice = true;
-
         public bool FreeRespec = false;
         public bool FullRespecStoryCompanion = false;
         public bool OriginalLevel = false;
@@ -76,6 +74,7 @@ namespace RespecWrath
                     modEntry.Logger.Error(ex.ToString());
                 }
             }
+
             return new Settings();
         }
 #endif

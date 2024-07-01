@@ -65,27 +65,15 @@ namespace RespecWrath
             // (It's common for many features to use the same localized text.
             // In that case, we reuse the old entry instead of making a new one.)
             LocalizedString localized;
-            /* if (textToLocalizedString.TryGetValue(value, out localized))
-             {
-                 return localized;
-             }*/
-            //var strings = LocalizationManager.CurrentPack.Strings;
-            //String oldValue;
-            //if (strings.TryGetValue(key, out oldValue) && value != oldValue)
-            {
 #if DEBUG
-           //     Main.LogDebug($"Info: duplicate localized string `{key}`, different text.");
+            Main.logger.Log($"Info: duplicate localized string `{key}`, different text.");
 #endif
-                //}
-                // strings[key] = value;
-                localized = new LocalizedString
-                {
-                    m_Key = key
-                };
-                LocalizationManager.CurrentPack.PutString(key,value);
-                // textToLocalizedString[value] = localized;
-                return localized;
-            }
+            localized = new LocalizedString
+            {
+                m_Key = key
+            };
+            LocalizationManager.CurrentPack.PutString(key,value);
+            return localized;
         }
     }
 

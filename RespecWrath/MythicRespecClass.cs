@@ -19,16 +19,16 @@ using System.Linq;
 
 namespace RespecWrath
 {
-    public static class MythicRespec
+    public static class MythicRespecClass
     {
-        public static void MyhticRespec(UnitEntityData unit)
+        public static void MythicRespec(UnitEntityData unit)
         {
             Main.MythicXP = unit.Progression.MythicExperience;
             for (int i = 0; i < Main.MythicXP; i++)
             {
-                // Main.logger.Log(i.ToString());
                 unit.Progression.RemoveMythicLevel();
             }
+
             unit.Progression.AdvanceMythicExperience(Main.MythicXP);
         }
 

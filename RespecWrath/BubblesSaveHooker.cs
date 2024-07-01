@@ -15,15 +15,13 @@ namespace RespecWrath
     [HarmonyPatch]
     internal static class SaveHooker
     {
-        [HarmonyPatch(typeof(ZipSaver))]
-        [HarmonyPatch("SaveJson"), HarmonyPostfix]
+        [HarmonyPatch(typeof(ZipSaver), nameof(ZipSaver.SaveJson)), HarmonyPostfix]
         private static void Zip_Saver(string name, ZipSaver __instance)
         {
             DoSave(name, __instance);
         }
 
-        [HarmonyPatch(typeof(FolderSaver))]
-        [HarmonyPatch("SaveJson"), HarmonyPostfix]
+        [HarmonyPatch(typeof(FolderSaver), nameof(FolderSaver.SaveJson)), HarmonyPostfix]
         private static void Folder_Saver(string name, FolderSaver __instance)
         {
             DoSave(name, __instance);
@@ -55,7 +53,7 @@ namespace RespecWrath
     {
         public const string FileName = "header.json.barley_levelrecords";
 
-        [HarmonyPatch("LoadGame"), HarmonyPostfix]
+        [HarmonyPatch(nameof(Game.LoadGame)), HarmonyPostfix]
         private static void LoadGame(SaveInfo saveInfo)
         {
             using (saveInfo)
@@ -69,6 +67,7 @@ namespace RespecWrath
                         {
                             raw = saver.ReadJson(FileName);
                         }
+
                         if (raw != null)
                         {
                             var serializer = new JsonSerializer();
@@ -95,8 +94,8 @@ namespace RespecWrath
             {
                 record = new LevelInfo();
                 PerCharacter.Add(key, record);
-                //PerCharacter[key] = record;
             }
+
             return record;
         }
 
@@ -106,19 +105,20 @@ namespace RespecWrath
         public class LevelInfo
         {
             public Dictionary<int, StatType> AbilityScoresByLevel = new Dictionary<int, StatType>();
-            public Dictionary<int, Dictionary<StatType, int>> SkillsByLevel = new Dictionary<int, Dictionary<StatType, int>>();
+
+            public Dictionary<int, Dictionary<StatType, int>> SkillsByLevel =
+                new Dictionary<int, Dictionary<StatType, int>>();
         }
     }
 
-    [HarmonyPatch(typeof(LevelUpController), "ApplyLevelUpActions")]
-    internal static class ApplyLevelUpActions_Patch
+    [HarmonyPatch(typeof(LevelUpController), nameof(LevelUpController.ApplyLevelUpActions))]
+    internal static class LevelUpController_ApplyLevelUpActions_Patch
     {
         public static void Prefix(LevelUpController __instance, UnitEntityData unit, List<ILevelUpAction> __result)
         {
             if (!unit.IsPlayerFaction || !Game.Instance.Player.AllCharacters.Contains(unit)) return;
             try
             {
-                // __result = __instance.LevelUpActions;
                 foreach (var ilevelupaction in __instance.LevelUpActions)
                 {
                     if (ilevelupaction.GetType() == typeof(SpendAttributePoint))
@@ -127,14 +127,16 @@ namespace RespecWrath
                         if (leveleupaction != null)
                         {
                             var entry = GlobalLevelInfo.Instance.ForCharacter(unit);
-                            //Main.logger.Log(leveleupaction.Attribute.ToString());
-                            if (entry.AbilityScoresByLevel.TryGetValue(unit.Progression.CharacterLevel + 1, out StatType stat))
+                            if (entry.AbilityScoresByLevel.TryGetValue(unit.Progression.CharacterLevel + 1,
+                                    out StatType stat))
                             {
-                                entry.AbilityScoresByLevel[unit.Progression.CharacterLevel + 1] = leveleupaction.Attribute;
+                                entry.AbilityScoresByLevel[unit.Progression.CharacterLevel + 1] =
+                                    leveleupaction.Attribute;
                             }
                             else
                             {
-                                entry.AbilityScoresByLevel.Add(unit.Progression.CharacterLevel + 1, leveleupaction.Attribute);
+                                entry.AbilityScoresByLevel.Add(unit.Progression.CharacterLevel + 1,
+                                    leveleupaction.Attribute);
                             }
                         }
                     }
@@ -143,30 +145,24 @@ namespace RespecWrath
                         var leveleupaction = (SpendSkillPoint)ilevelupaction;
                         if (leveleupaction != null)
                         {
-                            //  Main.logger.Log(leveleupaction.Skill.ToString());
                             var entry = GlobalLevelInfo.Instance.ForCharacter(unit);
-                            //  Main.logger.Log("a");
-                            if (entry.SkillsByLevel.TryGetValue(unit.Progression.CharacterLevel + 1, out Dictionary<StatType, int> statentry))
+                            if (entry.SkillsByLevel.TryGetValue(unit.Progression.CharacterLevel + 1,
+                                    out Dictionary<StatType, int> statentry))
                             {
-                                // Main.logger.Log("b");
                                 if (statentry.ContainsKey(leveleupaction.Skill))
                                 {
                                     statentry[leveleupaction.Skill] = statentry[leveleupaction.Skill] + 1;
-                                    //  Main.logger.Log("c");
                                 }
                                 else
                                 {
                                     statentry.Add(leveleupaction.Skill, 1);
-                                    //  Main.logger.Log("d");
                                 }
                             }
                             else
                             {
-                                //Main.logger.Log("e");
                                 var statentrynew = new Dictionary<StatType, int>();
                                 statentrynew.Add(leveleupaction.Skill, 1);
                                 entry.SkillsByLevel.Add(unit.Progression.CharacterLevel + 1, statentrynew);
-                                //Main.logger.Log("f");
                             }
                         }
                     }

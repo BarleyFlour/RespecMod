@@ -1,6 +1,5 @@
-﻿using HarmonyLib;
-
-///credit to Vek17 for this
+﻿///credit to Vek17 for this
+using HarmonyLib;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
@@ -22,16 +21,18 @@ namespace RespecWrath
     {
         public static bool IsStoryCompanionLocal(this UnitEntityData unit)
         {
-            return (unit.Blueprint.GetComponent<UnitIsStoryCompanion>() != null || unit.Blueprint.GetComponent<ClassLevelLimit>() != null);
+            return (unit.Blueprint.GetComponent<UnitIsStoryCompanion>() != null ||
+                    unit.Blueprint.GetComponent<ClassLevelLimit>() != null);
         }
+
         public static IEnumerable<GameAction> FlattenAllActions(this BlueprintAbility Ability)
         {
             return
                 Ability.GetComponents<AbilityExecuteActionOnCast>()
                     .SelectMany(a => a.FlattenAllActions())
-                .Concat(
-                Ability.GetComponents<AbilityEffectRunAction>()
-                    .SelectMany(a => a.FlattenAllActions()));
+                    .Concat(
+                        Ability.GetComponents<AbilityEffectRunAction>()
+                            .SelectMany(a => a.FlattenAllActions()));
         }
 
         public static IEnumerable<GameAction> FlattenAllActions(this AbilityExecuteActionOnCast Action)
@@ -47,7 +48,8 @@ namespace RespecWrath
         public static IEnumerable<GameAction> FlattenAllActions(this IEnumerable<GameAction> Actions)
         {
             List<GameAction> NewActions = new List<GameAction>();
-            NewActions.AddRange(Actions.OfType<ContextActionOnRandomTargetsAround>().SelectMany(a => a.Actions.Actions));
+            NewActions.AddRange(Actions.OfType<ContextActionOnRandomTargetsAround>()
+                .SelectMany(a => a.Actions.Actions));
             NewActions.AddRange(Actions.OfType<ContextActionConditionalSaved>().SelectMany(a => a.Failed.Actions));
             NewActions.AddRange(Actions.OfType<ContextActionConditionalSaved>().SelectMany(a => a.Succeed.Actions));
             NewActions.AddRange(Actions.OfType<Conditional>().SelectMany(a => a.IfFalse.Actions));
@@ -56,6 +58,7 @@ namespace RespecWrath
             {
                 return Actions.Concat(FlattenAllActions(NewActions));
             }
+
             return Actions;
         }
 
@@ -67,6 +70,7 @@ namespace RespecWrath
                 self.Add(key, value);
                 return value;
             }
+
             return oldValue;
         }
 
@@ -83,6 +87,7 @@ namespace RespecWrath
                 self.Add(key, value = ifAbsent());
                 return value;
             }
+
             return value;
         }
 
@@ -135,8 +140,10 @@ namespace RespecWrath
                     result[x++] = value;
                     added = true;
                 }
+
                 result[x++] = array[i];
             }
+
             return result;
         }
 
@@ -159,6 +166,7 @@ namespace RespecWrath
                     result[x++] = array[i];
                 }
             }
+
             return result;
         }
 
@@ -168,56 +176,16 @@ namespace RespecWrath
             return list.Remove(value) ? list.ToArray() : array;
         }
 
-        public static string StringJoin<T>(this IEnumerable<T> array, Func<T, string> map, string separator = " ") => string.Join(separator, array.Select(map));
+        public static string StringJoin<T>(this IEnumerable<T> array, Func<T, string> map, string separator = " ") =>
+            string.Join(separator, array.Select(map));
 
-        ///static readonly FastRef<BlueprintScriptableObject, string> blueprintScriptableObject_set_AssetId = Helpers.CreateFieldSetter<BlueprintScriptableObject, string>("m_AssetGuid");
 
 #if DEBUG
-        static readonly Dictionary<String, BlueprintScriptableObject> assetsByName = new Dictionary<String, BlueprintScriptableObject>();
+        static readonly Dictionary<String, BlueprintScriptableObject> assetsByName =
+            new Dictionary<String, BlueprintScriptableObject>();
 
         internal static readonly List<BlueprintScriptableObject> newAssets = new List<BlueprintScriptableObject>();
 #endif
-
-        /*  public static void AddAsset(this LibraryScriptableObject library, BlueprintScriptableObject blueprint, String guid)
-          {
-              //Main.Mod.Debug(MethodBase.GetCurrentMethod());
-              if (guid == "")
-              {
-                  guid = Helpers.GuidStorage.getGuid(blueprint.name);
-              }
-              //Main.Mod.Debug(guid);
-              blueprintScriptableObject_set_AssetId(blueprint) = guid;
-              // Sanity check that we don't stop on our own GUIDs or someone else's.
-              BlueprintScriptableObject existing;
-              if (library.BlueprintsByAssetId.TryGetValue(guid, out existing))
-              {
-                  throw Main.Error($"Duplicate AssetId for {blueprint.name}, existing entry ID: {guid}, name: {existing.name}, type: {existing.GetType().Name}");
-              }
-              else if (guid == "")
-              {
-                  throw Main.Error($"Missing AssetId: {guid}, name: {existing.name}, type: {existing.GetType().Name}");
-              }
-  #if DEBUG
-              newAssets.Add(blueprint);
-  #endif
-  #if false
-              // Sanity check that names are unique. This is less important, but the feat selection UI
-              // gets confused if multiple entries have the same name.
-              if (assetsByName.TryGetValue(blueprint.name, out existing))
-              {
-                  Log.Write($"Warning: Duplicate name, existing entry ID: {existing.AssetGuid}, name: {existing.name}, type: {existing.GetType().Name}");
-              }
-              else
-              {
-                  assetsByName.Add(blueprint.name, blueprint);
-              }
-  #endif
-
-              library.GetAllBlueprints().Add(blueprint);
-              library.BlueprintsByAssetId[guid] = blueprint;
-              Helpers.GuidStorage.addEntry(blueprint.name, guid);
-          }*/
-
         public static void SetFeatures(this BlueprintFeatureSelection selection, IEnumerable<BlueprintFeature> features)
         {
             SetFeatures(selection, features.ToArray());
@@ -225,7 +193,8 @@ namespace RespecWrath
 
         public static void SetFeatures(this BlueprintFeatureSelection selection, params BlueprintFeature[] features)
         {
-            selection.m_AllFeatures = selection.m_Features = features.Select(bp => bp.ToReference<BlueprintFeatureReference>()).ToArray();
+            selection.m_AllFeatures = selection.m_Features =
+                features.Select(bp => bp.ToReference<BlueprintFeatureReference>()).ToArray();
         }
 
         public static void InsertComponent(this BlueprintScriptableObject obj, int index, BlueprintComponent component)
@@ -254,7 +223,8 @@ namespace RespecWrath
             }
         }
 
-        public static void RemoveComponents<T>(this BlueprintScriptableObject obj, Predicate<T> predicate) where T : BlueprintComponent
+        public static void RemoveComponents<T>(this BlueprintScriptableObject obj, Predicate<T> predicate)
+            where T : BlueprintComponent
         {
             var compnents_to_remove = obj.GetComponents<T>().ToArray();
             foreach (var c in compnents_to_remove)
@@ -266,7 +236,9 @@ namespace RespecWrath
             }
         }
 
-        public static void AddComponents(this BlueprintScriptableObject obj, IEnumerable<BlueprintComponent> components) => AddComponents(obj, components.ToArray());
+        public static void
+            AddComponents(this BlueprintScriptableObject obj, IEnumerable<BlueprintComponent> components) =>
+            AddComponents(obj, components.ToArray());
 
         public static void AddComponents(this BlueprintScriptableObject obj, params BlueprintComponent[] components)
         {
@@ -286,6 +258,7 @@ namespace RespecWrath
                 {
                     c.name = $"${c.GetType().Name}";
                 }
+
                 if (!names.Add(c.name))
                 {
                     String name;
@@ -302,40 +275,6 @@ namespace RespecWrath
             SetComponents(obj, components.ToArray());
         }
 
-        /*  public static void AddAsset(this LibraryScriptableObject library, BlueprintScriptableObject blueprint, String guid1, String guid2)
-          {
-              library.AddAsset(blueprint, Helpers.MergeIds(guid1, guid2));
-          }*/
-
-        /* public static T Get<T>(this LibraryScriptableObject library, String assetId) where T : BlueprintScriptableObject
-         {
-             return (T)library.BlueprintsByAssetId[assetId];
-         }
-
-         public static T TryGet<T>(this LibraryScriptableObject library, String assetId) where T : BlueprintScriptableObject
-         {
-             BlueprintScriptableObject result;
-             if (library.BlueprintsByAssetId.TryGetValue(assetId, out result))
-             {
-                 return (T)result;
-             }
-             return null;
-         }*/
-
-        /*  public static T CopyAndAdd<T>(this LibraryScriptableObject library, String assetId, String newName, String newAssetId, String newAssetId2 = null) where T : BlueprintScriptableObject
-          {
-              return CopyAndAdd(library, Get<T>(library, assetId), newName, newAssetId, newAssetId2);
-          }
-
-         public static T CopyAndAdd<T>(this LibraryScriptableObject library, T original, String newName, String newAssetId, String newAssetId2 = null) where T : BlueprintScriptableObject
-          {
-              var clone = UnityEngine.Object.Instantiate(original);
-              clone.name = newName;
-              var id = newAssetId2 != null ? Helpers.MergeIds(newAssetId, newAssetId2) : newAssetId;
-              AddAsset(library, clone, id);
-              return clone;
-          }*/
-
         public static T CreateCopy<T>(this T original, Action<T> action = null) where T : UnityEngine.Object
         {
             var clone = UnityEngine.Object.Instantiate(original);
@@ -343,87 +282,9 @@ namespace RespecWrath
             {
                 action(clone);
             }
+
             return clone;
         }
-
-        /*static readonly FastRef<BlueprintUnitFact, LocalizedString> blueprintUnitFact_set_Description = Helpers.CreateFieldSetter<BlueprintUnitFact, LocalizedString>("m_Description");
-        static readonly FastRef<BlueprintUnitFact, Sprite> blueprintUnitFact_set_Icon = Helpers.CreateFieldSetter<BlueprintUnitFact, Sprite>("m_Icon");
-        static readonly FastRef<BlueprintUnitFact, LocalizedString> blueprintUnitFact_set_DisplayName = Helpers.CreateFieldSetter<BlueprintUnitFact, LocalizedString>("m_DisplayName");
-        static readonly FastRef<BlueprintUnitFact, LocalizedString> blueprintUnitFact_get_Description = Helpers.CreateFieldGetter<BlueprintUnitFact, LocalizedString>("m_Description");
-        static readonly FastRef<BlueprintUnitFact, LocalizedString> blueprintUnitFact_get_DisplayName = Helpers.CreateFieldGetter<BlueprintUnitFact, LocalizedString>("m_DisplayName");*/
-
-        /*   public static void SetNameDescriptionIcon(this BlueprintUnitFact feature, String displayName, String description, Sprite icon)
-           {
-               SetNameDescription(feature, displayName, description);
-               feature.SetIcon(icon);
-           }
-
-           public static void SetNameDescriptionIcon(this BlueprintUnitFact feature, BlueprintUnitFact other)
-           {
-               SetNameDescription(feature, other);
-               feature.SetIcon(other.Icon);
-           }*/
-
-        /* public static void SetNameDescription(this BlueprintUnitFact feature, String displayName, String description)
-         {
-             feature.SetName(Helpers.CreateString(feature.name + ".Name", displayName));
-             feature.SetDescription(description);
-         }
-
-         public static void SetNameDescription(this BlueprintUnitFact feature, BlueprintUnitFact other)
-         {
-             blueprintUnitFact_set_DisplayName(feature) = other.GetName();
-             blueprintUnitFact_set_Description(feature) = other.GetDescription();
-         }
-
-         public static LocalizedString GetName(this BlueprintUnitFact fact) => (LocalizedString)blueprintUnitFact_get_DisplayName(fact);
-         public static LocalizedString GetDescription(this BlueprintUnitFact fact) => (LocalizedString)blueprintUnitFact_get_Description(fact);
-
-         public static void SetIcon(this BlueprintUnitFact feature, Sprite icon)
-         {
-             blueprintUnitFact_set_Icon(feature) = icon;
-         }
-
-         public static void SetName(this BlueprintUnitFact feature, LocalizedString name)
-         {
-             blueprintUnitFact_set_DisplayName(feature) = name;
-         }
-
-         public static void SetName(this BlueprintUnitFact feature, String name)
-         {
-             blueprintUnitFact_set_DisplayName(feature) = Helpers.CreateString(feature.name + ".Name", name);
-         }
-
-         public static void SetDescription(this BlueprintUnitFact feature, String description)
-         {
-             blueprintUnitFact_set_Description(feature) = Helpers.CreateString(feature.name + ".Description", description);
-         }
-
-         public static void SetDescription(this BlueprintUnitFact feature, LocalizedString description)
-         {
-             blueprintUnitFact_set_Description(feature) = description;
-         }
-
-         public static bool HasFeatureWithId(this
-
-        Entry level, String id)
-         {
-             return level.Features.Any(f => HasFeatureWithId(f, id));
-         }
-
-         public static bool HasFeatureWithId(this BlueprintUnitFact fact, String id)
-         {
-             if (fact.AssetGuid == id) return true;
-             foreach (var c in fact.ComponentsArray)
-             {
-                 var addFacts = c as AddFacts;
-                 if (addFacts != null) return addFacts.Facts.Any(f => HasFeatureWithId(f, id));
-             }
-             return false;
-         }
-
-         static readonly FastRef<BlueprintArchetype, Sprite> blueprintArchetype_set_Icon = Helpers.CreateFieldSetter<BlueprintArchetype, Sprite>("m_Icon");
-         */
 
         public static void FixDomainSpell(this BlueprintAbility spell, int level, string spellListId)
         {
@@ -438,52 +299,6 @@ namespace RespecWrath
             return spell.AoERadius.Meters > 0f || spell.ProjectileType != AbilityProjectileType.Simple;
         }
 
-        ///public static void SetIcon(this BlueprintAbilityResource resource, Sprite icon) => setIcon(resource) = icon;
-
-        /*static readonly FastRef<BlueprintAbilityResource, Sprite> setIcon = Helpers.CreateFieldSetter<BlueprintAbilityResource, Sprite>("m_Icon");
-        //internal static readonly FastSetter<BlueprintAbilityResource, object> setMaxAmount = Helpers.CreateFieldSetter<BlueprintAbilityResource, object>("m_MaxAmount");
-        //internal static readonly FastGetter<BlueprintAbilityResource, object> getMaxAmount = Helpers.CreateFieldGetter<BlueprintAbilityResource, object>("m_MaxAmount");
-        //static readonly Type blueprintAbilityResource_Amount = HarmonyLib.AccessTools.Inner(typeof(BlueprintAbilityResource), "Amount");
-
-        internal static IEnumerable<BlueprintComponent> WithoutSpellComponents(this IEnumerable<BlueprintComponent> components)
-        {
-            return components.Where(c => !(c is SpellComponent) && !(c is SpellListComponent));
-        }
-
-        internal static int GetCost(this BlueprintAbility.MaterialComponentData material)
-        {
-            var item = material?.Item;
-            return item == null ? 0 : item.Cost * material.Count;
-        }
-
-        public static AddConditionImmunity CreateImmunity(this UnitCondition condition)
-        {
-            var b = Helpers.Create<AddConditionImmunity>();
-            b.Condition = condition;
-            return b;
-        }
-
-        public static AddCondition CreateAddCondition(this UnitCondition condition)
-        {
-            var a = Helpers.Create<AddCondition>();
-            a.Condition = condition;
-            return a;
-        }
-
-        public static BuffDescriptorImmunity CreateBuffImmunity(this SpellDescriptor spell)
-        {
-            var b = Helpers.Create<BuffDescriptorImmunity>();
-            b.Descriptor = spell;
-            return b;
-        }
-
-        public static SpellImmunityToSpellDescriptor CreateSpellImmunity(this SpellDescriptor spell)
-        {
-            var s = Helpers.Create<SpellImmunityToSpellDescriptor>();
-            s.Descriptor = spell;
-            return s;
-        }*/
-
         public static ActionList CreateActionList(params GameAction[] actions)
         {
             if (actions == null || actions.Length == 1 && actions[0] == null) actions = Array.Empty<GameAction>();
@@ -497,7 +312,8 @@ namespace RespecWrath
             return result;
         }
 
-        public static void addAction(this Kingmaker.UnitLogic.Abilities.Components.AbilityEffectRunAction action, Kingmaker.ElementsSystem.GameAction game_action)
+        public static void addAction(this Kingmaker.UnitLogic.Abilities.Components.AbilityEffectRunAction action,
+            Kingmaker.ElementsSystem.GameAction game_action)
         {
             if (action.Actions != null)
             {
@@ -510,7 +326,8 @@ namespace RespecWrath
             }
         }
 
-        public static void ReplaceComponent(this BlueprintScriptableObject blueprint, BlueprintComponent oldComponent, BlueprintComponent newComponent)
+        public static void ReplaceComponent(this BlueprintScriptableObject blueprint, BlueprintComponent oldComponent,
+            BlueprintComponent newComponent)
         {
             BlueprintComponent[] compnents_to_remove = blueprint.ComponentsArray;
             bool found = false;
@@ -521,18 +338,21 @@ namespace RespecWrath
                     blueprint.RemoveComponent(oldComponent);
                 }
             }
+
             if (found)
             {
                 blueprint.AddComponent(newComponent);
             }
         }
 
-        public static void ReplaceComponents<T>(this BlueprintScriptableObject blueprint, BlueprintComponent newComponent) where T : BlueprintComponent
+        public static void ReplaceComponents<T>(this BlueprintScriptableObject blueprint,
+            BlueprintComponent newComponent) where T : BlueprintComponent
         {
             blueprint.ReplaceComponents<T>(c => true, newComponent);
         }
 
-        public static void ReplaceComponents<T>(this BlueprintScriptableObject blueprint, Predicate<T> predicate, BlueprintComponent newComponent) where T : BlueprintComponent
+        public static void ReplaceComponents<T>(this BlueprintScriptableObject blueprint, Predicate<T> predicate,
+            BlueprintComponent newComponent) where T : BlueprintComponent
         {
             var compnents_to_remove = blueprint.GetComponents<T>().ToArray();
             bool found = false;
@@ -544,6 +364,7 @@ namespace RespecWrath
                     found = true;
                 }
             }
+
             if (found)
             {
                 blueprint.AddComponent(newComponent);
@@ -553,8 +374,8 @@ namespace RespecWrath
         public static SimpleBlueprint[] GetBlueprints()
         {
             var blueprints = (Dictionary<BlueprintGuid, BlueprintsCache.BlueprintCacheEntry>)AccessTools
-            .Field(typeof(BlueprintsCache), "m_LoadedBlueprints")
-            .GetValue(ResourcesLibrary.BlueprintsCache);
+                .Field(typeof(BlueprintsCache), "m_LoadedBlueprints")
+                .GetValue(ResourcesLibrary.BlueprintsCache);
             var keys = blueprints.Keys.ToArray();
             return keys.Select(k => ResourcesLibrary.TryGetBlueprint(k)).ToArray();
         }
