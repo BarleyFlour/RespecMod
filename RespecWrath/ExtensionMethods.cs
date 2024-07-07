@@ -76,7 +76,9 @@ namespace RespecWrath
 
         public static bool IsMC(this UnitEntityData unitEntityData)
         {
-            return unitEntityData.IsMainCharacter || unitEntityData.IsCloneOfMainCharacter;
+            return unitEntityData.IsMainCharacter || unitEntityData.IsCloneOfMainCharacter ||
+                   unitEntityData.Blueprint.name
+                       .Contains("StartGame");
         }
 
         public static V PutIfAbsent<K, V>(this IDictionary<K, V> self, K key, Func<V> ifAbsent) where V : class

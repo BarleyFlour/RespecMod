@@ -124,7 +124,9 @@ namespace RespecWrath
                         __instance.CanSelectRaceStat = true;
                     }
                 }
-
+#if DEBUG
+                Main.logger.Log($"Unit:{unit.CharacterName}, BlueprintUnit:{unit.Blueprint.CharacterName} IsMC:{unit.IsMC()}, IsPet:{unit.IsPet}, GUID:{unit.Blueprint.AssetGuidThreadSafe}");
+#endif        
                 if (unit?.IsCustomCompanion() == true && unit.IsPet == false ||
                     unit.IsMainCharacter && unit.IsPet == false || unit?.IsStoryCompanionLocal() == true &&
                     Main.settings.FullRespecStoryCompanion)
@@ -198,6 +200,7 @@ namespace RespecWrath
                         __instance.CanSelectPortrait = false;
                     }
 
+                    __instance.CanSelectRace = true;
                     __instance.CanSelectGender = true;
                 }
                 else if (unit.IsStoryCompanionLocal() && !Main.settings.FullRespecStoryCompanion ||
@@ -214,9 +217,9 @@ namespace RespecWrath
                     __instance.CanSelectVoice = false;
                 }
             }
-            catch (NullReferenceException nullref)
+            catch (Exception exception)
             {
-                Main.logger.Error(nullref.ToString());
+                Main.logger.Error(exception.ToString());
             }
         }
     }
