@@ -476,10 +476,6 @@ namespace RespecWrath
 #endif
                 modEntry.OnToggle = OnToggle;
                 IsEnabled = ModEntry.Enabled;
-                if (!Main.haspatched)
-                {
-                    Main.PatchLibrary();
-                }
             }
             catch (Exception e)
             {
@@ -493,6 +489,10 @@ namespace RespecWrath
         private static bool OnToggle(UnityModManager.ModEntry modEntry, bool value /* active or inactive */)
         {
             IsEnabled = value;
+            if (value == true)
+            {
+                Main.PatchLibrary();
+            }
             return true; // Permit or not.
         }
 
