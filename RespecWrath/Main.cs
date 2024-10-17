@@ -22,6 +22,7 @@ using Kingmaker.UI.MVVM._VM.ChangeVisual;
 using UniRx;
 using UnityEngine;
 #if UMM
+using Kingmaker.Settings;
 using Kingmaker.UI.MVVM._PCView.ChangeVisual;
 using UnityModManagerNet;
 using static UnityModManagerNet.UnityModManager;
@@ -530,98 +531,102 @@ namespace RespecWrath
                     return;
                 }
 
-                GUILayout.Space(5f);
-                GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
-                List<UnitEntityData> list = (from x in UIUtility.GetGroup(true, false)
-                    where !x.IsInCombat && !x.Descriptor.State.IsFinallyDead
-                    select x).ToList<UnitEntityData>();
-
-                bool flag2 = list.Any((UnitEntityData x) => x.Descriptor.Progression.CharacterLevel == 0 && !x.IsPet);
-                if (flag2)
+                if (!SettingsController.IsInMainMenu())
                 {
-                    list = (from x in list
-                        where x.Descriptor.Progression.CharacterLevel == 0
+                    GUILayout.Space(5f);
+                    GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
+                    List<UnitEntityData> list = (from x in UIUtility.GetGroup(true, false)
+                        where !x.IsInCombat && !x.Descriptor.State.IsFinallyDead
                         select x).ToList<UnitEntityData>();
-                    Main.selectedCharacter = 0;
-                }
-                else if (Main.selectedCharacter >= list.Count)
-                {
-                    Main.selectedCharacter = 0;
-                }
 
-                int num = 0;
-                UnitEntityData selected = null;
-                foreach (UnitEntityData unitEntityData in list)
-                {
-                    if (unitEntityData.IsPlayerFaction)
+                    bool flag2 =
+                        list.Any((UnitEntityData x) => x.Descriptor.Progression.CharacterLevel == 0 && !x.IsPet);
+                    if (flag2)
                     {
-                        if (GUILayout.Toggle(Main.selectedCharacter == num, " " + unitEntityData.CharacterName,
-                                new GUILayoutOption[]
-                                {
-                                    GUILayout.ExpandWidth(false)
-                                }))
+                        list = (from x in list
+                            where x.Descriptor.Progression.CharacterLevel == 0
+                            select x).ToList<UnitEntityData>();
+                        Main.selectedCharacter = 0;
+                    }
+                    else if (Main.selectedCharacter >= list.Count)
+                    {
+                        Main.selectedCharacter = 0;
+                    }
+
+                    int num = 0;
+                    UnitEntityData selected = null;
+                    foreach (UnitEntityData unitEntityData in list)
+                    {
+                        if (unitEntityData.IsPlayerFaction)
                         {
-                            Main.selectedCharacter = num;
-                            selected = unitEntityData;
+                            if (GUILayout.Toggle(Main.selectedCharacter == num, " " + unitEntityData.CharacterName,
+                                    new GUILayoutOption[]
+                                    {
+                                        GUILayout.ExpandWidth(false)
+                                    }))
+                            {
+                                Main.selectedCharacter = num;
+                                selected = unitEntityData;
+                            }
+
+                            num++;
                         }
-
-                        num++;
-                    }
-                }
-
-                GUILayout.EndHorizontal();
-                int i = Main.tabId;
-                if (i == 0)
-                {
-                    GUILayout.Space(10f);
-                    GUILayout.BeginHorizontal();
-                    if (selected?.IsStoryCompanionLocal() == true && selected?.IsMainCharacter != true)
-                    {
-                        settings.OriginalStats = GUILayout.Toggle(settings.OriginalStats, "Original Stats",
-                            GUILayout.ExpandWidth(false));
-                    }
-                    else
-                    {
-                        settings.OriginalStats = false;
                     }
 
                     GUILayout.EndHorizontal();
-                }
-
-                GUILayout.BeginHorizontal();
-                float value = settings.PointsCount;
-                value = Math.Max(0, Math.Min(102, value));
-                float abilityscoreslider =
-                    (float)Math.Round(GUILayout.HorizontalSlider(value, 0f, 102f, GUILayout.Width(120)));
-                string stringstuff = GUILayout.TextField(abilityscoreslider.ToString(), GUILayout.ExpandWidth(false));
-                int pointsstring = Int32.Parse(stringstuff);
-                value = pointsstring;
-                settings.PointsCount = (int)value;
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
-                int[] initStatsByUnit = Main.GetInitStatsByUnit(selected);
-                int num2 = 0;
-                foreach (StatType stat in StatTypeHelper.Attributes)
-                {
-                    GUILayout.Label(
-                        string.Format("  {0} {1}", LocalizedTexts.Instance.Stats.GetText(stat),
-                            initStatsByUnit[num2++]), new GUILayoutOption[]
+                    int i = Main.tabId;
+                    if (i == 0)
+                    {
+                        GUILayout.Space(10f);
+                        GUILayout.BeginHorizontal();
+                        if (selected?.IsStoryCompanionLocal() == true && selected?.IsMainCharacter != true)
                         {
-                            GUILayout.ExpandWidth(false)
-                        });
-                }
-
-                GUILayout.Label(("  Extra points +" + (settings.PointsCount.ToString())),
-                    new GUILayoutOption[] { GUILayout.ExpandWidth(false) });
-                GUILayout.EndHorizontal();
-                GUILayout.Space(10f);
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button(string.Format("Submit ({0}g)", Main.respecCost), UnityModManager.UI.button,
-                        new GUILayoutOption[]
+                            settings.OriginalStats = GUILayout.Toggle(settings.OriginalStats, "Original Stats",
+                                GUILayout.ExpandWidth(false));
+                        }
+                        else
                         {
-                            GUILayout.Width(250f)
-                        }))
-                {
+                            settings.OriginalStats = false;
+                        }
+
+                        GUILayout.EndHorizontal();
+                    }
+
+                    GUILayout.BeginHorizontal();
+                    float value = settings.PointsCount;
+                    value = Math.Max(0, Math.Min(102, value));
+                    float abilityscoreslider =
+                        (float)Math.Round(GUILayout.HorizontalSlider(value, 0f, 102f, GUILayout.Width(120)));
+                    string stringstuff =
+                        GUILayout.TextField(abilityscoreslider.ToString(), GUILayout.ExpandWidth(false));
+                    int pointsstring = Int32.Parse(stringstuff);
+                    value = pointsstring;
+                    settings.PointsCount = (int)value;
+                    GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
+                    int[] initStatsByUnit = Main.GetInitStatsByUnit(selected);
+                    int num2 = 0;
+                    foreach (StatType stat in StatTypeHelper.Attributes)
+                    {
+                        GUILayout.Label(
+                            string.Format("  {0} {1}", LocalizedTexts.Instance.Stats.GetText(stat),
+                                initStatsByUnit[num2++]), new GUILayoutOption[]
+                            {
+                                GUILayout.ExpandWidth(false)
+                            });
+                    }
+
+                    GUILayout.Label(("  Extra Ability Score points +" + (settings.PointsCount.ToString())),
+                        new GUILayoutOption[] { GUILayout.ExpandWidth(false) });
+                    GUILayout.EndHorizontal();
+                    GUILayout.Space(10f);
+                    GUILayout.BeginHorizontal();
+                    if (GUILayout.Button(string.Format("Submit ({0}g)", Main.respecCost), UnityModManager.UI.button,
+                            new GUILayoutOption[]
+                            {
+                                GUILayout.Width(250f)
+                            }))
+                    {
 #if DEBUG
                     string nameandtype = "";
                     if (selected.IsPet)
@@ -643,199 +648,229 @@ namespace RespecWrath
 
                     modEntry.Logger.Log($"Initiating respec of {nameandtype}");
 #endif
-                    bool flag5 = false;
-                    if (!selected.IsCustomCompanion())
-                    {
-                        if (Game.Instance.Player.SpendMoney(Main.respecCost))
+                        bool flag5 = false;
+                        if (!selected.IsCustomCompanion())
+                        {
+                            if (Game.Instance.Player.SpendMoney(Main.respecCost))
+                            {
+                                flag5 = true;
+                                modEntry.Logger.Log(string.Format("Money changed -{0}", Main.respecCost));
+                            }
+                            else
+                            {
+                                modEntry.Logger.Log(string.Format("Not enough money {0}", Main.respecCost));
+                            }
+                        }
+                        else if (Game.Instance.Player.Money >= Main.respecCost)
                         {
                             flag5 = true;
-                            modEntry.Logger.Log(string.Format("Money changed -{0}", Main.respecCost));
                         }
                         else
                         {
                             modEntry.Logger.Log(string.Format("Not enough money {0}", Main.respecCost));
                         }
-                    }
-                    else if (Game.Instance.Player.Money >= Main.respecCost)
-                    {
-                        flag5 = true;
-                    }
-                    else
-                    {
-                        modEntry.Logger.Log(string.Format("Not enough money {0}", Main.respecCost));
-                    }
 
-                    if (flag5)
-                    {
-                        try
+                        if (flag5)
                         {
-                            Main.IsRespec = true;
-                            Main.PreRespec(selected);
-                        }
-                        catch (Exception ex)
-                        {
-                            modEntry.Logger.Error(ex.ToString());
+                            try
+                            {
+                                Main.IsRespec = true;
+                                Main.PreRespec(selected);
+                            }
+                            catch (Exception ex)
+                            {
+                                modEntry.Logger.Error(ex.ToString());
+                            }
                         }
                     }
-                }
 
-                GUILayout.Space(5f);
-                if (selected.Descriptor.Progression.CharacterLevel != 0 && GUILayout.Button(
-                        string.Format("Mythic Only ({0}g)", Main.respecCost * 0.25), UnityModManager.UI.button,
-                        new GUILayoutOption[]
-                        {
-                            GUILayout.Width(250f)
-                        }))
-                {
-                    bool flag5 = false;
-                    if (!selected.IsCustomCompanion())
+                    GUILayout.Space(5f);
+                    if (selected.Descriptor.Progression.CharacterLevel != 0 && GUILayout.Button(
+                            string.Format("Mythic Only ({0}g)", Main.respecCost * 0.25), UnityModManager.UI.button,
+                            new GUILayoutOption[]
+                            {
+                                GUILayout.Width(250f)
+                            }))
                     {
-                        if (Game.Instance.Player.SpendMoney(Main.respecCost))
+                        bool flag5 = false;
+                        if (!selected.IsCustomCompanion())
+                        {
+                            if (Game.Instance.Player.SpendMoney(Main.respecCost))
+                            {
+                                flag5 = true;
+                                modEntry.Logger.Log(string.Format("Money changed -{0}", Main.respecCost));
+                            }
+                            else
+                            {
+                                modEntry.Logger.Log(string.Format("Not enough money {0}", Main.respecCost));
+                            }
+                        }
+                        else if (Game.Instance.Player.Money >= Main.respecCost)
                         {
                             flag5 = true;
-                            modEntry.Logger.Log(string.Format("Money changed -{0}", Main.respecCost));
                         }
                         else
                         {
                             modEntry.Logger.Log(string.Format("Not enough money {0}", Main.respecCost));
                         }
+
+                        if (flag5)
+                        {
+                            try
+                            {
+                                MythicRespecClass.MythicRespec(selected);
+                            }
+                            catch (Exception ex)
+                            {
+                                modEntry.Logger.Error(ex.ToString());
+                            }
+                        }
                     }
-                    else if (Game.Instance.Player.Money >= Main.respecCost)
+
+                    GUILayout.EndHorizontal();
+                    GUILayout.Space(10f);
+                    GUILayout.BeginHorizontal();
+                    if (selected.Descriptor.Progression.CharacterLevel > 1 && GUILayout.Button(
+                            string.Format("-1 Level"),
+                            UnityModManager.UI.button, new GUILayoutOption[]
+                            {
+                                GUILayout.Width(250f)
+                            }))
                     {
-                        flag5 = true;
+                        ArbitraryLevelRemoval.RemoveClassLevel(selected, selected.Progression);
+                    }
+
+                    GUILayout.Space(5f);
+                    if (selected.Descriptor.Progression.CharacterLevel > 1 && GUILayout.Button(
+                            string.Format("-1 Mythic Level"), UnityModManager.UI.button, new GUILayoutOption[]
+                            {
+                                GUILayout.Width(250f)
+                            }))
+                    {
+                        Main.MythicXP = selected.Progression.MythicExperience;
+                        selected.Progression.RemoveMythicLevel();
+                        selected.Progression.AdvanceMythicExperience(Main.MythicXP);
+                    }
+
+                    GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal();
+                    GUILayout.BeginVertical();
+                    settings.FreeRespec =
+                        GUILayout.Toggle(settings.FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
+                    settings.KeepSkillPoints = GUILayout.Toggle(settings.KeepSkillPoints,
+                        "Retain Skillpoint Distribution when leveling down", GUILayout.ExpandWidth(false));
+                    if (selected.IsStoryCompanionLocal() && !selected.IsMC())
+                    {
+                        settings.FullRespecStoryCompanion = GUILayout.Toggle(settings.FullRespecStoryCompanion,
+                            "Respec as Mercenary", GUILayout.ExpandWidth(false));
+                        if (settings.FullRespecStoryCompanion)
+                        {
+                            settings.BackgroundDeity = true;
+                        }
+
+                        settings.PreserveMCAlignment = false;
+                        settings.PreserveMCBirthday = false;
+                        settings.PreserveMCName = false;
                     }
                     else
                     {
-                        modEntry.Logger.Log(string.Format("Not enough money {0}", Main.respecCost));
+                        settings.FullRespecStoryCompanion = false;
                     }
 
-                    if (flag5)
+                    if (selected.IsMC())
                     {
-                        try
-                        {
-                            MythicRespecClass.MythicRespec(selected);
-                        }
-                        catch (Exception ex)
-                        {
-                            modEntry.Logger.Error(ex.ToString());
-                        }
+                        settings.PreserveVoice = GUILayout.Toggle(settings.PreserveVoice, "Retain Voice",
+                            GUILayout.ExpandWidth(false));
+                        settings.PreserveMCAlignment = GUILayout.Toggle(settings.PreserveMCAlignment,
+                            "Retain Alignment",
+                            GUILayout.ExpandWidth(false));
+                        settings.PreserveMCBirthday = GUILayout.Toggle(settings.PreserveMCBirthday, "Retain Birthday",
+                            GUILayout.ExpandWidth(false));
+                        settings.PreserveMCName = GUILayout.Toggle(settings.PreserveMCName, "Retain Name",
+                            GUILayout.ExpandWidth(false));
+                        settings.PreservePortrait = GUILayout.Toggle(settings.PreservePortrait, "Retain Portrait",
+                            GUILayout.ExpandWidth(false));
                     }
-                }
 
-                GUILayout.EndHorizontal();
-                GUILayout.Space(10f);
-                GUILayout.BeginHorizontal();
-                if (selected.Descriptor.Progression.CharacterLevel > 1 && GUILayout.Button(string.Format("-1 Level"),
-                        UnityModManager.UI.button, new GUILayoutOption[]
-                        {
-                            GUILayout.Width(250f)
-                        }))
-                {
-                    ArbitraryLevelRemoval.RemoveClassLevel(selected, selected.Progression);
-                }
-
-                GUILayout.Space(5f);
-                if (selected.Descriptor.Progression.CharacterLevel > 1 && GUILayout.Button(
-                        string.Format("-1 Mythic Level"), UnityModManager.UI.button, new GUILayoutOption[]
-                        {
-                            GUILayout.Width(250f)
-                        }))
-                {
-                    Main.MythicXP = selected.Progression.MythicExperience;
-                    selected.Progression.RemoveMythicLevel();
-                    selected.Progression.AdvanceMythicExperience(Main.MythicXP);
-                }
-
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.BeginVertical();
-                settings.FreeRespec =
-                    GUILayout.Toggle(settings.FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
-                settings.KeepSkillPoints = GUILayout.Toggle(settings.KeepSkillPoints,
-                    "Retain Skillpoint Distribution when leveling down", GUILayout.ExpandWidth(false));
-                if (selected.IsStoryCompanionLocal() && !selected.IsMC())
-                {
-                    settings.FullRespecStoryCompanion = GUILayout.Toggle(settings.FullRespecStoryCompanion,
-                        "Respec as Mercenary", GUILayout.ExpandWidth(false));
-                    if (settings.FullRespecStoryCompanion)
+                    if (selected.IsStoryCompanionLocal() && !settings.FullRespecStoryCompanion)
+                    {
+                        settings.BackgroundDeity = GUILayout.Toggle(settings.BackgroundDeity, "Choose Background/Deity",
+                            GUILayout.ExpandWidth(false));
+                        settings.OriginalLevel = GUILayout.Toggle(settings.OriginalLevel, "Respec From Recruit Level",
+                            GUILayout.ExpandWidth(false));
+                    }
+                    else if ((selected.IsStoryCompanionLocal()) && settings.FullRespecStoryCompanion)
                     {
                         settings.BackgroundDeity = true;
+                        settings.PreserveVoice = GUILayout.Toggle(settings.PreserveVoice, "Retain Voice",
+                            GUILayout.ExpandWidth(false));
+                        settings.PreservePortrait = GUILayout.Toggle(settings.PreservePortrait, "Retain Portrait",
+                            GUILayout.ExpandWidth(false));
+                    }
+                    else if (!settings.FullRespecStoryCompanion)
+                    {
+                        settings.BackgroundDeity = false;
                     }
 
-                    settings.PreserveMCAlignment = false;
-                    settings.PreserveMCBirthday = false;
-                    settings.PreserveMCName = false;
+                    if (selected.IsCustomCompanion())
+                    {
+                        settings.PreserveVoice = false;
+                        settings.PreservePortrait = false;
+                    }
+
+                    GUILayout.EndVertical();
+                    GUILayout.EndHorizontal();
+                    GUILayout.Space(10f);
+                    GUILayout.BeginHorizontal();
+                    OldCost = GUILayout.Toggle(OldCost, "Fixed/Scaling Cost", GUILayout.ExpandWidth(false));
+                    settings.AttributeInClassPage = GUILayout.Toggle(settings.AttributeInClassPage,
+                        "Attribute Selection icons on class page", GUILayout.ExpandWidth(false));
+                    GUILayout.EndHorizontal();
+                    if (settings.FreeRespec == true && !forcecost)
+                    {
+                        respecCost = 0L;
+                    }
+
+                    if (settings.FreeRespec == false || forcecost)
+                    {
+                        if (Main.OldCost)
+                        {
+                            respecCost = 1000L;
+                        }
+                        else
+                        {
+                            var lvl = selected.Progression.CharacterLevel;
+                            float cost = lvl * lvl / 4 * 1000;
+                            respecCost = (long)Math.Max(250, Math.Round(cost));
+                        }
+                    }
                 }
                 else
                 {
-                    settings.FullRespecStoryCompanion = false;
-                }
-
-                if (selected.IsMC())
-                {
-                    settings.PreserveVoice = GUILayout.Toggle(settings.PreserveVoice, "Retain Voice",
-                        GUILayout.ExpandWidth(false));
-                    settings.PreserveMCAlignment = GUILayout.Toggle(settings.PreserveMCAlignment, "Retain Alignment",
-                        GUILayout.ExpandWidth(false));
-                    settings.PreserveMCBirthday = GUILayout.Toggle(settings.PreserveMCBirthday, "Retain Birthday",
-                        GUILayout.ExpandWidth(false));
-                    settings.PreserveMCName = GUILayout.Toggle(settings.PreserveMCName, "Retain Name",
-                        GUILayout.ExpandWidth(false));
-                    settings.PreservePortrait = GUILayout.Toggle(settings.PreservePortrait, "Retain Portrait",
-                        GUILayout.ExpandWidth(false));
-                }
-
-                if (selected.IsStoryCompanionLocal() && !settings.FullRespecStoryCompanion)
-                {
-                    settings.BackgroundDeity = GUILayout.Toggle(settings.BackgroundDeity, "Choose Background/Deity",
-                        GUILayout.ExpandWidth(false));
-                    settings.OriginalLevel = GUILayout.Toggle(settings.OriginalLevel, "Respec From Recruit Level",
-                        GUILayout.ExpandWidth(false));
-                }
-                else if ((selected.IsStoryCompanionLocal()) && settings.FullRespecStoryCompanion)
-                {
-                    settings.BackgroundDeity = true;
-                    settings.PreserveVoice = GUILayout.Toggle(settings.PreserveVoice, "Retain Voice",
-                        GUILayout.ExpandWidth(false));
-                    settings.PreservePortrait = GUILayout.Toggle(settings.PreservePortrait, "Retain Portrait",
-                        GUILayout.ExpandWidth(false));
-                }
-                else if (!settings.FullRespecStoryCompanion)
-                {
-                    settings.BackgroundDeity = false;
-                }
-
-                if (selected.IsCustomCompanion())
-                {
-                    settings.PreserveVoice = false;
-                    settings.PreservePortrait = false;
-                }
-
-                GUILayout.EndVertical();
-                GUILayout.EndHorizontal();
-                GUILayout.Space(10f);
-                GUILayout.BeginHorizontal();
-                OldCost = GUILayout.Toggle(OldCost, "Fixed/Scaling Cost", GUILayout.ExpandWidth(false));
-                settings.AttributeInClassPage = GUILayout.Toggle(settings.AttributeInClassPage,
-                    "Attribute Selection icons on class page", GUILayout.ExpandWidth(false));
-                GUILayout.EndHorizontal();
-                if (settings.FreeRespec == true && !forcecost)
-                {
-                    respecCost = 0L;
-                }
-
-                if (settings.FreeRespec == false || forcecost)
-                {
-                    if (Main.OldCost)
-                    {
-                        respecCost = 1000L;
-                    }
-                    else
-                    {
-                        var lvl = selected.Progression.CharacterLevel;
-                        float cost = lvl * lvl / 4 * 1000;
-                        respecCost = (long)Math.Max(250, Math.Round(cost));
-                    }
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Respec Mod has no real functionality in the Main Menu, please load into the game to use.");
+                    GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal();
+                    float value = settings.PointsCount;
+                    value = Math.Max(0, Math.Min(102, value));
+                    float abilityscoreslider =
+                        (float)Math.Round(GUILayout.HorizontalSlider(value, 0f, 102f, GUILayout.Width(120)));
+                    string stringstuff =
+                        GUILayout.TextField(abilityscoreslider.ToString(), GUILayout.ExpandWidth(false));
+                    int pointsstring = Int32.Parse(stringstuff);
+                    value = pointsstring;
+                    settings.PointsCount = (int)value;
+                    GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal(Array.Empty<GUILayoutOption>());
+                    GUILayout.Label(("  Extra Ability Score points +" + (settings.PointsCount.ToString())),
+                        new GUILayoutOption[] { GUILayout.ExpandWidth(false) });
+                    GUILayout.EndHorizontal();
+                    GUILayout.Space(10f);
+                    GUILayout.BeginHorizontal();
+                    settings.AttributeInClassPage = GUILayout.Toggle(settings.AttributeInClassPage,
+                        "Attribute Selection icons on class page", GUILayout.ExpandWidth(false));
+                    GUILayout.EndHorizontal();
+                    GUILayout.Space(10f);
                 }
             }
             catch (Exception e)
