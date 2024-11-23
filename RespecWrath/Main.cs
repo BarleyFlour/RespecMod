@@ -727,7 +727,7 @@ namespace RespecWrath
                         }
                     }
 
-                    GUILayout.EndHorizontal();
+                    /*GUILayout.EndHorizontal();
                     GUILayout.Space(10f);
                     GUILayout.BeginHorizontal();
                     if (selected.Descriptor.Progression.CharacterLevel > 1 && GUILayout.Button(
@@ -750,7 +750,7 @@ namespace RespecWrath
                         Main.MythicXP = selected.Progression.MythicExperience;
                         selected.Progression.RemoveMythicLevel();
                         selected.Progression.AdvanceMythicExperience(Main.MythicXP);
-                    }
+                    }*/
 
                     GUILayout.EndHorizontal();
                     GUILayout.BeginHorizontal();
