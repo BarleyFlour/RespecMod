@@ -757,8 +757,8 @@ namespace RespecWrath
                     GUILayout.BeginVertical();
                     settings.FreeRespec =
                         GUILayout.Toggle(settings.FreeRespec, "Free Respec", GUILayout.ExpandWidth(false));
-                    settings.KeepSkillPoints = GUILayout.Toggle(settings.KeepSkillPoints,
-                        "Retain Skillpoint Distribution when leveling down", GUILayout.ExpandWidth(false));
+                    /*settings.KeepSkillPoints = GUILayout.Toggle(settings.KeepSkillPoints,
+                        "Retain Skillpoint Distribution when leveling down", GUILayout.ExpandWidth(false));*/
                     if (selected.IsStoryCompanionLocal() && !selected.IsMC())
                     {
                         settings.FullRespecStoryCompanion = GUILayout.Toggle(settings.FullRespecStoryCompanion,

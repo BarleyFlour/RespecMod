@@ -20,11 +20,12 @@ namespace RespecWrath
     {
         static bool ShouldSkipAddingLevels(UnitEntityData unit)
         {
-            return !(Main.IsHilorRespec || (Main.settings.OriginalLevel && Main.IsRespec) || !Main.IsRespec &&
+            var shouldSkip = !(Main.IsHilorRespec || (Main.settings.OriginalLevel && Main.IsRespec) || !Main.IsRespec &&
                 (Main.isrecruit ||
                  !Kingmaker.Game.Instance.Player.AllCharacters.Contains(jc =>
                      jc.Blueprint.CharacterName == unit.Blueprint.CharacterName) ||
                  (!unit.IsStoryCompanionLocal() && !Main.isrecruit) || unit.IsPet));
+            return shouldSkip;
         }
 
         static bool ShouldAddFeature(UnitEntityData unit, BlueprintFeature feature)

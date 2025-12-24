@@ -17,7 +17,7 @@ using System.Linq;
 
 namespace RespecWrath
 {
-    [HarmonyPatch(typeof(SpendSkillPoint), nameof(SpendSkillPoint.Check))]
+    /*[HarmonyPatch(typeof(SpendSkillPoint), nameof(SpendSkillPoint.Check))]
     internal static class SpendSkillPoint_check_patch
     {
         [HarmonyPostfix]
@@ -28,7 +28,7 @@ namespace RespecWrath
                        unit.Stats.GetStat(__instance.Skill).BaseValue < state.NextCharacterLevel &&
                        state.SkillPointsRemaining >= 0;
         }
-    }
+    }*/
 
     [HarmonyPatch(typeof(CharGenContextVM), nameof(CharGenContextVM.CompleteLevelUp))]
     internal static class CompleteLevelUp_patch
@@ -71,10 +71,10 @@ namespace RespecWrath
                         unit.AddFact(bu);
                     }
 
-                    if (!unit.IsMC() && unit.IsStoryCompanionLocal() &&
+                    if (Main.settings?.OriginalLevel == false && (!unit.IsMC() && unit.IsStoryCompanionLocal() &&
                         !Main.settings?.FullRespecStoryCompanion == true ||
                         unit.Blueprint.ToString().Contains("_Companion") && !unit.IsMC() &&
-                        !Main.settings?.FullRespecStoryCompanion == true)
+                        !Main.settings?.FullRespecStoryCompanion == true))
                     {
                         foreach (BlueprintFeature feat in unit?.Blueprint?.Race?.Features)
                         {
@@ -119,7 +119,7 @@ namespace RespecWrath
                 if (unit?.Progression?.Race?.SelectableRaceStat == true &&
                     unit?.OriginalBlueprint?.AssetGuidThreadSafe != "ae766624c03058440a036de90a7f2009")
                 {
-                    if (!Main.settings.FullRespecStoryCompanion && !unit.IsMC())
+                    if (!Main.settings.FullRespecStoryCompanion && !unit.IsMC() && !Main.settings.OriginalLevel)
                     {
                         __instance.CanSelectRaceStat = true;
                     }
@@ -208,7 +208,7 @@ namespace RespecWrath
                          !Main.settings.FullRespecStoryCompanion)
                 {
                     Traverse.Create(__instance).Field("Mode").SetValue(LevelUpState.CharBuildMode.LevelUp);
-                    __instance.StatsDistribution.Available = true;
+                    __instance.StatsDistribution.Available = !Main.settings.OriginalLevel;
                     __instance.CanSelectAlignment = false;
                     __instance.CanSelectRace = false;
                     __instance.CanSelectPortrait = false;
