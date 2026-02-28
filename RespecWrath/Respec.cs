@@ -113,7 +113,6 @@ namespace RespecWrath
                         }
                     }
                 }
-                var classestoadd = unit.Progression.Classes.Where(a => a.CharacterClass.IsMythic);
 
                 try
                 {
@@ -269,7 +268,7 @@ namespace RespecWrath
 
                 BlueprintFeature[] array = (from i in unit.Progression.Features.Enumerable.Except((Feature i) =>
                         i.SourceProgression || i.SourceClass || i.SourceRace || i.Blueprint.IsClassFeature ||
-                        i.SourceAbility || i.SourceFact != null)
+                        i.SourceAbility || i.SourceItem != null || i.SourceFact != null )
                     select i.Blueprint).ToArray<BlueprintFeature>();
                 Feature[] array2 = (from i in newUnit.Progression.Features.Enumerable
                     where !i.Blueprint.IsClassFeature && !unit.HasFact(i.Blueprint)

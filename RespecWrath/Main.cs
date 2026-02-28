@@ -986,11 +986,10 @@ namespace RespecWrath
                                             blueprintfeature.SourceProgression == null &&
                                             blueprintfeature.SourceAbility == null &&
                                             blueprintfeature.MythicSource == null &&
-                                            !blueprintfeature.Blueprint.IsClassFeature &&
-                                            blueprintfeature.SourceItem == null);
-                            if (backgroundsarray.Contains(blueprintfeature.Blueprint) &&
-                                !Main.settings.BackgroundDeity || blueprintfeature.Hidden && nosource &&
-                                !blueprintfeature.NameForAcronym.Contains("Cantrip"))
+                                            !blueprintfeature.Blueprint.IsClassFeature);
+                            if ((backgroundsarray.Contains(blueprintfeature.Blueprint) &&
+                                !Main.settings.BackgroundDeity) || (blueprintfeature.Hidden && nosource &&
+                                !blueprintfeature.NameForAcronym.Contains("Cantrip")))
                             {
                                 Main.featurestoadd.Add(blueprintfeature.Blueprint);
                             }
