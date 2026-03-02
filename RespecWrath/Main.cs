@@ -914,24 +914,20 @@ namespace RespecWrath
             {
                 Main.logger.Log("Library data gathering initiated");
                 DeityBackground.DeityFeatures = DeityBackground.DeitySelect?.AllFeatures.Select(a => a).ToArray();
-                var tempbackgroundlist = new List<BlueprintFeature>();
-                tempbackgroundlist.Add(DeityBackground.BackgroundSelect);
-                foreach (var background in DeityBackground.BackgroundSelect?.AllFeatures)
+                List<BlueprintFeature> tempbackgroundlist = [DeityBackground.BackgroundSelect];
+                foreach (var background in DeityBackground.BackgroundSelect?.AllFeatures.NotNull() ?? [])
                 {
-                    if (background != null)
+                    tempbackgroundlist.Add(background);
+                    if (background is BlueprintFeatureSelection background1)
                     {
-                        tempbackgroundlist.Add(background);
-                        if (background.GetType() == typeof(BlueprintFeatureSelection))
+                        foreach (var selection in background1?.AllFeatures.NotNull() ?? [])
                         {
-                            foreach (var selection in ((BlueprintFeatureSelection)background)?.AllFeatures)
+                            tempbackgroundlist.Add(selection);
+                            if (selection is BlueprintFeatureSelection selection1)
                             {
-                                tempbackgroundlist.Add(selection);
-                                if (selection.GetType() == typeof(BlueprintFeatureSelection))
+                                foreach (var selection2 in selection1?.AllFeatures.NotNull() ?? [])
                                 {
-                                    foreach (var selection2 in ((BlueprintFeatureSelection)selection)?.AllFeatures)
-                                    {
                                         tempbackgroundlist.Add(selection2);
-                                    }
                                 }
                             }
                         }
