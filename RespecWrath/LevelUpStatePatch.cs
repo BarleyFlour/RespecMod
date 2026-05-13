@@ -117,7 +117,8 @@ namespace RespecWrath
                     }
 
                 if (unit?.Progression?.Race?.SelectableRaceStat == true &&
-                    unit?.OriginalBlueprint?.AssetGuidThreadSafe != "ae766624c03058440a036de90a7f2009")
+                    unit?.OriginalBlueprint?.AssetGuidThreadSafe != "ae766624c03058440a036de90a7f2009" &&
+                    unit?.OriginalBlueprint?.AssetGuidThreadSafe != "cb29621d99b902e4da6f5d232352fbda")
                 {
                     if (!Main.settings.FullRespecStoryCompanion && !unit.IsMC() && !Main.settings.OriginalLevel)
                     {
